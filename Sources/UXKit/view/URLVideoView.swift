@@ -189,7 +189,7 @@ public class URLVideoView: UIView, StateMachineDelegate {
     delegate?.videoViewDidClear(self)
   }
 
-  public func update(check: DirtyStateChecker) {
+  public func update(check: StateValidator) {
     if check.isDirty(\URLVideoView.url) {
       updateVideo()
     }

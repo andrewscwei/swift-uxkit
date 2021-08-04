@@ -86,7 +86,7 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
     }
   }
 
-  open func update(check: DirtyStateChecker) {
+  open func update(check: StateValidator) {
     if check.isDirty(.layout) {
       collectionView.contentInset = contentInsets
 
