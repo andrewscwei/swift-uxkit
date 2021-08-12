@@ -10,6 +10,7 @@ extension DataCollectionViewController {
   ///   - datum: The datum.
   ///   - section: The section.
   ///   - filtered: Specifies if referring to unfiltered or filtered data.
+  ///
   /// - Returns: The first index (if found).
   public func firstIndex(for datum: T, at section: Int, filtered: Bool? = nil) -> Int? {
     guard section < numberOfSections else { return nil }
@@ -22,12 +23,14 @@ extension DataCollectionViewController {
     }
   }
 
-  /// Gets the cell indexes of a datum at a given section. Note that the same datum can repeat within the same section.
+  /// Gets the cell indexes of a datum at a given section. Note that the same datum can repeat
+  /// within the same section.
   ///
   /// - Parameters:
   ///   - datum: The datum.
   ///   - section: The section.
   ///   - filtered: Specifies if referring to unfiltered or filtered data.
+  ///
   /// - Returns: The indexes (if found).
   public func indexes(for datum: T, at section: Int, filtered: Bool? = nil) -> [Int] {
     guard
@@ -51,6 +54,7 @@ extension DataCollectionViewController {
   /// - Parameters:
   ///   - datum: The datum.
   ///   - filtered: Specifies if referring to unfiltered data or filtered data.
+  ///
   /// - Returns: The first index path if found.
   public func firstIndexPath(for datum: T, filtered: Bool? = nil) -> IndexPath? {
     for section in 0 ..< numberOfSections {
@@ -67,6 +71,7 @@ extension DataCollectionViewController {
   /// - Parameters:
   ///   - datum: The datum.
   ///   - filtered: Specifies if referring to unfiltered data or filtered data.
+  ///
   /// - Returns: The index paths if found.
   public func indexPaths(for datum: T, filtered: Bool? = nil) -> [IndexPath] {
     var out = [IndexPath]()

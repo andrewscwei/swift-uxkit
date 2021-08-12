@@ -7,6 +7,7 @@ import UIKit
 /// - Parameters:
 ///   - left: LHS `UIEdgeInsets` value.
 ///   - right: RHS `UIEdgeInsets` value.
+///
 /// - Returns: The resulting `UIEdgeInsets` value.
 public func +(left: UIEdgeInsets, right: UIEdgeInsets) -> UIEdgeInsets {
   return UIEdgeInsets(top: left.top + right.top, left: left.left + right.left, bottom: left.bottom + right.bottom, right: left.right + right.right)
@@ -17,6 +18,7 @@ public func +(left: UIEdgeInsets, right: UIEdgeInsets) -> UIEdgeInsets {
 /// - Parameters:
 ///   - left: LHS `UIEdgeInsets` value.
 ///   - right: RHS `UIEdgeInsets` value.
+///
 /// - Returns: The resulting `UIEdgeInsets` value.
 public func -(left: UIEdgeInsets, right: UIEdgeInsets) -> UIEdgeInsets {
   return UIEdgeInsets(top: left.top - right.top, left: left.left - right.left, bottom: left.bottom - right.bottom, right: left.right - right.right)
@@ -39,6 +41,7 @@ extension UIEdgeInsets {
   ///   - left: Left edge inset value to replace (omit to retain old value).
   ///   - bottom: Bottom edge inset value to replace (omit to retain old value).
   ///   - right: Right edge inset value to replace (omit to retain old value).
+  ///
   /// - Returns: New `UIEdgeInsets` struct with replaced edge inset values.
   public func replacedBy(top: CGFloat? = nil, left: CGFloat? = nil, bottom: CGFloat? = nil, right: CGFloat? = nil) -> UIEdgeInsets {
     return UIEdgeInsets(top: top ?? self.top, left: left ?? self.left, bottom: bottom ?? self.bottom, right: right ?? self.right)
@@ -48,9 +51,9 @@ extension UIEdgeInsets {
   ///
   /// - Parameters:
   ///   - offset: The amount to offset each edge inset value by.
+  ///
   /// - Returns: New `UIEdgeInsets` struct with offsetting edge inset values.
   public func offsetBy(_ offset: CGFloat) -> UIEdgeInsets {
     return UIEdgeInsets(top: self.top + offset, left: self.left + offset, bottom: self.bottom + offset, right: self.right + offset)
   }
 }
-

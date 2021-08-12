@@ -11,6 +11,7 @@ public protocol SizeComputable: AnySizeComputable  {
   ///
   /// - Parameters:
   ///   - attributes: Attributes that affect the calculation of the size.
+  ///
   /// - Returns: The computed `CGSize`.
   static func sizeThatFits(with attributes: SizeAttributes?) -> CGSize
 }

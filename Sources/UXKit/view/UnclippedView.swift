@@ -3,7 +3,9 @@
 import BaseKit
 import UIKit
 
-/// Custom `UIView` that supports hit-testing subviews outside of its bounds. Each subview must be registered via `registerUnclippedSubview(_:)` in order for out-of-bounds hit-testing to take effect. `UnclippedView`'s can be nested.
+/// Custom `UIView` that supports hit-testing subviews outside of its bounds. Each subview must be
+/// registered via `registerUnclippedSubview(_:)` in order for out-of-bounds hit-testing to take
+/// effect. `UnclippedView`'s can be nested.
 open class UnclippedView: UIView {
 
   private var unclippedSubviews: [WeakReference<UIView>] = []
@@ -50,11 +52,13 @@ open class UnclippedView: UIView {
     for ref in unclippedSubviews {
       guard let targetView = ref.get() else { continue }
 
-      // Convert the point to the target view's coordinate system. The target view isn't necessarily the immediate subview.
+      // Convert the point to the target view's coordinate system. The target view isn't necessarily
+      // the immediate subview.
       let pointForTargetView: CGPoint = targetView.convert(point, from: self)
 
       if targetView is UnclippedView || targetView.bounds.contains(pointForTargetView) {
-        // The target view may have its view hierarchy, so call its hitTest method to return the right hit-test view.
+        // The target view may have its view hierarchy, so call its hitTest method to return the
+        // right hit-test view.
         return targetView.hitTest(pointForTargetView, with: event)
       }
     }

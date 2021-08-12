@@ -34,7 +34,8 @@ public class DisplayLinkDelegate {
     reset()
   }
 
-  /// Pauses the current active display link. The display link is not removed, but merely paused, so it can be resumed at a later point.
+  /// Pauses the current active display link. The display link is not removed, but merely paused, so
+  /// it can be resumed at a later point.
   public func pause() {
     displayLink?.isPaused = true
   }
@@ -49,7 +50,8 @@ public class DisplayLinkDelegate {
     epoch = nil
   }
 
-  /// Handler invoked on every frame advancement for the duration of the current active display link.
+  /// Handler invoked on every frame advancement for the duration of the current active display
+  /// link.
   ///
   /// - Parameters:
   ///   - displayLink: The current active display link.

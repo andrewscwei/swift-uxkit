@@ -7,7 +7,8 @@ extension NSNumber {
 
   /// Returns the abbreviated string of an integer (i.e. "1K", "1M", etc.).
   ///
-  /// In order for the correct string to be displayed, the app must define the following strings in `Localizable.strings`:
+  /// In order for the correct string to be displayed, the app must define the following strings in
+  /// `Localizable.strings`:
   ///   1. `LTXT_NUMBER_SUFFIX_THOUSANDS`: Suffix for thousands (i.e. "K").
   ///   1. `LTXT_NUMBER_SUFFIX_MILLIONS`: Suffix for millions (i.e. "M").
   ///   1. `LTXT_NUMBER_SUFFIX_BILLIONS`: Suffix for billions (i.e. "B").

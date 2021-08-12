@@ -7,7 +7,9 @@ private var ptr_keyboardWillShow: UInt8 = 0
 private var ptr_keyboardWillHide: UInt8 = 0
 private var ptr_keyboardFrame: UInt8 = 0
 
-/// A `UIViewController` protocol for handling virtual keyboard show/hide events. Invoke `beginObservingKeyboardEvents` (i.e. in `viewWillAppear`) to begin listening for the events and `endListeneningForKeyboardEvents` (i.e. in `viewDidDisappear`) to stop.
+/// A `UIViewController` protocol for handling virtual keyboard show/hide events. Invoke
+/// `beginObservingKeyboardEvents` (i.e. in `viewWillAppear`) to begin listening for the events and
+/// `endListeneningForKeyboardEvents` (i.e. in `viewDidDisappear`) to stop.
 public protocol KeyboardObserver: UIViewController {
 
   /// Handler invoked when the virtual keyboard shows.
@@ -38,9 +40,11 @@ extension KeyboardObserver {
     set { setAssociatedValue(for: self, key: &ptr_keyboardFrame, value: newValue) }
   }
 
-  /// Returns the current frame of the virtual keyboard relative to the application window. If the keyboard is not present, `nil` will be returned.
+  /// Returns the current frame of the virtual keyboard relative to the application window. If the
+  /// keyboard is not present, `nil` will be returned.
   ///
-  /// - Returns: The current frame of the virtual keyboard relative to the application window, `nil` if the keyboard is not present.
+  /// - Returns: The current frame of the virtual keyboard relative to the application window, `nil`
+  ///            if the keyboard is not present.
   public func getKeyboardFrame() -> CGRect? { keyboardFrame }
 
   /// Begin listening for keyboard events.

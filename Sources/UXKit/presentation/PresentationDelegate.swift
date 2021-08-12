@@ -18,7 +18,10 @@ public class PresentationDelegate {
   ///
   /// - Parameters:
   ///   - storyboardName: Name of the storyboard.
-  ///   - shouldReplaceExisting: Specifies if the view controller to be presented should replace the currently presented view controller (if it exists). If `false` and there currently exists a presented view controller, this method will be skipped.
+  ///   - shouldReplaceExisting: Specifies if the view controller to be presented should replace the
+  ///                            currently presented view controller (if it exists). If `false` and
+  ///                            there currently exists a presented view controller, this method
+  ///                            will be skipped.
   public func present(_ storyboardName: String, shouldReplaceExisting: Bool = true) {
     guard let viewControllerToPresent = UIStoryboard(name: storyboardName, bundle: nil).instantiateInitialViewController() else {
       return
@@ -43,7 +46,10 @@ public class PresentationDelegate {
   ///
   /// - Parameters:
   ///   - viewControllerToPresent: View controller instance of the modal.
-  ///   - shouldReplaceExisting: Specifies if the view controller to be presented should replace the currently presented view controller (if it exists). If `false` and there currently exists a presented view controller, this method will be skipped.
+  ///   - shouldReplaceExisting: Specifies if the view controller to be presented should replace the
+  ///                            currently presented view controller (if it exists). If `false` and
+  ///                            there currently exists a presented view controller, this method
+  ///                            will be skipped.
   public func present(_ viewControllerToPresent: UIViewController, shouldReplaceExisting: Bool = true) {
     if delegator?.presentedViewController != nil {
       if shouldReplaceExisting {
@@ -65,7 +71,8 @@ public class PresentationDelegate {
   /// - Parameters:
   ///   - title: Title of the popup.
   ///   - message: The message of the popup.
-  ///   - actions: Array of `ActionDescriptor`s, each describing an action button (from left to right) of the alert popup.
+  ///   - actions: Array of `ActionDescriptor`s, each describing an action button (from left to
+  ///              right) of the alert popup.
   public func presentAlert(title: String, message: String, actions: [ActionDescriptor]? = nil) {
     let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
 
@@ -90,7 +97,8 @@ public class PresentationDelegate {
   /// - Parameters:
   ///   - title: Optional title of the action sheet.
   ///   - message: Optional message of the action sheet.
-  ///   - actions: Array of `ActionDescriptor`s, each describing an action button (from top to bottom) of the action sheet.
+  ///   - actions: Array of `ActionDescriptor`s, each describing an action button (from top to
+  ///              bottom) of the action sheet.
   public func presentActionSheet(title: String? = nil, message: String? = nil, actions: [ActionDescriptor]) {
     let alert = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
 

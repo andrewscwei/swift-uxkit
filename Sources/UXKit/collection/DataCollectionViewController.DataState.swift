@@ -13,7 +13,8 @@ extension DataCollectionViewController {
     /// Data is fetched successfully and the collection view is populated with data.
     case hasData
 
-    /// Data is fetched successfully but it is empty and there is nothing to populate in the collection view.
+    /// Data is fetched successfully but it is empty and there is nothing to populate in the
+    /// collection view.
     case noData
 
     /// Error occurred while fetching data.

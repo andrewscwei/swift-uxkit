@@ -8,7 +8,8 @@ public class URLImageView: UIImageView {
 
   public weak var delegate: URLImageViewDelegate?
 
-  /// A weak reference to the aspect ratio constraint of this view. This is necessary in order for the view to properly resize itself based on the actual dimension of the loaded image/video.
+  /// A weak reference to the aspect ratio constraint of this view. This is necessary in order for
+  /// the view to properly resize itself based on the actual dimension of the loaded image/video.
   private weak var aspectRatioConstraint: NSLayoutConstraint?
 
   public var url: URL? {
@@ -106,7 +107,9 @@ public class URLImageView: UIImageView {
     }
   }
 
-  /// Updates the aspect ratio constraint of this view. The constraint is based on the size of the current displayed `UIImage`, and automatically changes the view's height according to the aspect ratio of the image relative to the view's width.
+  /// Updates the aspect ratio constraint of this view. The constraint is based on the size of the
+  /// current displayed `UIImage`, and automatically changes the view's height according to the
+  /// aspect ratio of the image relative to the view's width.
   private func updateAspectRatio() {
     // First remove the current constraint, if it exists.
     if let oldConstraint = aspectRatioConstraint {
@@ -115,7 +118,8 @@ public class URLImageView: UIImageView {
 
     guard let size = image?.size, size != .zero else { return }
 
-    // Then apply the new constraint and lower its priority so externally applied constraints can override this.
+    // Then apply the new constraint and lower its priority so externally applied constraints can
+    // override this.
     let newConstraint = NSLayoutConstraint(item: self, attribute: .height, relatedBy: .equal, toItem: self, attribute: .width, multiplier: size.height / size.width, constant: 0)
     newConstraint.priority = UILayoutPriority(rawValue: 999)
     addConstraint(newConstraint)

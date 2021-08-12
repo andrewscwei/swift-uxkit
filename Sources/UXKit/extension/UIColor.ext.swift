@@ -18,7 +18,8 @@ extension UIColor {
     )
   }
 
-  /// Initializes and creates a color object using the specified opacity and hex code in #RRGGBB format.
+  /// Initializes and creates a color object using the specified opacity and hex code in #RRGGBB
+  /// format.
   ///
   /// - Parameters:
   ///   - hex: The hex code in #RRGGBB format.
@@ -48,18 +49,23 @@ extension UIColor {
     return nil
   }
 
-  /// Creates and returns a color object that has the same color space and component values as the receiver, but has an alpha component of `1.0`.
+  /// Creates and returns a color object that has the same color space and component values as the
+  /// receiver, but has an alpha component of `1.0`.
   public var opaque: UIColor { return self.withAlphaComponent(1.0) }
 
-  /// Creates and returns a color object that has the same color space and component values as the receiver, but has an alpha component of `0.8`.
+  /// Creates and returns a color object that has the same color space and component values as the
+  /// receiver, but has an alpha component of `0.8`.
   public var dimmed: UIColor { return self.withAlphaComponent(0.8) }
 
-  /// Creates and returns a color object that has the same color space and component values as the receiver, but has an alpha component of `0.4`.
+  /// Creates and returns a color object that has the same color space and component values as the
+  /// receiver, but has an alpha component of `0.4`.
   public var faded: UIColor { return self.withAlphaComponent(0.4) }
 
-  /// Creates and returns a color object that has the same color space and component values as the receiver, but has an alpha component of `0.1`.
+  /// Creates and returns a color object that has the same color space and component values as the
+  /// receiver, but has an alpha component of `0.1`.
   public var translucent: UIColor { return self.withAlphaComponent(0.1) }
 
-  /// Creates and returns a color object that has the same color space and component values as the receiver, but has an alpha component of `0.0`.
+  /// Creates and returns a color object that has the same color space and component values as the
+  /// receiver, but has an alpha component of `0.0`.
   public var transparent: UIColor { return self.withAlphaComponent(0.0) }
 }
