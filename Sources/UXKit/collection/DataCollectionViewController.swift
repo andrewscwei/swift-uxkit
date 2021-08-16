@@ -1306,10 +1306,10 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
   /// Stops the refresh control spinner at the front of the collection view.
   ///
   /// - Parameters:
-  ///   - completionHandler: Handle invoked upon completion.
-  private func stopFrontSpinner(completionHandler: (() -> Void)? = nil) {
+  ///   - completion: Handle invoked upon completion.
+  private func stopFrontSpinner(completion: (() -> Void)? = nil) {
     guard let frontSpinner = frontSpinner, frontSpinner.isActive else {
-      completionHandler?()
+      completion?()
       return
     }
 
@@ -1321,7 +1321,7 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
       UIView.animate(withDuration: self.view.animationDelegate.defaultDuration, animations: {
         self.collectionView.contentInset = self.contentInsets
       }) { _ in
-        completionHandler?()
+        completion?()
       }
     }
   }
@@ -1367,10 +1367,10 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
   /// Stops the refresh control spinner at the end of the collection view.
   ///
   /// - Parameters:
-  ///   - completionHandler: Handle invoked upon completion.
-  private func stopEndSpinner(completionHandler: (() -> Void)? = nil) {
+  ///   - completion: Handle invoked upon completion.
+  private func stopEndSpinner(completion: (() -> Void)? = nil) {
     guard let endSpinner = endSpinner, endSpinner.isActive else {
-      completionHandler?()
+      completion?()
       return
     }
 
@@ -1382,7 +1382,7 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
       UIView.animate(withDuration: self.view.animationDelegate.defaultDuration, animations: {
         self.collectionView.contentInset = self.contentInsets
       }) { _ in
-        completionHandler?()
+        completion?()
       }
     }
   }

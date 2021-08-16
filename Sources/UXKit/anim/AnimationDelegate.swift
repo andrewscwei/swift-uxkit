@@ -141,9 +141,9 @@ public class AnimationDelegate: NSObject, CAAnimationDelegate {
                                 repeatCount: Int? = nil,
                                 shouldOverwriteExisting: Bool? = nil,
                                 fillMode: CAMediaTimingFillMode? = nil,
-                                completion completionHandler: (() -> Void)? = nil) -> CAAnimation? {
+                                completion: (() -> Void)? = nil) -> CAAnimation? {
     guard let view = view else { return nil }
-    return basic(view.layer, property: property, to: toValue, from: fromValue, delay: delay, duration: duration, timingFunctionName: timingFunctionName, autoreverses: autoreverses, repeatCount: repeatCount, shouldOverwriteExisting: shouldOverwriteExisting, fillMode: fillMode, completion: completionHandler)
+    return basic(view.layer, property: property, to: toValue, from: fromValue, delay: delay, duration: duration, timingFunctionName: timingFunctionName, autoreverses: autoreverses, repeatCount: repeatCount, shouldOverwriteExisting: shouldOverwriteExisting, fillMode: fillMode, completion: completion)
   }
 
 
@@ -174,7 +174,7 @@ public class AnimationDelegate: NSObject, CAAnimationDelegate {
   ///   - fillMode: The fill mode of the animation. If there is a delay in the animation, the fill
   ///               mode is automatically set to `backwards`, given that no value is specified for
   ///               this parameter. Otherwise, the value of the parameter takes precedence.
-  ///   - completionHandler: The handler invoked when the animation completes.
+  ///   - completion: The handler invoked when the animation completes.
   ///
   /// - Returns: The `CABasicAnimation` instance that was created.
   @discardableResult public func basic(_ layer: CALayer?,
@@ -188,7 +188,7 @@ public class AnimationDelegate: NSObject, CAAnimationDelegate {
                                 repeatCount: Int? = nil,
                                 shouldOverwriteExisting: Bool? = nil,
                                 fillMode: CAMediaTimingFillMode? = nil,
-                                completion completionHandler: (() -> Void)? = nil) -> CAAnimation? {
+                                completion: (() -> Void)? = nil) -> CAAnimation? {
     guard let layer = layer else { return nil }
 
     let keyPath = property.rawValue
@@ -225,12 +225,12 @@ public class AnimationDelegate: NSObject, CAAnimationDelegate {
     let duration = duration ?? defaultDuration
 
     if delay <= 0, duration <= 0 {
-      completionHandler?()
+      completion?()
       return nil
     }
 
     if loggingEnabled {
-      log(.debug) { "Animating \(NSStringFromClass(type(of: layer)))<\(ObjectIdentifier(layer).hashValue)> for key path `\(keyPath)` to `\(to ?? "nil")`\(completionHandler == nil ? "" : " with completion handler")..." }
+      log(.debug) { "Animating \(NSStringFromClass(type(of: layer)))<\(ObjectIdentifier(layer).hashValue)> for key path `\(keyPath)` to `\(to ?? "nil")`\(completion == nil ? "" : " with completion handler")..." }
     }
 
     let anim = CABasicAnimation(keyPath: keyPath)
@@ -257,11 +257,11 @@ public class AnimationDelegate: NSObject, CAAnimationDelegate {
       anim.fillMode = fillMode
     }
 
-    if let completionHandler = completionHandler {
+    if let completion = completion {
       let hash = toHash(anim)
       anim.delegate = self
       anim.setValue(hash, forKey: "id")
-      completionHandlers[hash] = completionHandler
+      completionHandlers[hash] = completion
     }
 
     layer.add(anim, forKey: keyPath)
@@ -283,7 +283,7 @@ public class AnimationDelegate: NSObject, CAAnimationDelegate {
   ///   - autoreverses: Indicates if the animation automatically reverses on complete.
   ///   - repeatCount: Indicates the number of times the animation repeats. 0 indicates no repeats,
   ///                  and any number less than 0 indicates infinite loop.
-  ///   - completionHandler: The handler invoked when the animation completes.
+  ///   - completion: The handler invoked when the animation completes.
   public func basic(_ constraint: NSLayoutConstraint?,
              to toValue: Any,
              from fromValue: Any? = nil,
@@ -292,7 +292,7 @@ public class AnimationDelegate: NSObject, CAAnimationDelegate {
              timingFunctionName: CAMediaTimingFunctionName? = nil,
              autoreverses: Bool? = nil,
              repeatCount: Int? = nil,
-             completion completionHandler: (() -> Void)? = nil
+             completion: (() -> Void)? = nil
   ) {
     guard let constraint = constraint, let viewToLayout = (constraint.firstItem as? UIView ?? constraint.secondItem as? UIView)?.superview, let toValue = toCGFloat(toValue) as? CGFloat else { return }
 
@@ -306,7 +306,7 @@ public class AnimationDelegate: NSObject, CAAnimationDelegate {
     if delay <= 0, duration <= 0 {
       constraint.constant = toValue
       viewToLayout.layoutIfNeeded()
-      completionHandler?()
+      completion?()
     }
     else {
       var options = UIView.AnimationOptions()
@@ -328,7 +328,7 @@ public class AnimationDelegate: NSObject, CAAnimationDelegate {
         constraint.constant = toValue
         viewToLayout.layoutIfNeeded()
       }) { _ in
-        completionHandler?()
+        completion?()
       }
       CATransaction.commit()
     }
@@ -341,8 +341,8 @@ public class AnimationDelegate: NSObject, CAAnimationDelegate {
       log(.debug) { "Animation stopped for layer ID <\(hash)> for key path `\(keyPath)`\(flag ? "" : " without finishing")" }
     }
 
-    if flag, let completionHandler = completionHandlers[hash] {
-      completionHandler()
+    if flag, let completion = completionHandlers[hash] {
+      completion()
     }
 
     completionHandlers.removeValue(forKey: hash)

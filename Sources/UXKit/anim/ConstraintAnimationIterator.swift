@@ -19,9 +19,9 @@ public class ConstraintAnimationIterator {
              timingFunctionName: CAMediaTimingFunctionName? = nil,
              autoreverses: Bool? = nil,
              repeatCount: Int? = nil,
-             completion completionHandler: ((ConstraintAnimationIterator) -> Void)? = nil) {
-    delegate.basic(constraint, to: toValue, from: fromValue, delay: delay, duration: duration, timingFunctionName: timingFunctionName, autoreverses: autoreverses, repeatCount: repeatCount, completion: completionHandler == nil ? nil : {
-      completionHandler?(self)
+             completion: ((ConstraintAnimationIterator) -> Void)? = nil) {
+    delegate.basic(constraint, to: toValue, from: fromValue, delay: delay, duration: duration, timingFunctionName: timingFunctionName, autoreverses: autoreverses, repeatCount: repeatCount, completion: completion == nil ? nil : {
+      completion?(self)
     })
   }
 }

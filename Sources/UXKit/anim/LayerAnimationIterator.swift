@@ -24,9 +24,9 @@ public class LayerAnimationIterator {
              repeatCount: Int? = nil,
              shouldOverwriteExisting: Bool? = nil,
              fillMode: CAMediaTimingFillMode? = nil,
-             completion completionHandler: ((LayerAnimationIterator) -> Void)? = nil) {
-    delegate.basic(layer, property: property, to: toValue, from: fromValue, delay: delay, duration: duration, timingFunctionName: timingFunctionName, autoreverses: autoreverses, repeatCount: repeatCount, shouldOverwriteExisting: shouldOverwriteExisting, fillMode: fillMode, completion: completionHandler == nil ? nil : {
-      completionHandler?(self)
+             completion: ((LayerAnimationIterator) -> Void)? = nil) {
+    delegate.basic(layer, property: property, to: toValue, from: fromValue, delay: delay, duration: duration, timingFunctionName: timingFunctionName, autoreverses: autoreverses, repeatCount: repeatCount, shouldOverwriteExisting: shouldOverwriteExisting, fillMode: fillMode, completion: completion == nil ? nil : {
+      completion?(self)
     })
   }
 }

@@ -4,6 +4,41 @@ import UIKit
 
 extension UIImage {
 
+  /// Resizes the shorter edge of this image to the specified length while maintaining the original
+  /// aspect ratio.
+  ///
+  /// - Parameters:
+  ///   - min: The length to resize the target edge to.
+  ///
+  /// - Returns: The resized image.
+  public func minLengthResize(min: CGFloat) -> UIImage? { UIImage.minLengthResize(self, min: min) }
+
+  /// Resizes the longer edge of this image to the specified length while maintaining the original
+  /// aspect ratio.
+  ///
+  /// - Parameters:
+  ///   - min: The length to resize the target edge to.
+  ///
+  /// - Returns: The resized image.
+  public func maxLengthResize(max: CGFloat) -> UIImage? { UIImage.maxLengthResize(self, max: max) }
+
+  /// Fills this image to the specified size while maintaining aspect ratio.
+  ///
+  /// - Parameters:
+  ///   - size: The size to fill.
+  ///
+  /// - Returns: The filled image.
+  public func aspectFillResize(to size: CGSize) -> UIImage? { UIImage.aspectFillResize(self, to: size) }
+
+  /// Fits this image in the specified size while maintaining aspect ratio. Unused space will be
+  /// cropped, so the size of the image may be smaller than the fitted size.
+  ///
+  /// - Parameters:
+  ///   - size: The size to fit.
+  ///
+  /// - Returns: The fitted image.
+  public func aspectFitResize(to size: CGSize) -> UIImage? { UIImage.aspectFitResize(self, to: size) }
+
   /// Resizes the shorter edge of the image to the specified length while maintaining the original
   /// aspect ratio.
   ///
