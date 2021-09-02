@@ -3,9 +3,9 @@
 import BaseKit
 import UIKit
 
-/// Custom `UIView` that supports hit-testing subviews outside of its bounds. Each subview must be
-/// registered via `registerUnclippedSubview(_:)` in order for out-of-bounds hit-testing to take
-/// effect. `UnclippedView`'s can be nested.
+/// A custom `UIView` that handles hit-testing of subviews outside of its bounds. For this to work,
+/// each subview (that wishes to have out-of-bounds hit-testing detected) must be registered via
+/// `registerUnclippedSubview(_:)`. `UnclippedView`'s can be nested.
 open class UnclippedView: UIView {
 
   private var unclippedSubviews: [WeakReference<UIView>] = []

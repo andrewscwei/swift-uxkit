@@ -93,11 +93,9 @@ extension DataCollectionViewControllerDelegate {
 
   public func dataCollectionViewControllerDidScroll(_ collectionViewController: UICollectionViewController) {}
 
-  public func dataCollectionViewControllerWillApplyDefaultSelection(_ collectionViewController: UICollectionViewController) -> Any? { return nil }
+  public func dataCollectionViewControllerWillApplyDefaultSelection(_ collectionViewController: UICollectionViewController) -> Any? { nil }
 
   public func dataCollectionViewControllerDidApplyDefaultSelection(_ collectionViewController: UICollectionViewController) {}
 
-  public func dataCollectionViewController(_ collectionViewController: UICollectionViewController, didInitCell cell: UICollectionViewCell, at indexPath: IndexPath) -> UICollectionViewCell {
-    return cell
-  }
+  public func dataCollectionViewController(_ collectionViewController: UICollectionViewController, didInitCell cell: UICollectionViewCell, at indexPath: IndexPath) -> UICollectionViewCell { cell }
 }

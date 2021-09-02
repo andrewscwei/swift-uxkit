@@ -2,8 +2,8 @@
 
 import UIKit
 
-/// A protocol that indicates the conforming object may perform background tasks by invoking
-/// `UIApplication.shared.beginBackgroundTask` and maintain a reference to the resulting
+/// An object conforming to `BackgroundService` performs a background task (i.e. via
+/// `UIApplication.shared.beginBackgroundTask`) and maintains a reference to the resulting
 /// `UIBackgroundTaskIdentifier`.
 public protocol BackgroundService: AnyObject {
 

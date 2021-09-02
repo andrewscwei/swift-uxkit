@@ -3,9 +3,9 @@
 import BaseKit
 import UIKit
 
-public class DisplayLinkDelegate {
+public class VSyncMachine {
 
-  private weak var delegator: WithDisplayLinkDelegate?
+  private weak var delegate: VSyncMachineDelegate?
 
   /// Local `CADisplayLink` instance.
   private var displayLink: CADisplayLink?
@@ -13,8 +13,8 @@ public class DisplayLinkDelegate {
   /// The time (in milliseconds) of which the most recently created display link started.
   private var epoch: TimeInterval?
 
-  init(_ delegator: WithDisplayLinkDelegate) {
-    self.delegator = delegator
+  public init(_ delegate: VSyncMachineDelegate) {
+    self.delegate = delegate
   }
 
   /// Creates and starts a new display link. Resets epoch.
@@ -63,6 +63,6 @@ public class DisplayLinkDelegate {
       self.epoch = epoch
     }
 
-    delegator?.frameWillAdvance(elapsed: elapsed, elapsedTotal: displayLink.targetTimestamp - epoch)
+    delegate?.frameWillAdvance(elapsed: elapsed, elapsedTotal: displayLink.targetTimestamp - epoch)
   }
 }

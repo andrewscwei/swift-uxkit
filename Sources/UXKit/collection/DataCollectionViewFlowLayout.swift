@@ -2,22 +2,33 @@
 
 import UIKit
 
+/// A custom `UICollectionViewFlowLayout` for `DataCollectionViewController` that supports section
+/// and cell separators and layout orientation (restricted to a linear direction, no grid layout).
 public class DataCollectionViewFlowLayout: UICollectionViewFlowLayout {
-  
+
+  /// The orientation of the collection view in the `DataCollectionViewController`.
   public var orientation: UICollectionView.ScrollDirection = .horizontal { didSet { invalidateLayout() } }
 
+  /// The width of the section separator up to the last section of the collection view (the last
+  /// section has no separator after it).
   public var sectionSeparatorWidth: CGFloat = 0.0 { didSet { invalidateLayout() } }
 
+  /// The color of the section separator, defaults to transparent.
   public var sectionSeparatorColor: UIColor = .clear { didSet { invalidateLayout() } }
 
+  /// The width of the cell separator up the the last cell of each section (the last cell of each
+  /// section has no separator after it).
   public var cellSeparatorWidth: CGFloat = 0.0 { didSet { invalidateLayout() } }
 
+  /// The color of the cell separator, defaults to transparent.
   public var cellSeparatorColor: UIColor = .clear { didSet { invalidateLayout() } }
 
+  /// The padding between the separator and the cell before and/or after it.
   public var separatorPadding: CGFloat = 0.0
 
   public override func prepare() {
     super.prepare()
+
     register(DataCollectionSeparatorView.self, forDecorationViewOfKind: DataCollectionSeparatorView.className)
   }
 
@@ -78,10 +89,14 @@ public class DataCollectionViewFlowLayout: UICollectionViewFlowLayout {
   }
 }
 
+/// Attributes of each decoration view in `DataCollectionViewFlowLayout`.
 private class DataCollectionViewLayoutAttributes: UICollectionViewLayoutAttributes {
+
+  /// The color of the separators.
   var separatorColor: UIColor = .clear
 }
 
+/// A separator style decoration view for `DataCollectionViewFlowLayout`.
 private class DataCollectionSeparatorView: UICollectionReusableView {
   override func apply(_ layoutAttributes: UICollectionViewLayoutAttributes) {
     super.apply(layoutAttributes)

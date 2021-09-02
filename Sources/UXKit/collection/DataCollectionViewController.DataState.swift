@@ -2,22 +2,22 @@
 
 extension DataCollectionViewController {
 
-  /// State indicating the various stages of dataset processing.
-  public enum DataState: Equatable {
-    /// Default idle state.
+  /// Enum describing the state of the data provided to the `DataCollectionViewController`.
+  public enum DataState: Equatable, CustomStringConvertible {
+
+    /// The default idle state.
     case `default`
 
-    /// Data are in the middle of loading.
+    /// This state indicates that data loading is in progress.
     indirect case loading(from: DataState?)
 
-    /// Data is fetched successfully and the collection view is populated with data.
+    /// Data is loaded successfully and it is not empty.
     case hasData
 
-    /// Data is fetched successfully but it is empty and there is nothing to populate in the
-    /// collection view.
+    /// Data is loaded successfully but it is empty.
     case noData
 
-    /// Error occurred while fetching data.
+    /// An error occurred while loading data.
     case error(error: Error?)
 
     public static func == (lhs: DataState, rhs: DataState) -> Bool {
@@ -31,7 +31,7 @@ extension DataCollectionViewController {
       return false
     }
 
-    public func toString() -> String {
+    public var description: String {
       switch self {
       case .default: return "default"
       case .loading(_): return "loading"

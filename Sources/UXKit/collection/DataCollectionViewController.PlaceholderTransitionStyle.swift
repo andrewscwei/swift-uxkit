@@ -2,8 +2,9 @@
 
 extension DataCollectionViewController {
 
-  /// Transition style for the placeholder view.
+  /// Transition style for the placeholder view in a `DataCollectionViewController`.
   public enum PlaceholderTransitionStyle {
+
     /// No transitions.
     case none
 

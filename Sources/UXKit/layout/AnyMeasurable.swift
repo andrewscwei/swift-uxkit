@@ -2,8 +2,8 @@
 
 import UIKit
 
-/// A `UIResponder` protocol that computes its own `CGSize`.
-public protocol AnySizeComputable: UIResponder {
+/// A `UIResponder` conforming to `AnyMeasurable` has a computable `CGSize`.
+public protocol AnyMeasurable: UIResponder {
 
   /// Returns the computed size that fits this object.
   ///

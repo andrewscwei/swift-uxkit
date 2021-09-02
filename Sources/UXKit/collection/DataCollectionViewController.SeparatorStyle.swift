@@ -2,8 +2,9 @@
 
 extension DataCollectionViewController {
 
-  /// Style of separators between cells and/or sections.
+  /// Style of separators between cells and sections.
   public enum SeparatorStyle {
+
     /// No separators at all.
     case none
 

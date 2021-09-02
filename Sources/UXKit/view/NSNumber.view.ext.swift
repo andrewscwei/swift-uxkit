@@ -10,10 +10,10 @@ extension NSNumber {
   /// In order for the correct string to be displayed, the app must define the following strings in
   /// `Localizable.strings`:
   ///   1. `LTXT_NUMBER_SUFFIX_THOUSANDS`: Suffix for thousands (i.e. "K").
-  ///   1. `LTXT_NUMBER_SUFFIX_MILLIONS`: Suffix for millions (i.e. "M").
-  ///   1. `LTXT_NUMBER_SUFFIX_BILLIONS`: Suffix for billions (i.e. "B").
-  ///   1. `LTXT_NUMBER_SUFFIX_TRILLIONS`: Suffix for trillions (i.e. "T").
-  ///   1. `LTXT_NUMBER_SUFFIX_QUADRILLION`: Suffix for quadrillions (i.e. "Q").
+  ///   2. `LTXT_NUMBER_SUFFIX_MILLIONS`: Suffix for millions (i.e. "M").
+  ///   3. `LTXT_NUMBER_SUFFIX_BILLIONS`: Suffix for billions (i.e. "B").
+  ///   4. `LTXT_NUMBER_SUFFIX_TRILLIONS`: Suffix for trillions (i.e. "T").
+  ///   5. `LTXT_NUMBER_SUFFIX_QUADRILLION`: Suffix for quadrillions (i.e. "Q").
   ///
   /// - Parameter int: The integer.
   /// - Returns: The abbreviated string.
