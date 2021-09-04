@@ -6,8 +6,6 @@ import UIKit
 /// Delegate object for handling the presentation of view controllers and alert popups.
 public class PresentationDelegate {
 
-  public typealias ActionDescriptor = (label: String, style: UIAlertAction.Style, handler: (() -> Void)?)
-
   private weak var delegator: UIViewController?
 
   init(_ delegator: UIViewController) {
@@ -71,9 +69,9 @@ public class PresentationDelegate {
   /// - Parameters:
   ///   - title: Title of the popup.
   ///   - message: The message of the popup.
-  ///   - actions: Array of `ActionDescriptor`s, each describing an action button (from left to
+  ///   - actions: Array of `AlertButtonDescriptor`s, each describing an action button (from left to
   ///              right) of the alert popup.
-  public func presentAlert(title: String, message: String, actions: [ActionDescriptor]? = nil) {
+  public func presentAlert(title: String, message: String, actions: [AlertButtonDescriptor]? = nil) {
     let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
 
     if let actions = actions {
@@ -97,9 +95,9 @@ public class PresentationDelegate {
   /// - Parameters:
   ///   - title: Optional title of the action sheet.
   ///   - message: Optional message of the action sheet.
-  ///   - actions: Array of `ActionDescriptor`s, each describing an action button (from top to
+  ///   - actions: Array of `AlertButtonDescriptor`s, each describing an action button (from top to
   ///              bottom) of the action sheet.
-  public func presentActionSheet(title: String? = nil, message: String? = nil, actions: [ActionDescriptor]) {
+  public func presentActionSheet(title: String? = nil, message: String? = nil, actions: [AlertButtonDescriptor]) {
     let alert = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
 
     for action in actions {

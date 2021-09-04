@@ -14,13 +14,7 @@ extension DataCollectionViewController {
   /// - Returns: The first index (if found).
   public func firstIndex(for datum: T, at section: Int, filtered: Bool? = nil) -> Int? {
     guard section < numberOfSections else { return nil }
-
-    if filtered ?? hasDataFilter {
-      return filteredData(for: section)?.firstIndex { areDataEqual(a: $0, b: datum) }
-    }
-    else {
-      return data(for: section)?.firstIndex { areDataEqual(a: $0, b: datum) }
-    }
+    return data(for: section, filtered: filtered)?.firstIndex { areDataEqual(a: $0, b: datum) }
   }
 
   /// Gets the cell indexes of a datum at a given section. Note that the same datum can repeat
@@ -35,7 +29,7 @@ extension DataCollectionViewController {
   public func indexes(for datum: T, at section: Int, filtered: Bool? = nil) -> [Int] {
     guard
       section < numberOfSections,
-      let data = (filtered ?? hasDataFilter) ? filteredData(for: section) : self.data(for: section)
+      let data = data(for: section, filtered: filtered)
     else { return [] }
 
     var out = [Int]()
