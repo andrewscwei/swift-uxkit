@@ -12,19 +12,17 @@ open class UnclippedView: UIView {
 
   override init(frame: CGRect) {
     super.init(frame: frame)
-    reinit()
+    didInit()
   }
 
   required public init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
-    reinit()
+    didInit()
   }
 
-  private func reinit() {
+  private func didInit() {
     clipsToBounds = false
   }
-
-  deinit {}
 
   public func registerUnclippedSubview(_ view: UIView) {
     if firstIndexOfUnclippedSubview(view) == nil {

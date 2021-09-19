@@ -61,17 +61,17 @@ public class URLVideoView: UIView, StateMachineDelegate {
 
   override init(frame: CGRect) {
     super.init(frame: frame)
-    reinit()
+    didInit()
   }
 
   required init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
-    reinit()
+    didInit()
   }
 
-  private func reinit() {
-    contentMode = .scaleAspectFill
+  private func didInit() {
     backgroundColor = .clear
+    contentMode = .scaleAspectFill
 
     layer.addSublayer(playerLayer)
     playerLayer.masksToBounds = true
@@ -81,12 +81,15 @@ public class URLVideoView: UIView, StateMachineDelegate {
     stateMachine.start()
   }
 
-  deinit {
-    stateMachine.stop()
-
+  private func willDeinit() {
     NotificationCenter.default.removeObserver(self)
 
+    stateMachine.stop()
     clear()
+  }
+
+  deinit {
+    willDeinit()
   }
 
   public override func layoutSubviews() {

@@ -18,8 +18,6 @@ import UIKit
 ///   - customizable pull-to-refresh triggers and indicators from both ends of the collection (see
 ///     `frontSpinner`, `endSpinner`, and `willPullToRefresh(in:)`)
 ///   - section/cell separators
-///
-/// @TODO: Remove placeholders, remove sender ref
 open class DataCollectionViewController<T: Equatable>: UICollectionViewController, UICollectionViewDelegateFlowLayout, StateMachineDelegate {
 
   // MARK: - Delegation
@@ -31,17 +29,28 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
 
   // MARK: - Life Cycle
 
+  /// Serial `DispatchQueue` used for accessing and modifying members synchronously, ensuring
+  /// thread-safety.
+  private let lockQueue: DispatchQueue
+
+  /// Concurrent `DispatchQueue` used for fetching data.
+  private let fetchQueue: DispatchQueue
+
   required public init?(coder aDecoder: NSCoder) {
+    self.lockQueue = DispatchQueue(label: "io.sybl.uxkit.DataCollectionViewController.\(Self.self).lock-queue", qos: .utility)
+    self.fetchQueue = DispatchQueue(label: "io.sybl.uxkit.DataCollectionViewController.\(Self.self).fetch-queue", qos: .utility, attributes: .concurrent)
     super.init(coder: aDecoder)
     buildSubviews()
   }
 
   public init() {
+    self.lockQueue = DispatchQueue(label: "io.sybl.uxkit.DataCollectionViewController.\(Self.self)", qos: .utility)
+    self.fetchQueue = DispatchQueue(label: "io.sybl.uxkit.DataCollectionViewController.\(Self.self).fetch-queue", qos: .utility, attributes: .concurrent)
     super.init(collectionViewLayout: flowLayout)
   }
 
   override init(collectionViewLayout layout: UICollectionViewLayout) {
-    fatalError("Restricted use of this initializer because DataCollectionViewController uses a custom UICollectionViewLayout")
+    fatalError("<\(Self.self)> Restricted use of this initializer because DataCollectionViewController uses a custom UICollectionViewLayout")
   }
 
   func buildSubviews() {
@@ -276,9 +285,6 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
 
   // MARK: - Data Management
 
-  /// `DispatchQueue` used for thread-safe read and write access of data.
-  private let dataQueue = DispatchQueue(label: "io.sybl.UXKit.DataCollectionViewController.\(UUID().uuidString)", qos: .utility, attributes: [.concurrent])
-
   /// Specifies whether the collection view will refresh automatically whenever the view re/appears.
   public var shouldAutoRefresh: Bool = true
 
@@ -295,19 +301,13 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
   private var dataset: [Int: [T]] = [:]
 
   /// Thread-safe getter for `dataset`.
-  private func getDataset() -> [Int: [T]] {
-    return dataQueue.sync { () -> [Int: [T]] in
-      self.dataset
-    }
-  }
+  private func getDataset() -> [Int: [T]] { lockQueue.sync { dataset } }
 
   /// Thread-safe setter for `dataset`.
   ///
   /// - Parameter value: The new value.
   private func setDataset(_ value: [Int: [T]]) {
-    dataQueue.async(flags: .barrier) {
-      self.dataset = value
-    }
+    lockQueue.sync { dataset = value }
 
     invalidateFilteredDataset()
     invalidateSelectedDataset()
@@ -317,19 +317,13 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
   private var filteredDataset: [Int: [T]]? = nil
 
   /// Thread-safe getter for `filteredDataset`.
-  private func getFilteredDataset() -> [Int: [T]]? {
-    return dataQueue.sync { () -> [Int: [T]]? in
-      self.filteredDataset
-    }
-  }
+  private func getFilteredDataset() -> [Int: [T]]? { lockQueue.sync { filteredDataset } }
 
   /// Thread-safe setter for `filteredDataset`.
   ///
   /// - Parameter value: The new value.
   private func setFilteredDataset(_ value: [Int: [T]]?) {
-    dataQueue.async(flags: .barrier) {
-      self.filteredDataset = value
-    }
+    lockQueue.sync { filteredDataset = value }
   }
 
   /// Invalidates the `filteredDataset`, ensuring that it does not contain any outdated data not
@@ -434,6 +428,7 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
   ///
   /// - Parameters:
   ///   - section: The section to fetch data for.
+  ///   - queue: The queue to fetch data in.
   ///   - completion: Handler invoked upon completion with a `Result` of either a `.success` value
   ///                 value of the fetched data or a `.failure` with the error.
   open func fetchData(for section: Int, queue: DispatchQueue, completion: @escaping (Result<[T], Error>) -> Void) {
@@ -454,7 +449,7 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
     for section in 0 ..< numberOfSections {
       group.enter()
 
-      fetchData(for: section, queue: dataQueue) { result in
+      fetchData(for: section, queue: fetchQueue) { result in
         switch result {
         case .failure(let error):
           if firstEncounteredError == nil {
@@ -468,7 +463,7 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
       }
     }
 
-    group.notify(queue: dataQueue) {
+    group.notify(queue: fetchQueue) {
       if let error = firstEncounteredError {
         completion(.failure(error))
       }
@@ -556,19 +551,13 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
   private var selectedDataset: [Int: [T]] = [:]
 
   /// Thread-safe getter for `selectedDataset`.
-  private func getSelectedDataset() -> [Int: [T]] {
-    return dataQueue.sync { () -> [Int: [T]] in
-      self.selectedDataset
-    }
-  }
+  private func getSelectedDataset() -> [Int: [T]] { lockQueue.sync { selectedDataset } }
 
   /// Thread-safe setter for `selectedDataset`.
   ///
   /// - Parameter value: The new value.
   private func setSelectedDataset(_ value: [Int: [T]]) {
-    dataQueue.async(flags: .barrier) {
-      self.selectedDataset = value
-    }
+    lockQueue.sync { selectedDataset = value }
   }
 
   /// Invalidates the `selectedDataset`, ensuring that it does not contain any outdated data not
@@ -1054,7 +1043,7 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
   ///
   /// - Returns: The cell.
   open func cellFactory(at indexPath: IndexPath) -> UICollectionViewCell {
-    fatalError("Derived class must implement this method")
+    fatalError("Derived class <\(Self.self)> must implement this method")
   }
 
   /// Initializes a cell instance. Override this to provide additional initialization steps.

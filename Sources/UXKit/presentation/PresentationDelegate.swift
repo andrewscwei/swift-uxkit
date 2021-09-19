@@ -21,23 +21,8 @@ public class PresentationDelegate {
   ///                            there currently exists a presented view controller, this method
   ///                            will be skipped.
   public func present(_ storyboardName: String, shouldReplaceExisting: Bool = true) {
-    guard let viewControllerToPresent = UIStoryboard(name: storyboardName, bundle: nil).instantiateInitialViewController() else {
-      return
-    }
-
-    if delegator?.presentedViewController != nil {
-      if shouldReplaceExisting {
-        delegator?.dismiss(animated: true) {
-          self.delegator?.present(viewControllerToPresent, animated: true, completion: nil)
-        }
-      }
-      else {
-        return
-      }
-    }
-    else {
-      delegator?.present(viewControllerToPresent, animated: true, completion: nil)
-    }
+    guard let viewControllerToPresent = UIStoryboard(name: storyboardName, bundle: nil).instantiateInitialViewController() else { return }
+    present(viewControllerToPresent, shouldReplaceExisting: shouldReplaceExisting)
   }
 
   /// Presents a view controller.

@@ -39,15 +39,15 @@ public class URLImageView: UIImageView {
 
   override init(frame: CGRect) {
     super.init(frame: frame)
-    reinit()
+    didInit()
   }
 
   required init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
-    reinit()
+    didInit()
   }
 
-  private func reinit() {
+  private func didInit() {
     contentMode = .scaleAspectFill
     backgroundColor = .clear
     clipsToBounds = true
