@@ -40,7 +40,7 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
     self.lockQueue = DispatchQueue(label: "io.sybl.uxkit.DataCollectionViewController.\(Self.self).lock-queue", qos: .utility)
     self.fetchQueue = DispatchQueue(label: "io.sybl.uxkit.DataCollectionViewController.\(Self.self).fetch-queue", qos: .utility, attributes: .concurrent)
     super.init(coder: aDecoder)
-    buildSubviews()
+    initSubviews()
   }
 
   public init() {
@@ -53,7 +53,7 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
     fatalError("<\(Self.self)> Restricted use of this initializer because DataCollectionViewController uses a custom UICollectionViewLayout")
   }
 
-  func buildSubviews() {
+  func initSubviews() {
     collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
   }
 
