@@ -164,6 +164,15 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
     }
 
     if check.isDirty(\DataCollectionViewController.dataState) {
+      switch dataState {
+      case .loading(let prevDataState):
+        isScrollEnabled = prevDataState == .hasData
+      case .hasData:
+        isScrollEnabled = true
+      default:
+        isScrollEnabled = false
+      }
+
       if let backgroundView = collectionView.backgroundView {
         let newPlaceholderView = placeholderView(for: dataState)
         newPlaceholderView?.accessibilityIdentifier = placeholderIdentifier(for: dataState)
@@ -501,15 +510,15 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
           self.dataState = self.count() > 0 ? .hasData : .noData
         }
 
-        // Prior to reloading data in the collection view, ensure that the spinners are stopped
-        // and their exit animations are complete.
+        // Prior to reloading data in the collection view, ensure that the spinners are stopped and
+        // their exit animations are complete.
         self.stopSpinnersIfNeeded {
           self.reloadCells()
 
-          // Only apply default selection if there are no selected cells at the moment. Also, do
-          // it in the next run loop.
+          // Only apply default selection if there are no selected cells at the moment. Also, do it
+          // in the next run loop.
           if self.indexPathsForSelectedCells.count == 0 {
-            DispatchQueue.main.async { self.applyDefaultSelection() }
+            self.applyDefaultSelection()
           }
 
           self.delegate?.dataCollectionViewControllerDidReloadData(self, sender: sender)
