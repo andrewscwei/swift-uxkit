@@ -8,7 +8,7 @@ public class PresentationDelegate {
 
   private weak var delegator: UIViewController?
 
-  init(_ delegator: UIViewController) {
+  public init(_ delegator: UIViewController) {
     self.delegator = delegator
   }
 
