@@ -1009,7 +1009,7 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
 
   /// Handler invoked when cell selection changes.
   private func selectionDidChange() {
-    stateMachine.invalidate(.content)
+    stateMachine.invalidate(.selection)
     delegate?.dataCollectionViewControllerSelectionDidChange(self)
   }
 
@@ -1201,7 +1201,6 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
   /// - Returns: The size.
   open func cellSize(for indexPath: IndexPath) -> CGSize { .zero }
 
-  /// TODO: Make this final
   open override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int { count(for: section) }
 
   public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize { cellSize(for: indexPath) }
@@ -1310,7 +1309,7 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
     // as selected and scroll to it, it is sometimes semi-visible (you can see it but the collection
     // view thinks it's invisible because `cellForItem(at:)` is `nil`), hence the selection will not
     // apply, so do this at the end of a scrolling animation.
-    stateMachine.invalidate(.content)
+    stateMachine.invalidate(.selection)
   }
 
   // MARK: - Pull-to-Refresh Management
