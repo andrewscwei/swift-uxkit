@@ -13,6 +13,9 @@ public class VSyncMachine {
   /// The time (in milliseconds) of which the most recently created display link started.
   private var epoch: TimeInterval?
 
+  /// The time (in milliseconds) elapsed since this `VSyncMachine` started.
+  public private(set) var elapsedTime: TimeInterval = 0
+
   public init(_ delegate: VSyncMachineDelegate) {
     self.delegate = delegate
   }
@@ -48,6 +51,7 @@ public class VSyncMachine {
   /// Resets epoch value, which consequently resets the total elapsed time of the display link.
   public func reset() {
     epoch = nil
+    elapsedTime = 0
   }
 
   /// Handler invoked on every frame advancement for the duration of the current active display
@@ -56,13 +60,15 @@ public class VSyncMachine {
   /// - Parameters:
   ///   - displayLink: The current active display link.
   @objc public func frameWillAdvance(displayLink: CADisplayLink) {
-    let elapsed = displayLink.targetTimestamp - displayLink.timestamp
+    let elapsedSinceLastFrame = displayLink.targetTimestamp - displayLink.timestamp
     let epoch = self.epoch ?? displayLink.targetTimestamp
 
     if self.epoch == nil {
       self.epoch = epoch
     }
 
-    delegate?.frameWillAdvance(elapsed: elapsed, elapsedTotal: displayLink.targetTimestamp - epoch)
+    elapsedTime = displayLink.targetTimestamp - epoch
+
+    delegate?.frameWillAdvance(elapsed: elapsedSinceLastFrame, elapsedTotal: elapsedTime)
   }
 }

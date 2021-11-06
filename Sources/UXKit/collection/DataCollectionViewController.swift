@@ -298,7 +298,7 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
   public var shouldAutoRefresh: Bool = true
 
   /// The current data state.
-  @Stateful public var dataState: DataState = .default {
+  @Stateful(.mode) public var dataState: DataState = .default {
     didSet {
       guard $dataState.isDirty else { return }
       delegate?.dataCollectionViewControllerDataStateDidChange(self)
