@@ -482,6 +482,14 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
     }
   }
 
+  /// Patches the current data and reloads the cells corresponding to the changed data only.
+  ///
+  /// - Parameters:
+  ///   - dataset: The dataset to patch.
+  public func patchData(dataset: [Int: [T]]) {
+    // TBI
+  }
+
   /// Refreshes the data, consequently repopulating the collection view. If a previous refresh is
   /// in progress, it will be cancelled.
   ///
