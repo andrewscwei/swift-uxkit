@@ -75,7 +75,7 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
     stateMachine.start()
 
     if shouldAutoRefresh {
-      refresh(sender: self)
+      refresh()
     }
   }
 
@@ -266,15 +266,11 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
       }
     }
 
-    if check.isDirty(.content) {
+    if check.isDirty(.selection) {
       if let indexPaths = collectionView.indexPathsForSelectedItems {
         for indexPath in indexPaths {
-          guard
-            let cell = collectionView.cellForItem(at: indexPath),
-            let entry = datum(at: indexPath)
-          else { continue }
-
-          cell.isSelected = isDatumSelected(entry)
+          guard let cell = collectionView.cellForItem(at: indexPath), let datum = datum(at: indexPath) else { continue }
+          cell.isSelected = isDatumSelected(datum)
         }
       }
     }
@@ -492,11 +488,8 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
 
   /// Refreshes the data, consequently repopulating the collection view. If a previous refresh is
   /// in progress, it will be cancelled.
-  ///
-  /// - Parameters:
-  ///   - sender: The object that triggered the refresh.
-  open func refresh(sender: Any? = nil) {
-    delegate?.dataCollectionViewControllerWillReloadData(self, sender: sender)
+  open func refresh() {
+    delegate?.dataCollectionViewControllerWillReloadData(self)
 
     // Cancel previous refresh if it is in progress.
     switch dataState {
@@ -529,7 +522,7 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
             self.applyDefaultSelection()
           }
 
-          self.delegate?.dataCollectionViewControllerDidReloadData(self, sender: sender)
+          self.dataDidReload()
         }
       }
     }
@@ -554,6 +547,12 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
   ///
   /// - Returns: `true` to allow manual refresh, `false` otherwise.
   open func willPullToRefresh(in dataState: DataState) -> Bool { false }
+
+  /// Handler invoked when data is reloaded.
+  private func dataDidReload() {
+    stateMachine.invalidate(.data)
+    delegate?.dataCollectionViewControllerDidReloadData(self)
+  }
 
   // MARK: - Selection Management
 
@@ -1312,14 +1311,6 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
     startSpinnersIfNeeded()
   }
 
-  open override func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
-    // Invalidate the dirty flag for content so cell selection can take effect. If you mark a cell
-    // as selected and scroll to it, it is sometimes semi-visible (you can see it but the collection
-    // view thinks it's invisible because `cellForItem(at:)` is `nil`), hence the selection will not
-    // apply, so do this at the end of a scrolling animation.
-    stateMachine.invalidate(.selection)
-  }
-
   // MARK: - Pull-to-Refresh Management
 
   /// Distance required to overscroll in order to trigger a refresh (consequently showing the
@@ -1481,7 +1472,7 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
       self.collectionView.setContentOffset(offset, animated: true)
     }
 
-    refresh(sender: self)
+    refresh()
   }
 
   /// Stops the refresh control spinner at the front of the collection view.
@@ -1546,7 +1537,7 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
       self.collectionView.setContentOffset(offset, animated: true)
     }
 
-    refresh(sender: self)
+    refresh()
   }
 
   /// Stops the refresh control spinner at the end of the collection view.
@@ -1610,13 +1601,21 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
 
   /// Gets the placeholder view identifier for the specified data state. This identifier is used to
   /// determine if 2 placeholders are the "same" so we can avoid transitioning one placeholder to
-  /// another if they are the "same".
+  /// another if they are the "same". By default the loading state is the same as the previous
+  /// state unless there is no previous state.
   ///
   /// - Parameters:
   ///   - dataState: The data state.
   ///
   /// - Returns: The identifier.
-  open func placeholderIdentifier(for dataState: DataState) -> String { dataState.description }
+  open func placeholderIdentifier(for dataState: DataState) -> String {
+    switch dataState {
+    case .loading(let fromState):
+      return "\(fromState ?? dataState)"
+    default:
+      return "\(dataState)"
+    }
+  }
 
   /// Gets the placeholder view for the specified data state. This is meant to be overridden.
   ///

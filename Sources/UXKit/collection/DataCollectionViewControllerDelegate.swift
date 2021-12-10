@@ -10,16 +10,14 @@ public protocol DataCollectionViewControllerDelegate: AnyObject {
   /// - Parameters:
   ///   - collectionViewController: The `DataCollectionViewController` instance that invoked this
   ///                               method.
-  ///   - sender: The object that triggered the reload.
-  func dataCollectionViewControllerWillReloadData(_ collectionViewController: UICollectionViewController, sender: Any?)
+  func dataCollectionViewControllerWillReloadData(_ collectionViewController: UICollectionViewController)
 
   /// Method invoked after data is reloaded.
   ///
   /// - Parameters:
   ///   - collectionViewController: The `DataCollectionViewController` instance that invoked this
   ///                               method.
-  ///   - sender: The object that triggered the reload.
-  func dataCollectionViewControllerDidReloadData(_ collectionViewController: UICollectionViewController, sender: Any?)
+  func dataCollectionViewControllerDidReloadData(_ collectionViewController: UICollectionViewController)
 
   /// Method invoked when the data state is changed.
   ///
@@ -81,9 +79,9 @@ public protocol DataCollectionViewControllerDelegate: AnyObject {
 
 extension DataCollectionViewControllerDelegate {
 
-  public func dataCollectionViewControllerWillReloadData(_ collectionViewController: UICollectionViewController, sender: Any?) {}
+  public func dataCollectionViewControllerWillReloadData(_ collectionViewController: UICollectionViewController) {}
 
-  public func dataCollectionViewControllerDidReloadData(_ collectionViewController: UICollectionViewController, sender: Any?) {}
+  public func dataCollectionViewControllerDidReloadData(_ collectionViewController: UICollectionViewController) {}
 
   public func dataCollectionViewControllerDataStateDidChange(_ collectionViewController: UICollectionViewController) {}
 
