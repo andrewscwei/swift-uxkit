@@ -1,4 +1,4 @@
-# UXKit [![CircleCI](https://img.shields.io/circleci/build/github/sybl/swift-uxkit/main?token=4c0c2d477e8626757170ee8d68a3201152d81201)](https://circleci.com/gh/sybl/swift-uxkit/tree/main)
+# UXKit [![CI](https://github.com/sybl/swift-uxkit/workflows/CI/badge.svg?branch=main)](https://github.com/sybl/swift-uxkit/actions/workflows/ci.yml?query=branch%3Amain)
 
 ---
 
