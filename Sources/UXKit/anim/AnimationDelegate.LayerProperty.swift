@@ -1,4 +1,4 @@
-// © Sybl
+// © GHOZT
 
 extension AnimationDelegate {
 

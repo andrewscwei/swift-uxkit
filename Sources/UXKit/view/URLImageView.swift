@@ -1,4 +1,4 @@
-// © Sybl
+// © GHOZT
 
 import SDWebImage
 import UIKit

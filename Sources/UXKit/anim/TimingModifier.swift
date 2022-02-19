@@ -1,4 +1,4 @@
-// © Sybl
+// © GHOZT
 
 import UIKit
 
@@ -9,7 +9,7 @@ public enum TimingModifier {
   ///
   /// - Parameters:
   ///   - t: The progress decimal whose value must be `0 <= t <= 1`.
-  ///   
+  ///
   /// - Returns: The modified value.
   public static func easeInEaseOut(t: CGFloat) -> CGFloat {
     return t < 0.5 ? 2 * t * t : -1.0 + (4.0 - 2.0 * t) * t

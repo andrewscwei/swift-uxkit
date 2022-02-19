@@ -1,0 +1,25 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "SDWebImage",
+        "repositoryURL": "https://github.com/SDWebImage/SDWebImage.git",
+        "state": {
+          "branch": null,
+          "revision": "2c53f531f1bedd253f55d85105409c28ed4a922c",
+          "version": "5.12.3"
+        }
+      },
+      {
+        "package": "BaseKit",
+        "repositoryURL": "https://github.com/0xGHOZT/swift-basekit",
+        "state": {
+          "branch": null,
+          "revision": "fa39e4b75bbb17f02c009edd738ef5a01ec5a8eb",
+          "version": "0.17.0"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

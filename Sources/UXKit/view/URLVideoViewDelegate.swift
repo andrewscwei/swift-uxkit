@@ -1,4 +1,4 @@
-// © Sybl
+// © GHOZT
 
 import AVFoundation
 import UIKit
@@ -35,6 +35,6 @@ extension URLVideoViewDelegate {
   public func videoViewDidFinishPlaying(_ videoView: URLVideoView) {}
 
   public func videoView(_ videoView: URLVideoView, didChangePlayStatus status: AVPlayer.TimeControlStatus) {}
-  
+
   public func videoViewDidClear(_ videoView: URLVideoView) {}
 }

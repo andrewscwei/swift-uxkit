@@ -1,10 +1,10 @@
-// © Sybl
+// © GHOZT
 
 import UIKit
 
 /// Iterator of `NSLayoutConstraint` animations.
 public class ConstraintAnimationIterator {
-  
+
   let delegate: AnimationDelegate
   let constraint: NSLayoutConstraint
 
