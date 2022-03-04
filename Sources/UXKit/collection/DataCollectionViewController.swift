@@ -15,8 +15,8 @@ import UIKit
 ///     `placeholderIdentifier(for:)`)
 ///   - default selection handled by `DataCollectionViewControllerDelegate` (see
 ///     `dataCollectionViewControllerWillApplyDefaultSelection(_:)`)
-///   - customizable pull-to-refresh triggers and indicators from both ends of the collection (see
-///     `frontSpinner`, `endSpinner`, and `willPullToRefresh(in:)`)
+///   - customizable pull-to-reload triggers and indicators from both ends of the collection (see
+///     `frontSpinner`, `endSpinner`, and `willPullToReload(in:)`)
 ///   - section/cell separators
 open class DataCollectionViewController<T: Equatable>: UICollectionViewController, UICollectionViewDelegateFlowLayout, StateMachineDelegate {
 
@@ -74,8 +74,8 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
 
     stateMachine.start()
 
-    if shouldAutoRefresh {
-      refresh()
+    if shouldAutoReload {
+      reloadData()
     }
   }
 
@@ -108,7 +108,7 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
 
           frontSpinner.autoLayout {
             self.frontSpinnerConstraintX = $0.alignToSuperview(.centerX).first
-            self.frontSpinnerConstraintY = $0.align(.centerY, to: frontSpinner.superview!, for: .top, offset: displacementToTriggerRefresh * 0.5).first
+            self.frontSpinnerConstraintY = $0.align(.centerY, to: frontSpinner.superview!, for: .top, offset: displacementToTriggerReload * 0.5).first
           }
         }
 
@@ -118,7 +118,7 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
 
           endSpinner.autoLayout {
             self.endSpinnerConstraintX = $0.alignToSuperview(.centerX).first
-            self.endSpinnerConstraintY = $0.align(.centerY, to: endSpinner.superview!, for: .bottom, offset: -displacementToTriggerRefresh * 0.5).first
+            self.endSpinnerConstraintY = $0.align(.centerY, to: endSpinner.superview!, for: .bottom, offset: -displacementToTriggerReload * 0.5).first
           }
         }
       default:
@@ -291,7 +291,7 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
   // MARK: - Data Management
 
   /// Specifies whether the collection view will refresh automatically whenever the view re/appears.
-  public var shouldAutoRefresh: Bool = true
+  public var shouldAutoReload: Bool = true
 
   /// The current data state.
   @Stateful(.mode) public var dataState: DataState = .default {
@@ -486,14 +486,14 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
     // TBI
   }
 
-  /// Refreshes the data, consequently repopulating the collection view. If a previous refresh is
-  /// in progress, it will be cancelled.
-  open func refresh() {
+  /// Reloads the data by invoking `fetchData`, consequently reloading the cells in the collection
+  /// view. If a previous reload is in progress, it will be cancelled.
+  open func reloadData() {
     delegate?.dataCollectionViewControllerWillReloadData(self)
 
-    // Cancel previous refresh if it is in progress.
+    // Cancel previous reload if it is in progress.
     switch dataState {
-    case .loading(from: _): cancelRefresh()
+    case .loading(from: _): cancelReload()
     default: break
     }
 
@@ -528,8 +528,8 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
     }
   }
 
-  /// Cancels the refresh operation, reverts the data state back to the previous state.
-  open func cancelRefresh() {
+  /// Cancels the reload operation and reverts the data state back to the previous state.
+  open func cancelReload() {
     // Revert to previous state if current state is loading.
     switch dataState {
     case .loading(let prevDataState):
@@ -539,14 +539,14 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
     }
   }
 
-  /// Method that indicates if manual refresh is allowed per data state. Override this for custom
+  /// Method that indicates if pull-to-reload is allowed per data state. Override this for custom
   /// behavior.
   ///
   /// - Parameters:
   ///   - dataState: The data state to check.
   ///
-  /// - Returns: `true` to allow manual refresh, `false` otherwise.
-  open func willPullToRefresh(in dataState: DataState) -> Bool { false }
+  /// - Returns: `true` to allow pull-to-reload, `false` otherwise.
+  open func willPullToReload(in dataState: DataState) -> Bool { false }
 
   /// Handler invoked when data is reloaded.
   private func dataDidReload() {
@@ -1155,7 +1155,7 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
   final public override func numberOfSections(in collectionView: UICollectionView) -> Int { numberOfSections }
 
   /// Reloads the cells in the collection view. Call this method instead of
-  /// `collectionView.refresh`.
+  /// `collectionView.reloadData`.
   ///
   /// - Parameters:
   ///   - fromBeginning: Specifies if the collection view should move its scroll position to the
@@ -1311,17 +1311,17 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
     startSpinnersIfNeeded()
   }
 
-  // MARK: - Pull-to-Refresh Management
+  // MARK: - Pull-to-Reload Management
 
-  /// Distance required to overscroll in order to trigger a refresh (consequently showing the
+  /// Distance required to overscroll in order to trigger a reload (consequently showing the
   /// spinner). This value INCLUDES the content insets of the collection view.
-  public var displacementToTriggerRefresh: CGFloat = 60.0
+  public var displacementToTriggerReload: CGFloat = 60.0
 
-  /// Specifies whether user can pull to refresh at end of collection (as oppposed to only the
+  /// Specifies whether user can pull to reload at end of collection (as oppposed to only the
   /// front).
-  public var canPullFromEndToRefresh: Bool = true
+  public var canPullFromEndToReload: Bool = true
 
-  /// Refresh control spinner at the front of the collection view.
+  /// Reload control spinner at the front of the collection view.
   public var frontSpinner: DataCollectionViewSpinner? {
     willSet {
       if let oldSpinner = frontSpinner {
@@ -1348,7 +1348,7 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
     }
   }
 
-  /// Gradient mask of the refresh control spinner at the end of the collection view.
+  /// Gradient mask of the reload control spinner at the end of the collection view.
   private var frontSpinnerMask: CAGradientLayer?
 
   /// X constraint of the front spinner.
@@ -1357,7 +1357,7 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
   /// Y constraint of the front spinner.
   private var frontSpinnerConstraintY: NSLayoutConstraint?
 
-  /// Refresh control spinner at the end of the collection view.
+  /// Reload control spinner at the end of the collection view.
   public var endSpinner: DataCollectionViewSpinner? {
     willSet {
       if let oldSpinner = endSpinner {
@@ -1383,7 +1383,7 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
     }
   }
 
-  /// Gradient mask of the refresh control spinner at the end of the collection view.
+  /// Gradient mask of the reload control spinner at the end of the collection view.
   private var endSpinnerMask: CAGradientLayer?
 
   /// X constraint of the end spinner.
@@ -1395,7 +1395,7 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
   /// Starts either the front or the end spinners if applicable, depending on the current scroll
   /// position of the collection view.
   private func startSpinnersIfNeeded() {
-    guard willPullToRefresh(in: dataState) else { return }
+    guard willPullToReload(in: dataState) else { return }
 
     var frontDelta: CGFloat = 0.0
     var endDelta: CGFloat = 0.0
@@ -1409,10 +1409,10 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
       endDelta = max(0.0, collectionView.contentOffset.x - collectionView.maxContentOffset.x)
     }
 
-    if frontDelta < -displacementToTriggerRefresh {
+    if frontDelta < -displacementToTriggerReload {
       startFrontSpinner()
     }
-    else if canPullFromEndToRefresh, endDelta > displacementToTriggerRefresh {
+    else if canPullFromEndToReload, endDelta > displacementToTriggerReload {
       startEndSpinner()
     }
   }
@@ -1434,13 +1434,13 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
     }
   }
 
-  /// Starts the refresh control spinner at the front of the collection.
+  /// Starts the reload control spinner at the front of the collection.
   private func startFrontSpinner() {
     guard
       let frontSpinner = frontSpinner,
       !frontSpinner.isActive,
       endSpinner?.isActive != true,
-      willPullToRefresh(in: dataState)
+      willPullToReload(in: dataState)
     else { return }
 
     frontSpinner.isActive = true
@@ -1449,11 +1449,11 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
     var insets = contentInsets
 
     switch orientation {
-    case .vertical: insets.top = displacementToTriggerRefresh
-    default: insets.left = displacementToTriggerRefresh
+    case .vertical: insets.top = displacementToTriggerReload
+    default: insets.left = displacementToTriggerReload
     }
 
-    // Refresh is triggered when the user pulls from the front of the scroll view. When the pull is
+    // Reload is triggered when the user pulls from the front of the scroll view. When the pull is
     // released, animate the scroll view position so it is parked just beside the front spinner.
     DispatchQueue.main.async {
       UIView.animate(withDuration: 0.2, animations: {
@@ -1472,10 +1472,10 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
       self.collectionView.setContentOffset(offset, animated: true)
     }
 
-    refresh()
+    reloadData()
   }
 
-  /// Stops the refresh control spinner at the front of the collection view.
+  /// Stops the reload control spinner at the front of the collection view.
   ///
   /// - Parameters:
   ///   - completion: Handle invoked upon completion.
@@ -1498,14 +1498,14 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
     }
   }
 
-  /// Starts the refresh control spinner at the end of the collection.
+  /// Starts the reload control spinner at the end of the collection.
   private func startEndSpinner() {
     guard
       let endSpinner = endSpinner,
       !endSpinner.isActive,
       frontSpinner?.isActive != true,
-      canPullFromEndToRefresh,
-      willPullToRefresh(in: dataState)
+      canPullFromEndToReload,
+      willPullToReload(in: dataState)
     else { return }
 
     endSpinner.isActive = true
@@ -1514,11 +1514,11 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
     var insets = contentInsets
 
     switch orientation {
-    case .vertical: insets.bottom = displacementToTriggerRefresh
-    default: insets.right = displacementToTriggerRefresh
+    case .vertical: insets.bottom = displacementToTriggerReload
+    default: insets.right = displacementToTriggerReload
     }
 
-    // Refresh is triggered when the user pulls from the end of the scroll view. When the pull is
+    // Reload is triggered when the user pulls from the end of the scroll view. When the pull is
     // released, animate the scroll view position so it is parked just beside the end spinner.
     DispatchQueue.main.async {
       UIView.animate(withDuration: 0.2, animations: {
@@ -1537,10 +1537,10 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
       self.collectionView.setContentOffset(offset, animated: true)
     }
 
-    refresh()
+    reloadData()
   }
 
-  /// Stops the refresh control spinner at the end of the collection view.
+  /// Stops the reload control spinner at the end of the collection view.
   ///
   /// - Parameters:
   ///   - completion: Handle invoked upon completion.
@@ -1565,28 +1565,28 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
 
   /// Update layout of spinners if needed.
   private func layoutSpinnersIfNeeded() {
-    guard willPullToRefresh(in: dataState) else { return }
+    guard willPullToReload(in: dataState) else { return }
 
     switch orientation {
     case .vertical:
       // Content offset of scrollview should be < 0
       let frontDelta: CGFloat = min(0.0, collectionView.contentOffset.y - collectionView.minContentOffset.y)
-      frontSpinnerMask?.endPoint = CGPoint(x: min(1.0, abs(frontDelta / displacementToTriggerRefresh)) * 2.0, y: 0.5)
+      frontSpinnerMask?.endPoint = CGPoint(x: min(1.0, abs(frontDelta / displacementToTriggerReload)) * 2.0, y: 0.5)
 
-      if canPullFromEndToRefresh {
+      if canPullFromEndToReload {
         // Content offset of scrollview should be > 0
         let endDelta: CGFloat = max(0.0, collectionView.contentOffset.y - collectionView.maxContentOffset.y)
-        endSpinnerMask?.endPoint = CGPoint(x: 1.0 - min(1.0, abs(endDelta / displacementToTriggerRefresh)) * 2.0, y: 0.5)
+        endSpinnerMask?.endPoint = CGPoint(x: 1.0 - min(1.0, abs(endDelta / displacementToTriggerReload)) * 2.0, y: 0.5)
       }
     default:
       // Content offset of scrollview should be < 0
       let frontDelta: CGFloat = min(0.0, collectionView.contentOffset.x - collectionView.minContentOffset.x)
-      frontSpinnerMask?.endPoint = CGPoint(x: min(1.0, abs(frontDelta / displacementToTriggerRefresh)) * 2.0, y: 0.5)
+      frontSpinnerMask?.endPoint = CGPoint(x: min(1.0, abs(frontDelta / displacementToTriggerReload)) * 2.0, y: 0.5)
 
-      if canPullFromEndToRefresh {
+      if canPullFromEndToReload {
         // Content offset of scrollview should be > 0
         let endDelta: CGFloat = max(0.0, collectionView.contentOffset.x - collectionView.maxContentOffset.x)
-        endSpinnerMask?.endPoint = CGPoint(x: 1.0 - min(1.0, abs(endDelta / displacementToTriggerRefresh)) * 2.0, y: 0.5)
+        endSpinnerMask?.endPoint = CGPoint(x: 1.0 - min(1.0, abs(endDelta / displacementToTriggerReload)) * 2.0, y: 0.5)
       }
     }
   }
