@@ -10,7 +10,10 @@ public class AutoLayoutIterator {
 
   init(_ view: UIView) {
     self.view = view
-    view.translatesAutoresizingMaskIntoConstraints = false
+
+    if !(view is UICollectionViewCell) {
+      view.translatesAutoresizingMaskIntoConstraints = false
+    }
   }
 
   @discardableResult public func alignToSuperview(_ anchorType: AutoLayoutAnchorType = [.top, .right, .bottom, .left], offset: CGFloat = 0.0, useSafeArea: Bool = false) -> [NSLayoutConstraint] {
