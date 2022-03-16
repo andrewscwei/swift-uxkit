@@ -437,7 +437,7 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
   ///   - completion: Handler invoked upon completion with a `Result` of either a `.success` value
   ///                 value of the fetched data or a `.failure` with the error.
   open func fetchData(for section: Int, queue: DispatchQueue, completion: @escaping (Result<[T], Error>) -> Void) {
-    completion(.success([]))
+    completion(.success(getDataset()[section] ?? []))
   }
 
   /// Fetches data for all sections.
@@ -449,7 +449,7 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
     let group = DispatchGroup()
 
     var firstEncounteredError: Error? = nil
-    var dataset: [Int: [T]] = [:]
+    var newDataset: [Int: [T]] = [:]
 
     for section in 0 ..< numberOfSections {
       group.enter()
@@ -461,7 +461,7 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
             firstEncounteredError = error
           }
         case .success(let data):
-          dataset[section] = data
+          newDataset[section] = data
         }
 
         group.leave()
@@ -473,21 +473,13 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
         completion(.failure(error))
       }
       else {
-        completion(.success(dataset))
+        completion(.success(newDataset))
       }
     }
   }
 
-  /// Patches the current data and reloads the cells corresponding to the changed data only.
-  ///
-  /// - Parameters:
-  ///   - dataset: The dataset to patch.
-  public func patchData(dataset: [Int: [T]]) {
-    // TBI
-  }
-
-  /// Reloads the data by invoking `fetchData`, consequently reloading the cells in the collection
-  /// view. If a previous reload is in progress, it will be cancelled.
+  /// Refetches all data, consequently reloading the cells in the collection view. If a previous
+  /// reload is in progress, it will be cancelled.
   open func reloadData() {
     delegate?.dataCollectionViewControllerWillReloadData(self)
 
@@ -499,7 +491,6 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
 
     dataState = .loading(from: dataState)
 
-    // Begin fetching data.
     fetchData { result in
       DispatchQueue.main.async {
         switch result {
@@ -511,13 +502,12 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
           self.dataState = self.count() > 0 ? .hasData : .noData
         }
 
-        // Prior to reloading data in the collection view, ensure that the spinners are stopped and
+        // Prior to reloading cells in the collection view, ensure that the spinners are stopped and
         // their exit animations are complete.
         self.stopSpinnersIfNeeded {
           self.reloadCells()
 
-          // Only apply default selection if there are no selected cells at the moment. Also, do it
-          // in the next run loop.
+          // Only apply default selection if there are no selected cells at the moment.
           if self.indexPathsForSelectedCells.count == 0 {
             self.applyDefaultSelection()
           }
@@ -989,7 +979,8 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
   private func applyDefaultSelection() {
     switch selectionMode {
     case .single:
-      guard let selectedData = delegate?.dataCollectionViewControllerWillApplyDefaultSelection(self) as? T, let indexPath = firstIndexPath(for: selectedData) else { return }
+      guard let selectedData = delegate?.dataCollectionViewControllerWillApplyDefaultSelection(self) as? T else { return }
+      guard let indexPath = firstIndexPath(for: selectedData) else { return }
 
       if shouldSelectCellAt(indexPath) {
         selectCellInCollectionView(at: indexPath, scrollPosition: orientation == .vertical ? .centeredVertically : .centeredHorizontally)
