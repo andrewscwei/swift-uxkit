@@ -37,7 +37,7 @@ case .local:
 case .development:
   dependencies.append(.package(name: "BaseKit", url: "https://github.com/0xGHOZT/swift-basekit", .branch("master")))
 case .production:
-  dependencies.append(.package(name: "BaseKit", url: "https://github.com/0xGHOZT/swift-basekit", from: "0.20.0"))
+  dependencies.append(.package(name: "BaseKit", url: "https://github.com/0xGHOZT/swift-basekit", from: "0.21.0"))
 }
 
 let package = Package(
