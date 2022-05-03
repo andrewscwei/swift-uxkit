@@ -1054,7 +1054,7 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
   ///
   /// - Parameter cellClass: The cell class type.
   public func unregisterCell(_ cellClass: AnyClass) {
-    collectionView.register(nil, forCellWithReuseIdentifier: String(describing: cellClass).components(separatedBy: ".").last!)
+    collectionView.register(nil as AnyClass?, forCellWithReuseIdentifier: String(describing: cellClass).components(separatedBy: ".").last!)
   }
 
   /// Shorthand for dequeueing reusable cell at the specified index path.
