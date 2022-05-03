@@ -1049,6 +1049,25 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
     collectionView.register(cellClass, forCellWithReuseIdentifier: String(describing: cellClass).components(separatedBy: ".").last!)
   }
 
+  /// Shorthand for unregistering a class for use in creating new collection view cells. The reuse
+  /// identifier is automatically inferred.
+  ///
+  /// - Parameter cellClass: The cell class type.
+  public func unregisterCell(_ cellClass: AnyClass) {
+    collectionView.register(nil, forCellWithReuseIdentifier: String(describing: cellClass).components(separatedBy: ".").last!)
+  }
+
+  /// Shorthand for dequeueing reusable cell at the specified index path.
+  ///
+  /// - Parameters:
+  ///   - cellClass: The cell class type.
+  ///   - indexPath: The index path.
+  ///
+  /// - Returns: The cell object.
+  public func dequeueReusableCell<T: UICollectionViewCell>(_ cellClass: T.Type, for indexPath: IndexPath) -> T {
+    collectionView.dequeueReusableCell(withReuseIdentifier: String(describing: cellClass).components(separatedBy: ".").last!, for: indexPath) as! T
+  }
+
   /// Creates an instance of the cell at the specified index path. This is a good place to dequeue
   /// reusable cells. Derived classes MUST implement this method. Avoid setting properties of cell
   /// instances here, do that in `initCell(_:at:)`.
