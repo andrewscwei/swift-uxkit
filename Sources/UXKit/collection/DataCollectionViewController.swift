@@ -1041,6 +1041,14 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
 
   // MARK: - Cell Management
 
+  /// Shorthand for registering a class for use in creating new collection view cells. The reuse
+  /// identifier is automatically inferred.
+  ///
+  /// - Parameter cellClass: The cell class type.
+  public func registerCell(_ cellClass: AnyClass) {
+    collectionView.register(cellClass, forCellWithReuseIdentifier: String(describing: cellClass).components(separatedBy: ".").last!)
+  }
+
   /// Creates an instance of the cell at the specified index path. This is a good place to dequeue
   /// reusable cells. Derived classes MUST implement this method. Avoid setting properties of cell
   /// instances here, do that in `initCell(_:at:)`.
