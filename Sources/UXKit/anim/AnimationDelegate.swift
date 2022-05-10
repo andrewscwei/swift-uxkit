@@ -289,7 +289,11 @@ public class AnimationDelegate: NSObject, CAAnimationDelegate {
 
     if delay <= 0, duration <= 0 {
       constraint.constant = toValue
-      viewToLayout.layoutIfNeeded()
+
+      if viewToLayout.window != nil {
+        viewToLayout.layoutIfNeeded()
+      }
+      
       completion?()
     }
     else {
@@ -301,7 +305,9 @@ public class AnimationDelegate: NSObject, CAAnimationDelegate {
         if repeatCount != 0 { options.insert(.repeat) }
       }
 
-      viewToLayout.layoutIfNeeded()
+      if viewToLayout.window != nil {
+        viewToLayout.layoutIfNeeded()
+      }
 
       CATransaction.begin()
       CATransaction.setAnimationTimingFunction(CAMediaTimingFunction(name: timingFunctionName ?? .easeInEaseOut))
@@ -310,7 +316,10 @@ public class AnimationDelegate: NSObject, CAAnimationDelegate {
           UIView.setAnimationRepeatCount(Float(repeatCount))
         }
         constraint.constant = toValue
-        viewToLayout.layoutIfNeeded()
+        
+        if viewToLayout.window != nil {
+          viewToLayout.layoutIfNeeded()
+        }
       }) { _ in
         completion?()
       }
