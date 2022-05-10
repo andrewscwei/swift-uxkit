@@ -26,6 +26,9 @@ extension StateType {
   /// etc.
   public static let selection = StateType.factory()
 
+  /// Use this type for position changes in the UI, i.e. scroll position.
+  public static let position = StateType.factory()
+
   /// Use this type when the focus has changed, i.e. text field focus, collection item focus, etc.
   public static let focus = StateType.factory()
 

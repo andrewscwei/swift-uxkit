@@ -529,6 +529,13 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
     }
   }
 
+  public func invalidateVislbleCells() {
+    for cell in collectionView.visibleCells {
+      guard let indexPath = collectionView.indexPath(for: cell) else { continue }
+      initCell(cell, at: indexPath)
+    }
+  }
+
   /// Method that indicates if pull-to-reload is allowed per data state. Override this for custom
   /// behavior.
   ///
@@ -1092,7 +1099,7 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
   final public override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
     let cell = cellFactory(at: indexPath)
     initCell(cell, at: indexPath)
-    return delegate?.dataCollectionViewController(self, didInitCell: cell, at: indexPath) ?? cell
+    return cell
   }
 
   // MARK: - Layout Management

@@ -10,7 +10,11 @@ open class UnclippedView: UIView {
 
   private var unclippedSubviews: [WeakReference<UIView>] = []
 
-  override init(frame: CGRect) {
+  public convenience init() {
+    self.init(frame: .zero)
+  }
+
+  public override init(frame: CGRect) {
     super.init(frame: frame)
     didInit()
   }

@@ -64,17 +64,6 @@ public protocol DataCollectionViewControllerDelegate: AnyObject {
   ///   - collectionViewController: The `DataCollectionViewController` instance that invoked this
   ///                               method.
   func dataCollectionViewControllerDidApplyDefaultSelection(_ collectionViewController: UICollectionViewController)
-
-  /// Method invoked after a cell is initialized.
-  ///
-  /// - Parameters:
-  ///   - collectionViewController: The `DataCollectionViewController` instance that invoked th is
-  ///                               method.
-  ///   - cell: The cell that was initialized.
-  ///   - indexPath: The index path of the cell that was initialized.
-  ///
-  /// - Returns: The initialized cell.
-  func dataCollectionViewController(_ collectionViewController: UICollectionViewController, didInitCell cell: UICollectionViewCell, at indexPath: IndexPath) -> UICollectionViewCell
 }
 
 extension DataCollectionViewControllerDelegate {
@@ -94,6 +83,4 @@ extension DataCollectionViewControllerDelegate {
   public func dataCollectionViewControllerWillApplyDefaultSelection(_ collectionViewController: UICollectionViewController) -> Any? { nil }
 
   public func dataCollectionViewControllerDidApplyDefaultSelection(_ collectionViewController: UICollectionViewController) {}
-
-  public func dataCollectionViewController(_ collectionViewController: UICollectionViewController, didInitCell cell: UICollectionViewCell, at indexPath: IndexPath) -> UICollectionViewCell { cell }
 }
