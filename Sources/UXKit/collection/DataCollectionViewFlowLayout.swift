@@ -2,22 +2,24 @@
 
 import UIKit
 
-/// A custom `UICollectionViewFlowLayout` for `DataCollectionViewController` that supports section
-/// and cell separators and layout orientation (restricted to a linear direction, no grid layout).
+/// A custom `UICollectionViewFlowLayout` for `DataCollectionViewController`
+/// that supports section and cell separators and layout orientation (restricted
+/// to a linear direction, no grid layout).
 public class DataCollectionViewFlowLayout: UICollectionViewFlowLayout {
 
-  /// The orientation of the collection view in the `DataCollectionViewController`.
+  /// The orientation of the collection view in the
+  /// `DataCollectionViewController`.
   public var orientation: UICollectionView.ScrollDirection = .horizontal { didSet { invalidateLayout() } }
 
-  /// The width of the section separator up to the last section of the collection view (the last
-  /// section has no separator after it).
+  /// The width of the section separator up to the last section of the
+  /// collection view (the last section has no separator after it).
   public var sectionSeparatorWidth: CGFloat = 0.0 { didSet { invalidateLayout() } }
 
   /// The color of the section separator, defaults to transparent.
   public var sectionSeparatorColor: UIColor = .clear { didSet { invalidateLayout() } }
 
-  /// The width of the cell separator up the the last cell of each section (the last cell of each
-  /// section has no separator after it).
+  /// The width of the cell separator up the the last cell of each section (the
+  /// last cell of each section has no separator after it).
   public var cellSeparatorWidth: CGFloat = 0.0 { didSet { invalidateLayout() } }
 
   /// The color of the cell separator, defaults to transparent.

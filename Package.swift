@@ -28,7 +28,7 @@ enum Environment: String {
 }
 
 var dependencies: [Package.Dependency] = [
-  .package(url: "https://github.com/SDWebImage/SDWebImage.git", from: "5.11.1"),
+  .package(url: "https://github.com/SDWebImage/SDWebImage.git", from: "5.15.4"),
 ]
 
 switch Environment.get() {
@@ -37,7 +37,7 @@ case .local:
 case .development:
   dependencies.append(.package(name: "BaseKit", url: "https://github.com/0xGHOZT/swift-basekit", .branch("master")))
 case .production:
-  dependencies.append(.package(name: "BaseKit", url: "https://github.com/0xGHOZT/swift-basekit", from: "0.22.0"))
+  dependencies.append(.package(name: "BaseKit", url: "https://github.com/0xGHOZT/swift-basekit", from: "0.23.0"))
 }
 
 let package = Package(

@@ -16,7 +16,7 @@ public class AutoLayoutIterator {
     }
   }
 
-  @discardableResult public func alignToSuperview(_ anchorType: AutoLayoutAnchorType = [.top, .right, .bottom, .left], offset: CGFloat = 0.0, useSafeArea: Bool = false) -> [NSLayoutConstraint] {
+  @discardableResult public func alignToSuperview(_ anchorType: AutoLayoutAnchorType = [.top, .right, .bottom, .left], offset: CGFloat = 0.0, useSafeArea: Bool = true) -> [NSLayoutConstraint] {
     var constraints = [NSLayoutConstraint]()
 
     guard let superview = view.superview else { return constraints }
@@ -120,7 +120,7 @@ public class AutoLayoutIterator {
     return constraints
   }
 
-  @discardableResult public func alignToSuperview(edgeInsets: UIEdgeInsets, useSafeArea: Bool = false) -> [NSLayoutConstraint] {
+  @discardableResult public func alignToSuperview(edgeInsets: UIEdgeInsets, useSafeArea: Bool = true) -> [NSLayoutConstraint] {
     var constraints = [NSLayoutConstraint]()
 
     guard let superview = view.superview else { return constraints }
@@ -166,7 +166,7 @@ public class AutoLayoutIterator {
     return constraints
   }
 
-  @discardableResult public func alignGreaterThanOrEqualToSuperview(_ anchorType: AutoLayoutAnchorType = [.top, .right, .bottom, .left], offset: CGFloat = 0.0, useSafeArea: Bool = false) -> [NSLayoutConstraint] {
+  @discardableResult public func alignGreaterThanOrEqualToSuperview(_ anchorType: AutoLayoutAnchorType = [.top, .right, .bottom, .left], offset: CGFloat = 0.0, useSafeArea: Bool = true) -> [NSLayoutConstraint] {
     var constraints = [NSLayoutConstraint]()
 
     guard let superview = view.superview else { return constraints }
@@ -270,7 +270,7 @@ public class AutoLayoutIterator {
     return constraints
   }
 
-  @discardableResult public func alignLessThanOrEqualToSuperview(_ anchorType: AutoLayoutAnchorType = [.top, .right, .bottom, .left], offset: CGFloat = 0.0, useSafeArea: Bool = false) -> [NSLayoutConstraint] {
+  @discardableResult public func alignLessThanOrEqualToSuperview(_ anchorType: AutoLayoutAnchorType = [.top, .right, .bottom, .left], offset: CGFloat = 0.0, useSafeArea: Bool = true) -> [NSLayoutConstraint] {
     var constraints = [NSLayoutConstraint]()
 
     guard let superview = view.superview else { return constraints }
@@ -374,7 +374,7 @@ public class AutoLayoutIterator {
     return constraints
   }
 
-  @discardableResult public func align(_ anchorType: AutoLayoutAnchorType, to toView: UIView, for toAnchorType: AutoLayoutAnchorType? = nil, offset: CGFloat = 0.0, useSafeArea: Bool = false) -> [NSLayoutConstraint] {
+  @discardableResult public func align(_ anchorType: AutoLayoutAnchorType, to toView: UIView, for toAnchorType: AutoLayoutAnchorType? = nil, offset: CGFloat = 0.0, useSafeArea: Bool = true) -> [NSLayoutConstraint] {
     var constraints = [NSLayoutConstraint]()
 
     let t = toAnchorType ?? anchorType
@@ -662,7 +662,7 @@ public class AutoLayoutIterator {
     return constraints
   }
 
-  @discardableResult public func alignGreaterOrEqual(_ anchorType: AutoLayoutAnchorType, to toView: UIView, for toAnchorType: AutoLayoutAnchorType? = nil, offset: CGFloat = 0.0, useSafeArea: Bool = false) -> [NSLayoutConstraint] {
+  @discardableResult public func alignGreaterOrEqual(_ anchorType: AutoLayoutAnchorType, to toView: UIView, for toAnchorType: AutoLayoutAnchorType? = nil, offset: CGFloat = 0.0, useSafeArea: Bool = true) -> [NSLayoutConstraint] {
     var constraints = [NSLayoutConstraint]()
 
     let t = toAnchorType ?? anchorType
@@ -950,7 +950,7 @@ public class AutoLayoutIterator {
     return constraints
   }
 
-  @discardableResult public func alignLessOrEqual(_ anchorType: AutoLayoutAnchorType, to toView: UIView, for toAnchorType: AutoLayoutAnchorType? = nil, offset: CGFloat = 0.0, useSafeArea: Bool = false) -> [NSLayoutConstraint] {
+  @discardableResult public func alignLessOrEqual(_ anchorType: AutoLayoutAnchorType, to toView: UIView, for toAnchorType: AutoLayoutAnchorType? = nil, offset: CGFloat = 0.0, useSafeArea: Bool = true) -> [NSLayoutConstraint] {
     var constraints = [NSLayoutConstraint]()
 
     let t = toAnchorType ?? anchorType
@@ -1238,7 +1238,7 @@ public class AutoLayoutIterator {
     return constraints
   }
 
-  @discardableResult public func fitDimensionToSuperview(_ anchorType: AutoLayoutAnchorType = [.width, .height], multiplier: CGFloat = 1.0, offset: CGFloat = 0.0, useSafeArea: Bool = false) -> [NSLayoutConstraint] {
+  @discardableResult public func fitDimensionToSuperview(_ anchorType: AutoLayoutAnchorType = [.width, .height], multiplier: CGFloat = 1.0, offset: CGFloat = 0.0, useSafeArea: Bool = true) -> [NSLayoutConstraint] {
     var constraints = [NSLayoutConstraint]()
 
     guard let superview = view.superview else { return constraints }
@@ -1288,7 +1288,7 @@ public class AutoLayoutIterator {
     return constraint
   }
 
-  @discardableResult public func horizontalSpacing(to toView: UIView, spacing: CGFloat = 0.0, useSafeArea: Bool = false) -> NSLayoutConstraint {
+  @discardableResult public func horizontalSpacing(to toView: UIView, spacing: CGFloat = 0.0, useSafeArea: Bool = true) -> NSLayoutConstraint {
     var constraint: NSLayoutConstraint
     if #available(iOS 11.0, *) {
       constraint = toView.leftAnchor.constraint(equalTo: useSafeArea ? view.safeAreaLayoutGuide.rightAnchor : view.rightAnchor, constant: spacing)
@@ -1300,7 +1300,7 @@ public class AutoLayoutIterator {
     return constraint
   }
 
-  @discardableResult public func verticalSpacing(to toView: UIView, spacing: CGFloat = 0.0, useSafeArea: Bool = false) -> NSLayoutConstraint {
+  @discardableResult public func verticalSpacing(to toView: UIView, spacing: CGFloat = 0.0, useSafeArea: Bool = true) -> NSLayoutConstraint {
     var constraint: NSLayoutConstraint
     if #available(iOS 11.0, *) {
       constraint = toView.topAnchor.constraint(equalTo: useSafeArea ? view.safeAreaLayoutGuide.bottomAnchor : view.bottomAnchor, constant: spacing)

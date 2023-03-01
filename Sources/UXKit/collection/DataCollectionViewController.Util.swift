@@ -17,8 +17,8 @@ extension DataCollectionViewController {
     return data(for: section, filtered: filtered)?.firstIndex { areDataEqual(a: $0, b: datum) }
   }
 
-  /// Gets the cell indexes of a datum at a given section. Note that the same datum can repeat
-  /// within the same section.
+  /// Gets the cell indexes of a datum at a given section. Note that the same
+  /// datum can repeat within the same section.
   ///
   /// - Parameters:
   ///   - datum: The datum.

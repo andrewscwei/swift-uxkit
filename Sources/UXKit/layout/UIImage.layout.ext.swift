@@ -4,8 +4,8 @@ import UIKit
 
 extension UIImage {
 
-  /// Sets the shorter edge of this image to the specified length and resizes the longer edge while
-  /// maintaining the original aspect ratio.
+  /// Sets the shorter edge of this image to the specified length and resizes
+  /// the longer edge while maintaining the original aspect ratio.
   ///
   /// - Parameters:
   ///   - min: The length to resize the target edge to.
@@ -13,8 +13,8 @@ extension UIImage {
   /// - Returns: The resized image.
   public func minLengthResize(min: CGFloat) -> UIImage? { UIImage.minLengthResize(self, min: min) }
 
-  /// Sets the longer edge of this image to the specified length and resizes the shorter edge while
-  /// maintaining the original aspect ratio.
+  /// Sets the longer edge of this image to the specified length and resizes the
+  /// shorter edge while maintaining the original aspect ratio.
   ///
   /// - Parameters:
   ///   - min: The length to resize the target edge to.
@@ -30,8 +30,9 @@ extension UIImage {
   /// - Returns: The filled image.
   public func aspectFillResize(to size: CGSize) -> UIImage? { UIImage.aspectFillResize(self, to: size) }
 
-  /// Fits this image within the specified size while maintaining aspect ratio. Unused space will be
-  /// cropped, so the size of the image may be smaller than the fitted size.
+  /// Fits this image within the specified size while maintaining aspect ratio.
+  /// Unused space will be cropped, so the size of the image may be smaller than
+  /// the fitted size.
   ///
   /// - Parameters:
   ///   - size: The size to fit.
@@ -39,8 +40,8 @@ extension UIImage {
   /// - Returns: The fitted image.
   public func aspectFitResize(to size: CGSize) -> UIImage? { UIImage.aspectFitResize(self, to: size) }
 
-  /// Sets the shorter edge of this image to the specified length and resizes the longer edge while
-  /// maintaining the original aspect ratio.
+  /// Sets the shorter edge of this image to the specified length and resizes
+  /// the longer edge while maintaining the original aspect ratio.
   ///
   /// - Parameters:
   ///   - image: The image to resize.
@@ -66,8 +67,8 @@ extension UIImage {
     return resizedImage
   }
 
-  /// Sets the longer edge of this image to the specified length and resizes the shorter edge while
-  /// maintaining the original aspect ratio.
+  /// Sets the longer edge of this image to the specified length and resizes the
+  /// shorter edge while maintaining the original aspect ratio.
   ///
   /// - Parameters:
   ///   - image: The image to resize.
@@ -117,8 +118,9 @@ extension UIImage {
     return resizedImage
   }
 
-  /// Fits an image within the specified size while maintaining aspect ratio. Unused space will be
-  /// cropped, so the size of the image may be smaller than the fitted size.
+  /// Fits an image within the specified size while maintaining aspect ratio.
+  /// Unused space will be cropped, so the size of the image may be smaller than
+  /// the fitted size.
   ///
   /// - Parameters:
   ///   - image: The image to use.

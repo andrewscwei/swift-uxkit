@@ -26,7 +26,8 @@ public func -(left: UIEdgeInsets, right: UIEdgeInsets) -> UIEdgeInsets {
 
 extension UIEdgeInsets {
 
-  /// Initializes a `UIEdgeInsets` value with all edge inset values equal to the specified constant.
+  /// Initializes a `UIEdgeInsets` value with all edge inset values equal to the
+  /// specified constant.
   ///
   /// - Parameters:
   ///   - constant: The constant.
@@ -34,7 +35,8 @@ extension UIEdgeInsets {
     self.init(top: constant, left: constant, bottom: constant, right: constant)
   }
 
-  /// Replaces old edge inset values of this `UIEdgeInsets` with new edge inset values.
+  /// Replaces old edge inset values of this `UIEdgeInsets` with new edge inset
+  /// values.
   ///
   /// - Parameters:
   ///   - top: Top edge inset value to replace (omit to retain old value).

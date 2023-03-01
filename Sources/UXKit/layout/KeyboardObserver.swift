@@ -7,25 +7,27 @@ private var ptr_keyboardWillShowObserver: UInt8 = 0
 private var ptr_keyboardWillHideObserver: UInt8 = 0
 private var ptr_keyboardRect: UInt8 = 0
 
-/// A `UIViewController` conforming to `KeyboardObserver` automatically gets notified whenever the
-/// virtual keyboard shows or hides.
+/// A `UIViewController` conforming to `KeyboardObserver` automatically gets
+/// notified whenever the virtual keyboard shows or hides.
 ///
-/// The conforming `UIViewController` must explicitly invoke `beginObservingKeyboardEvents()` (i.e.
-/// in `viewWillAppear(_:)`) and `endObservingKeyboardEvents()` (i.e. in `viewDidDisappear(_:)`) to
-/// subscribe to and unsubscribe from the keyboard events, respectively.
+/// The conforming `UIViewController` must explicitly invoke
+/// `beginObservingKeyboardEvents()` (i.e. in `viewWillAppear(_:)`) and
+/// `endObservingKeyboardEvents()` (i.e. in `viewDidDisappear(_:)`) to subscribe
+/// to and unsubscribe from the keyboard events, respectively.
 public protocol KeyboardObserver: UIViewController {
 
   /// Handler invoked when the virtual keyboard appears. At this point, calling
-  /// `getKeyboardRect(relativeTo:)` will yield the rect of the keyboard in its fully visible state.
+  /// `getKeyboardRect(relativeTo:)` will yield the rect of the keyboard in its
+  /// fully visible state.
   ///
   /// - Parameters
-  ///   - rect: The rect of the keyboard when it is fully visible, relative to the backing view of
-  ///           this `UIViewController`.
+  ///   - rect: The rect of the keyboard when it is fully visible, relative to
+  ///           the backing view of this `UIViewController`.
   func keyboardWillShow(rect: CGRect)
 
   /// Handler invoked when the virtual keyboard hides. At this point, calling
-  /// `getKeyboardRect(relativeTo:)` will yield the rect of the keyboard in its fully hidden state,
-  /// which is `nil`.
+  /// `getKeyboardRect(relativeTo:)` will yield the rect of the keyboard in its
+  /// fully hidden state, which is `nil`.
   func keyboardWillHide()
 }
 
@@ -47,15 +49,16 @@ extension KeyboardObserver {
     set { setAssociatedValue(for: self, key: &ptr_keyboardRect, value: newValue) }
   }
 
-  /// Returns the current rect of the virtual keyboard relative to the specified view. If the view
-  /// is not provided, the returned rect will be relative to the base window. If the keyboard is
-  /// not present, `nil` will be returned.
+  /// Returns the current rect of the virtual keyboard relative to the specified
+  /// view. If the view is not provided, the returned rect will be relative to
+  /// the base window. If the keyboard is not present, `nil` will be returned.
   ///
-  /// - Parameter view: The view whose coordinate system is one that the returned rect is based on.
-  ///                   If this is `nil`, the coordinate system of the base window is used instead.
+  /// - Parameter view: The view whose coordinate system is one that the
+  ///                   returned rect is based on. If this is `nil`, the
+  ///                   coordinate system of the base window is used instead.
   ///
-  /// - Returns: The current rect of the virtual keyboard relative to specified view, `nil` if the
-  ///            keyboard is not present.
+  /// - Returns: The current rect of the virtual keyboard relative to specified
+  ///            view, `nil` if the keyboard is not present.
   public func getKeyboardRect(relativeTo view: UIView? = nil) -> CGRect? {
     guard let keyboardRect = keyboardRect else { return nil }
 

@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "SDWebImage",
+        "repositoryURL": "https://github.com/SDWebImage/SDWebImage.git",
+        "state": {
+          "branch": null,
+          "revision": "a812079ae91a7f2e627364c42ea7b98abfa366ed",
+          "version": "5.15.4"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

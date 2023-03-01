@@ -10,7 +10,8 @@ public class VSyncMachine {
   /// Local `CADisplayLink` instance.
   private var displayLink: CADisplayLink?
 
-  /// The time (in milliseconds) of which the most recently created display link started.
+  /// The time (in milliseconds) of which the most recently created display link
+  /// started.
   private var epoch: TimeInterval?
 
   /// The time (in milliseconds) elapsed since this `VSyncMachine` started.
@@ -37,8 +38,8 @@ public class VSyncMachine {
     reset()
   }
 
-  /// Pauses the current active display link. The display link is not removed, but merely paused, so
-  /// it can be resumed at a later point.
+  /// Pauses the current active display link. The display link is not removed,
+  /// but merely paused, so it can be resumed at a later point.
   public func pause() {
     displayLink?.isPaused = true
   }
@@ -48,14 +49,15 @@ public class VSyncMachine {
     displayLink?.isPaused = false
   }
 
-  /// Resets epoch value, which consequently resets the total elapsed time of the display link.
+  /// Resets epoch value, which consequently resets the total elapsed time of
+  /// the display link.
   public func reset() {
     epoch = nil
     elapsedTime = 0
   }
 
-  /// Handler invoked on every frame advancement for the duration of the current active display
-  /// link.
+  /// Handler invoked on every frame advancement for the duration of the current
+  /// active display link.
   ///
   /// - Parameters:
   ///   - displayLink: The current active display link.

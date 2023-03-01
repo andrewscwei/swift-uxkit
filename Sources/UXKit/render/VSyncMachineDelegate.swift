@@ -2,10 +2,10 @@
 
 import UIKit
 
-/// An object conforming to `VSyncMachineDelegate` will assume the delegate of a `VSyncMachine`,
-/// receiving frame updates from the `DisplayLink` upon invoking `start` on the `VSyncMachine`
-/// instance. The object must also invoke `stop` on the `VSyncMachine` for optimal memory
-/// management.
+/// An object conforming to `VSyncMachineDelegate` will assume the delegate of a
+/// `VSyncMachine`, receiving frame updates from the `DisplayLink` upon invoking
+/// `start` on the `VSyncMachine` instance. The object must also invoke `stop`
+/// on the `VSyncMachine` for optimal memory management.
 public protocol VSyncMachineDelegate: AnyObject {
 
   /// The internal `VSyncMachine` instance.

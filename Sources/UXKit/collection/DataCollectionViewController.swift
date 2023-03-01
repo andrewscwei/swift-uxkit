@@ -3,20 +3,24 @@
 import BaseKit
 import UIKit
 
-/// An abstract `UICollectionViewController` whose backing `UICollectionView` displays a collection
-/// of cells based on the fetched dataset, each cell representing a *datum* (a singular entry of
-/// each individual data in the dataset) of uniform type `T`. The dataset is partitioned into
-/// *sections*, each corresponding to a displayable section in the `UICollectionView`.
+/// An abstract `UICollectionViewController` whose backing `UICollectionView`
+/// displays a collection of cells based on the fetched dataset, each cell
+/// representing a *datum* (a singular entry of each individual data in the
+/// dataset) of uniform type `T`. The dataset is partitioned into *sections*,
+/// each corresponding to a displayable section in the `UICollectionView`.
 ///
-/// `DataCollectionViewController` has native support for the following features:
+/// `DataCollectionViewController` has native support for the following
+/// features:
 ///   - data filtering (see `dataFilter`)
-///   - single/multiple cell selection (see `selectionMode`), persisted across reloads
-///   - customizable placeholder view per data state (see `placeholderView(for:)` and
-///     `placeholderIdentifier(for:)`)
+///   - single/multiple cell selection (see `selectionMode`), persisted across
+///     reloads
+///   - customizable placeholder view per data state (see
+///     `placeholderView(for:)` and `placeholderIdentifier(for:)`)
 ///   - default selection handled by `DataCollectionViewControllerDelegate` (see
 ///     `dataCollectionViewControllerWillApplyDefaultSelection(_:)`)
-///   - customizable pull-to-reload triggers and indicators from both ends of the collection (see
-///     `frontSpinner`, `endSpinner`, and `willPullToReload(in:)`)
+///   - customizable pull-to-reload triggers and indicators from both ends of
+///     the collection (see `frontSpinner`, `endSpinner`, and
+///     `willPullToReload(in:)`)
 ///   - section/cell separators
 open class DataCollectionViewController<T: Equatable>: UICollectionViewController, UICollectionViewDelegateFlowLayout, StateMachineDelegate {
 
@@ -29,8 +33,8 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
 
   // MARK: - Life Cycle
 
-  /// Serial `DispatchQueue` used for accessing and modifying members synchronously, ensuring
-  /// thread-safety.
+  /// Serial `DispatchQueue` used for accessing and modifying members
+  /// synchronously, ensuring thread-safety.
   private let lockQueue: DispatchQueue
 
   /// Concurrent `DispatchQueue` used for fetching data.
@@ -254,9 +258,10 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
         collectionView.allowsMultipleSelection = true
         collectionView.allowsSelection = true
       case .single:
-        // This is enabled for a reason. The native `UICollectionView` behaves weirdly, such that if
-        // `allowsMultipleSelection` is `false`, and a cell has `collectionView:shouldSelectItemAt:`
-        // returning `false`, the previously selected cell still gets deselected. Hence this custom
+        // This is enabled for a reason. The native `UICollectionView` behaves
+        // weirdly, such that if `allowsMultipleSelection` is `false`, and a
+        // cell has `collectionView:shouldSelectItemAt:` returning `false`, the
+        // previously selected cell still gets deselected. Hence this custom
         // controller manually handles single selection restrictions.
         collectionView.allowsMultipleSelection = true
         collectionView.allowsSelection = true
@@ -290,7 +295,8 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
 
   // MARK: - Data Management
 
-  /// Specifies whether the collection view will refresh automatically whenever the view re/appears.
+  /// Specifies whether the collection view will refresh automatically whenever
+  /// the view re/appears.
   public var shouldAutoReload: Bool = true
 
   /// The current data state.
@@ -301,8 +307,9 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
     }
   }
 
-  /// The dataset to display for this `DataCollectionViewController`. Each key represents a section
-  /// index, while each value is an array of data of type `T`.
+  /// The dataset to display for this `DataCollectionViewController`. Each key
+  /// represents a section index, while each value is an array of data of type
+  /// `T`.
   private var dataset: [Int: [T]] = [:]
 
   /// Thread-safe getter for `dataset`.
@@ -331,8 +338,8 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
     lockQueue.sync { filteredDataset = value }
   }
 
-  /// Invalidates the `filteredDataset`, ensuring that it does not contain any outdated data not
-  /// in the current dataset.
+  /// Invalidates the `filteredDataset`, ensuring that it does not contain any
+  /// outdated data not in the current dataset.
   private func invalidateFilteredDataset() {
     guard let dataFilter = dataFilter else {
       setFilteredDataset(nil)
@@ -350,8 +357,9 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
   /// Indicates if the collection currently has a valid data filter applied.
   public var hasDataFilter: Bool { dataFilter != nil }
 
-  /// Filter to apply to the fetched data. Once set, the collection view will reload with data
-  /// filtered by this value. How this value translates to data being filtered is up to the method
+  /// Filter to apply to the fetched data. Once set, the collection view will
+  /// reload with data filtered by this value. How this value translates to data
+  /// being filtered is up to the method
   /// `dataFilterPredicate(datum:for:filter:)`.
   public var dataFilter: Any? {
     didSet {
@@ -360,9 +368,9 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
     }
   }
 
-  /// Predicate method used to iterate over every datum to determine if it should be included
-  /// whenever the data filter changes. Return `true` to indicate that the datum should be included,
-  /// `false` otherwise.
+  /// Predicate method used to iterate over every datum to determine if it
+  /// should be included whenever the data filter changes. Return `true` to
+  /// indicate that the datum should be included, `false` otherwise.
   ///
   /// - Parameters:
   ///   - datum: The datum to test for inclusion.
@@ -371,11 +379,13 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
   /// - Returns: `true` to include this datum, `false` otherwise.
   open func dataFilterPredicate(_ datum: T, for section: Int, filter: Any) -> Bool { false }
 
-  /// Returns the data (plural, consisting of individual *datum*) at the specified section.
+  /// Returns the data (plural, consisting of individual *datum*) at the
+  /// specified section.
   ///
   /// - Parameters:
   ///   - section: Section index.
-  ///   - filtered: Indicates if the applied data filter should be accounted for.
+  ///   - filtered: Indicates if the applied data filter should be accounted
+  ///     for.
   ///
   /// - Returns: The data at the specified section.
   public func data(for section: Int, filtered: Bool? = nil) -> [T]? {
@@ -393,7 +403,8 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
   ///
   /// - Parameter:
   ///   - indexPath: The index path.
-  ///   - filtered: indicates if the applied data filter should be accounted for.
+  ///   - filtered: indicates if the applied data filter should be accounted
+  ///               for.
   ///
   /// - Returns: The datum.
   public func datum(at indexPath: IndexPath, filtered: Bool? = nil) -> T? {
@@ -402,8 +413,8 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
     return data[indexPath.item]
   }
 
-  /// Checks if two data (plural of datum) are equal (given that the data is expected to be
-  /// equatable). Override this for custom comparisions.
+  /// Checks if two data (plural of datum) are equal (given that the data is
+  /// expected to be equatable). Override this for custom comparisons.
   ///
   /// - Parameters:
   ///   - a: A datum.
@@ -412,8 +423,8 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
   /// - Returns: `true` if they're equal, `false` otherwise.
   open func areDataEqual(a: T, b: T) -> Bool { a == b }
 
-  /// Gets the data count at the specified section. If a section is not provided, the total data
-  /// count across all sections will be returned.
+  /// Gets the data count at the specified section. If a section is not
+  /// provided, the total data count across all sections will be returned.
   ///
   /// - Parameters:
   ///   - section: Optional section index.
@@ -428,23 +439,24 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
     }
   }
 
-  /// Fetches data from data sources for the specified section. Override this method to define how
-  /// data should be fetched from data sources.
+  /// Fetches data from data sources for the specified section. Override this
+  /// method to define how data should be fetched from data sources.
   ///
   /// - Parameters:
   ///   - section: The section to fetch data for.
   ///   - queue: The queue to fetch data in.
-  ///   - completion: Handler invoked upon completion with a `Result` of either a `.success` value
-  ///                 value of the fetched data or a `.failure` with the error.
+  ///   - completion: Handler invoked upon completion with a `Result` of either
+  ///                 a `.success` value value of the fetched data or a
+  ///                 `.failure` with the error.
   open func fetchData(for section: Int, queue: DispatchQueue, completion: @escaping (Result<[T], Error>) -> Void) {
     completion(.success(getDataset()[section] ?? []))
   }
 
   /// Fetches data for all sections.
   ///
-  /// - Parameter completion: Handler invoked upon completion with a `Result` as either a `.success`
-  ///                         with the fetched dataset or a `.failure` with the first encountered
-  ///                         error.
+  /// - Parameter completion: Handler invoked upon completion with a `Result` as
+  ///                         either a `.success` with the fetched dataset or a
+  ///                         `.failure` with the first encountered error.
   private func fetchData(completion: @escaping (Result<[Int: [T]], Error>) -> Void) {
     let group = DispatchGroup()
 
@@ -478,8 +490,8 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
     }
   }
 
-  /// Refetches all data, consequently reloading the cells in the collection view. If a previous
-  /// reload is in progress, it will be cancelled.
+  /// Refetches all data, consequently reloading the cells in the collection
+  /// view. If a previous reload is in progress, it will be cancelled.
   open func reloadData() {
     delegate?.dataCollectionViewControllerWillReloadData(self)
 
@@ -502,12 +514,13 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
           self.dataState = self.count() > 0 ? .hasData : .noData
         }
 
-        // Prior to reloading cells in the collection view, ensure that the spinners are stopped and
-        // their exit animations are complete.
+        // Prior to reloading cells in the collection view, ensure that the
+        // spinners are stopped and their exit animations are complete.
         self.stopSpinnersIfNeeded {
           self.reloadCells()
 
-          // Only apply default selection if there are no selected cells at the moment.
+          // Only apply default selection if there are no selected cells at the
+          // moment.
           if self.indexPathsForSelectedCells.count == 0 {
             self.applyDefaultSelection()
           }
@@ -518,7 +531,8 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
     }
   }
 
-  /// Cancels the reload operation and reverts the data state back to the previous state.
+  /// Cancels the reload operation and reverts the data state back to the
+  /// previous state.
   open func cancelReload() {
     // Revert to previous state if current state is loading.
     switch dataState {
@@ -536,8 +550,8 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
     }
   }
 
-  /// Method that indicates if pull-to-reload is allowed per data state. Override this for custom
-  /// behavior.
+  /// Method that indicates if pull-to-reload is allowed per data state.
+  /// Override this for custom behavior.
   ///
   /// - Parameters:
   ///   - dataState: The data state to check.
@@ -556,8 +570,8 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
   /// Specifies how the collection view selects its cells.
   @Stateful public var selectionMode: SelectionMode = .none
 
-  /// Specifies whether a cell should deselect when selecting it again, only works if
-  /// `selectionMode` is not `none`.
+  /// Specifies whether a cell should deselect when selecting it again, only
+  /// works if `selectionMode` is not `none`.
   public var allowsTogglingSelectedCells: Bool = false
 
   /// Dictionary of selected data indexed by section.
@@ -573,8 +587,8 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
     lockQueue.sync { selectedDataset = value }
   }
 
-  /// Invalidates the `selectedDataset`, ensuring that it does not contain any outdated data not
-  /// in the current dataset.
+  /// Invalidates the `selectedDataset`, ensuring that it does not contain any
+  /// outdated data not in the current dataset.
   private func invalidateSelectedDataset() {
     let currValue = getSelectedDataset()
     let dataset = getDataset()
@@ -627,7 +641,7 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
   /// - Parameters:
   ///   - datum: The datum.
   ///
-  /// - Returns: `true` if it is selcted, `false` otherwise.
+  /// - Returns: `true` if it is selected, `false` otherwise.
   public func isDatumSelected(_ datum: T) -> Bool {
     for (_, data) in getSelectedDataset() {
       if (data.firstIndex { areDataEqual(a: $0, b: datum) }) != nil {
@@ -638,12 +652,13 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
     return false
   }
 
-  /// Selects a cell at the specified index path, with the option to scroll to it (positioning it at
-  /// the center of the collection view).
+  /// Selects a cell at the specified index path, with the option to scroll to
+  /// it (positioning it at the center of the collection view).
   ///
   /// - Parameters:
   ///   - indexPath: The target index path for the cell to select.
-  ///   - shouldScroll: Specifies whether to scroll to the cell at the target index path.
+  ///   - shouldScroll: Specifies whether to scroll to the cell at the target
+  ///                   index path.
   ///   - animated: Whether the scroll is animated.
   public func select(_ indexPath: IndexPath, shouldScroll: Bool = true, animated: Bool = true) {
     guard shouldSelectCellAt(indexPath) else { return }
@@ -663,9 +678,10 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
     selectionDidChange()
   }
 
-  /// Selects a cell by its associated datum. If the same datum is associated with more than one
-  /// cell and `selectionMode` is `single`, the first matching cell will be selected. If
-  /// `selectionMode` is `multiple`, all the matching cells will be selected.
+  /// Selects a cell by its associated datum. If the same datum is associated
+  /// with more than one cell and `selectionMode` is `single`, the first
+  /// matching cell will be selected. If `selectionMode` is `multiple`, all the
+  /// matching cells will be selected.
   ///
   /// - Parameters:
   ///   - datum: The datum to select.
@@ -739,10 +755,11 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
   /// Proxy method for selecting a cell in the collection view.
   ///
   /// - Parameters:
-  ///   - indexPath: The index path of the cell to select in the collection view.
+  ///   - indexPath: The index path of the cell to select in the collection
+  ///                view.
   ///   - animated: Specifies if the selection is animated.
-  ///   - scrollPosition: Specifies the scroll position of the selection, `nil` to leave current
-  ///                     scroll position unchanged.
+  ///   - scrollPosition: Specifies the scroll position of the selection, `nil`
+  ///                     to leave current scroll position unchanged.
   private func selectCellInCollectionView(at indexPath: IndexPath, animated: Bool = false, scrollPosition: UICollectionView.ScrollPosition? = nil) {
     if selectionMode == .single {
       for ip in collectionView.indexPathsForSelectedItems ?? [] {
@@ -768,9 +785,10 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
     selectionDidChange()
   }
 
-  /// Deselects a cell by its associated datum. If the same datum is associated with more than one
-  /// cell and the `selectionMode` is `single`, the first matching cell will be deselected. If
-  /// `selectionMode` is `multiple`, all the matching cells will be deselected.
+  /// Deselects a cell by its associated datum. If the same datum is associated
+  /// with more than one cell and the `selectionMode` is `single`, the first
+  /// matching cell will be deselected. If `selectionMode` is `multiple`, all
+  /// the matching cells will be deselected.
   ///
   /// - Parameters:
   ///   - datum: The data to deselect.
@@ -793,8 +811,8 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
     default: return
     }
 
-    // Regardless of whether it's visible in the collection view, mark the data itself as deselected
-    // when at least one of its cells is deselected.
+    // Regardless of whether it's visible in the collection view, mark the data
+    // itself as deselected when at least one of its cells is deselected.
     if count > 0 {
       dequeueSelectedDatum(datum)
       selectionDidChange()
@@ -834,14 +852,16 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
   /// Proxy method for deselecting a cell in the collection view.
   ///
   /// - Parameters:
-  ///   - indexPath: The index path of the cell to deselect in the colleciton view.
+  ///   - indexPath: The index path of the cell to deselect in the collection
+  ///                view.
   ///   - animated: Specifies if the deselection is animated.
   private func deselectCellInCollectionView(at indexPath: IndexPath, animated: Bool) {
     collectionView.deselectItem(at: indexPath, animated: animated)
   }
 
-  /// Specifies if the cell at the specified index path should be selected. This is invoked when the
-  /// cell is manually selected via user input and when default selection is applied.
+  /// Specifies if the cell at the specified index path should be selected. This
+  /// is invoked when the cell is manually selected via user input and when
+  /// default selection is applied.
   ///
   /// - Parameters:
   ///   - indexPath: The index path of the cell.
@@ -900,8 +920,8 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
     setSelectedDataset(newSelectedDataset)
   }
 
-  /// Marks a datum as selected. This method handles duplicate data as well, so the same datum
-  /// across multiple sections will all be marked as selected.
+  /// Marks a datum as selected. This method handles duplicate data as well, so
+  /// the same datum across multiple sections will all be marked as selected.
   ///
   /// - Parameters:
   ///   - datum: The datum.
@@ -954,8 +974,9 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
     setSelectedDataset(newSelectedDataset)
   }
 
-  /// Marks a datum as deselected. This method handles duplicate data as well, so the same datum
-  /// across multiple sections will all be marked as deselected.
+  /// Marks a datum as deselected. This method handles duplicate data as well,
+  /// so the same datum across multiple sections will all be marked as
+  /// deselected.
   ///
   /// - Parameters:
   ///   - datum: The datum.
@@ -1040,7 +1061,8 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
     selectionDidChange()
   }
 
-  /// - Note: This handler is only invoked when the collection view allows multiple selections.
+  /// - Note: This handler is only invoked when the collection view allows
+  ///   multiple selections.
   final public override func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
     dequeueSelectedDatum(at: indexPath)
     selectionDidChange()
@@ -1048,16 +1070,16 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
 
   // MARK: - Cell Management
 
-  /// Shorthand for registering a class for use in creating new collection view cells. The reuse
-  /// identifier is automatically inferred.
+  /// Shorthand for registering a class for use in creating new collection view
+  /// cells. The reuse identifier is automatically inferred.
   ///
   /// - Parameter cellClass: The cell class type.
   public func registerCell(_ cellClass: AnyClass) {
     collectionView.register(cellClass, forCellWithReuseIdentifier: String(describing: cellClass).components(separatedBy: ".").last!)
   }
 
-  /// Shorthand for unregistering a class for use in creating new collection view cells. The reuse
-  /// identifier is automatically inferred.
+  /// Shorthand for unregistering a class for use in creating new collection
+  /// view cells. The reuse identifier is automatically inferred.
   ///
   /// - Parameter cellClass: The cell class type.
   public func unregisterCell(_ cellClass: AnyClass) {
@@ -1075,9 +1097,10 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
     collectionView.dequeueReusableCell(withReuseIdentifier: String(describing: cellClass).components(separatedBy: ".").last!, for: indexPath) as! T
   }
 
-  /// Creates an instance of the cell at the specified index path. This is a good place to dequeue
-  /// reusable cells. Derived classes MUST implement this method. Avoid setting properties of cell
-  /// instances here, do that in `initCell(_:at:)`.
+  /// Creates an instance of the cell at the specified index path. This is a
+  /// good place to dequeue reusable cells. Derived classes MUST implement this
+  /// method. Avoid setting properties of cell instances here, do that in
+  /// `initCell(_:at:)`.
   ///
   /// - Parameters:
   ///   - indexPath: The index path.
@@ -1087,7 +1110,8 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
     fatalError("Derived class <\(Self.self)> must implement this method")
   }
 
-  /// Initializes a cell instance. Override this to provide additional initialization steps.
+  /// Initializes a cell instance. Override this to provide additional
+  /// initialization steps.
   ///
   /// - Parameters:
   ///   - cell: The cell instance.
@@ -1183,13 +1207,15 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
   /// `collectionView.reloadData`.
   ///
   /// - Parameters:
-  ///   - fromBeginning: Specifies if the collection view should move its scroll position to the
-  ///                    beginning (unanimated) after the cells are reloaded, defaults to `false`.
+  ///   - fromBeginning: Specifies if the collection view should move its scroll
+  ///                    position to the beginning (unanimated) after the cells
+  ///                    are reloaded, defaults to `false`.
   private func reloadCells(fromBeginning: Bool = false) {
     // Reload data in collection view.
     collectionView.reloadData()
 
-    // Scroll to beginning at the next UI cycle (otherwise causes jittering) if needed.
+    // Scroll to beginning at the next UI cycle (otherwise causes jittering) if
+    // needed.
     if (fromBeginning) {
       DispatchQueue.main.async {
         self.scrollToBeginning(animated: false)
@@ -1225,7 +1251,8 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
     }
   }
 
-  /// Gets the cell size of this collection view for a cell at the specified index path.
+  /// Gets the cell size of this collection view for a cell at the specified
+  /// index path.
   ///
   /// - Parameters:
   ///   - indexPath: Cell index path.
@@ -1338,12 +1365,13 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
 
   // MARK: - Pull-to-Reload Management
 
-  /// Distance required to overscroll in order to trigger a reload (consequently showing the
-  /// spinner). This value INCLUDES the content insets of the collection view.
+  /// Distance required to overscroll in order to trigger a reload (consequently
+  /// showing the spinner). This value INCLUDES the content insets of the
+  /// collection view.
   public var displacementToTriggerReload: CGFloat = 60.0
 
-  /// Specifies whether user can pull to reload at end of collection (as oppposed to only the
-  /// front).
+  /// Specifies whether user can pull to reload at end of collection (as
+  /// opposed to only the front).
   public var canPullFromEndToReload: Bool = true
 
   /// Reload control spinner at the front of the collection view.
@@ -1361,8 +1389,8 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
 
         let mask = CAGradientLayer()
         mask.colors = [UIColor.black.cgColor, UIColor.clear.cgColor]
-        // HACK: Use -0.01 here because somehow when the start and end points are identical, the
-        // layer mask doesn't work at all.
+        // HACK: Use -0.01 here because somehow when the start and end points
+        // are identical, the layer mask doesn't work at all.
         mask.startPoint = CGPoint(x: -0.01, y: 0.5)
         mask.endPoint = CGPoint(x: 0.0, y: 0.5)
         newSpinner.layer.mask = mask
@@ -1373,7 +1401,8 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
     }
   }
 
-  /// Gradient mask of the reload control spinner at the end of the collection view.
+  /// Gradient mask of the reload control spinner at the end of the collection
+  /// view.
   private var frontSpinnerMask: CAGradientLayer?
 
   /// X constraint of the front spinner.
@@ -1408,7 +1437,8 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
     }
   }
 
-  /// Gradient mask of the reload control spinner at the end of the collection view.
+  /// Gradient mask of the reload control spinner at the end of the collection
+  /// view.
   private var endSpinnerMask: CAGradientLayer?
 
   /// X constraint of the end spinner.
@@ -1417,8 +1447,8 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
   /// Y constraint of the end spinner.
   private var endSpinnerConstraintY: NSLayoutConstraint?
 
-  /// Starts either the front or the end spinners if applicable, depending on the current scroll
-  /// position of the collection view.
+  /// Starts either the front or the end spinners if applicable, depending on
+  /// the current scroll position of the collection view.
   private func startSpinnersIfNeeded() {
     guard willPullToReload(in: dataState) else { return }
 
@@ -1478,8 +1508,9 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
     default: insets.left = displacementToTriggerReload
     }
 
-    // Reload is triggered when the user pulls from the front of the scroll view. When the pull is
-    // released, animate the scroll view position so it is parked just beside the front spinner.
+    // Reload is triggered when the user pulls from the front of the scroll
+    // view. When the pull is released, animate the scroll view position so it
+    // is parked just beside the front spinner.
     DispatchQueue.main.async {
       UIView.animate(withDuration: 0.2, animations: {
         self.collectionView.contentInset = insets
@@ -1543,8 +1574,9 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
     default: insets.right = displacementToTriggerReload
     }
 
-    // Reload is triggered when the user pulls from the end of the scroll view. When the pull is
-    // released, animate the scroll view position so it is parked just beside the end spinner.
+    // Reload is triggered when the user pulls from the end of the scroll view.
+    // When the pull is released, animate the scroll view position so it is
+    // parked just beside the end spinner.
     DispatchQueue.main.async {
       UIView.animate(withDuration: 0.2, animations: {
         self.collectionView.contentInset = insets
@@ -1624,10 +1656,11 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
   /// The placeholder view.
   public private(set) weak var placeholderView: UIView?
 
-  /// Gets the placeholder view identifier for the specified data state. This identifier is used to
-  /// determine if 2 placeholders are the "same" so we can avoid transitioning one placeholder to
-  /// another if they are the "same". By default the loading state is the same as the previous
-  /// state unless there is no previous state.
+  /// Gets the placeholder view identifier for the specified data state. This
+  /// identifier is used to determine if 2 placeholders are the "same" so we can
+  /// avoid transitioning one placeholder to another if they are the "same". By
+  /// default the loading state is the same as the previous state unless there
+  /// is no previous state.
   ///
   /// - Parameters:
   ///   - dataState: The data state.
@@ -1642,7 +1675,8 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
     }
   }
 
-  /// Gets the placeholder view for the specified data state. This is meant to be overridden.
+  /// Gets the placeholder view for the specified data state. This is meant to
+  /// be overridden.
   ///
   /// - Parameters:
   ///   - dataState: The target data state.

@@ -11,21 +11,25 @@ extension Date {
     return Formatter.iso8601.string(from: self)
   }
 
-  /// Returns a string representation of how much time has passed since this `Date`.
+  /// Returns a string representation of how much time has passed since this
+  /// `Date`.
   ///
-  /// In order for the correct string to be displayed, the app must define the following strings in
-  /// `Localizable.strings`:
-  ///   1. `LTXT_TIME_1_YEAR` and `LTXT_TIME_N_YEARS`: String representations of 1 year and N years
-  ///      respectively, where N is an integer.
-  ///   2. `LTXT_TIME_1_DAY` and `LTXT_TIME_N_DAYS`: String representations of 1 day and N days
-  ///      respectively, where N is an integer.
-  ///   3. `LTXT_TIME_1_HOUR` and `LTXT_TIME_N_HOURS`: String representations of 1 hour and N hours
-  ///      respectively, where N is an integer.
-  ///   4. `LTXT_TIME_1_MINUTE` and `LTXT_TIME_N_MINUTES`: String representations of 1 minute and N
-  ///      minutes respectively, where N is an integer.
-  ///   5. `LTXT_TIME_JUST_NOW`: String representation of any duration under a minute.
+  /// In order for the correct string to be displayed, the app must define the
+  /// following strings in `Localizable.strings`:
+  ///   1. `LTXT_TIME_1_YEAR` and `LTXT_TIME_N_YEARS`: String representations of
+  ///      1 year and N years respectively, where N is an integer.
+  ///   2. `LTXT_TIME_1_DAY` and `LTXT_TIME_N_DAYS`: String representations of 1
+  ///      day and N days respectively, where N is an integer.
+  ///   3. `LTXT_TIME_1_HOUR` and `LTXT_TIME_N_HOURS`: String representations of
+  ///      1 hour and N hours respectively, where N is an integer.
+  ///   4. `LTXT_TIME_1_MINUTE` and `LTXT_TIME_N_MINUTES`: String
+  ///      representations of 1 minute and N minutes respectively, where N is an
+  ///      integer.
+  ///   5. `LTXT_TIME_JUST_NOW`: String representation of any duration under a
+  ///      minute.
   ///
-  /// - Returns: String representation of how much time has passed since this `Date`.
+  /// - Returns: String representation of how much time has passed since this
+  ///   `Date`.
   public func shortTimeAgoSinceNow() -> String {
     let interval = Calendar.current.dateComponents([.year, .day, .hour, .minute], from: self, to: Date())
 

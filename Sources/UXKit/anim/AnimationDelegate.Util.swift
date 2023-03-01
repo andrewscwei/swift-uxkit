@@ -20,7 +20,8 @@ extension AnimationDelegate {
   /// - Parameters:
   ///   - value: The value to convert.
   ///
-  /// - Returns: The converted value or `nil` if the conversion was not possible.
+  /// - Returns: The converted value or `nil` if the conversion was not
+  ///            possible.
   func toFloat(_ value: Any?) -> Any? {
     if let value = value as? CGFloat { return Float(value) }
     if let value = value as? Double { return Float(value) }
@@ -33,7 +34,8 @@ extension AnimationDelegate {
   /// - Parameters:
   ///   - value: The value to convert.
   ///
-  /// - Returns: The converted value or `nil` if the conversion was not possible.
+  /// - Returns: The converted value or `nil` if the conversion was not
+  ///            possible.
   func toCGFloat(_ value: Any?) -> Any? {
     if let value = value as? Float { return CGFloat(value) }
     if let value = value as? Double { return CGFloat(value) }
@@ -46,7 +48,8 @@ extension AnimationDelegate {
   /// - Parameters:
   ///   - value: The value to convert.
   ///
-  /// - Returns: The converted value or `nil` if the conversion was not possible.
+  /// - Returns: The converted value or `nil` if the conversion was not
+  ///            possible.
   func toCGColor(_ value: Any?) -> Any? {
     if let value = value as? UIColor { return value.cgColor }
     return value

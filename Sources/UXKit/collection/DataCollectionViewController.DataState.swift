@@ -2,7 +2,8 @@
 
 extension DataCollectionViewController {
 
-  /// Enum describing the state of the data provided to the `DataCollectionViewController`.
+  /// Enum describing the state of the data provided to the
+  /// `DataCollectionViewController`.
   public enum DataState: Equatable, CustomStringConvertible {
 
     /// The default idle state.

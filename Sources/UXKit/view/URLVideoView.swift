@@ -19,8 +19,9 @@ public class URLVideoView: UIView, StateMachineDelegate {
   private var playerContext = 0
   private var playerItemContext = 0
 
-  /// A weak reference to the aspect ratio constraint of this view. This is necessary in order for
-  /// the view to properly resize itself based on the actual dimension of the loaded video.
+  /// A weak reference to the aspect ratio constraint of this view. This is
+  /// necessary in order for the view to properly resize itself based on the
+  /// actual dimension of the loaded video.
   private weak var aspectRatioConstraint: NSLayoutConstraint?
 
   /// Specifies if the video (if any) should be played automatically on load.
@@ -149,7 +150,8 @@ public class URLVideoView: UIView, StateMachineDelegate {
 
   /// Handler invoked the video reaches the end.
   ///
-  /// - Parameter notification: The `Notification` object that triggered this handler.
+  /// - Parameter notification: The `Notification` object that triggered this
+  ///                           handler.
   @objc private func didFinishPlaying(notification: Notification) {
     guard let playerItem = playerItem, playerItem == notification.object as? AVPlayerItem else { return }
 
@@ -241,9 +243,10 @@ public class URLVideoView: UIView, StateMachineDelegate {
     updateAspectRatio()
   }
 
-  /// Updates the aspect ratio constraint of this view. The constraint is based on the size of the
-  /// current displayed video, and automatically changes the view's height according to the aspect
-  /// ratio of the video relative to the view's width.
+  /// Updates the aspect ratio constraint of this view. The constraint is based
+  /// on the size of the current displayed video, and automatically changes the
+  /// view's height according to the aspect ratio of the video relative to the
+  /// view's width.
   private func updateAspectRatio() {
     // First remove the current constraint, if it exists.
     if let oldConstraint = aspectRatioConstraint {
@@ -254,13 +257,14 @@ public class URLVideoView: UIView, StateMachineDelegate {
 
     guard size != .zero else { return }
 
-    // Then apply the new constraint and lower its priority so externally applied constraints can
-    // override this.
+    // Then apply the new constraint and lower its priority so externally
+    // applied constraints can override this.
     let newConstraint = NSLayoutConstraint(item: self, attribute: .height, relatedBy: .equal, toItem: self, attribute: .width, multiplier: size.height / size.width, constant: 0)
     newConstraint.priority = UILayoutPriority(rawValue: 999)
     addConstraint(newConstraint)
 
-    // Save a weak reference of the new constraint so it can get referred back in this method.
+    // Save a weak reference of the new constraint so it can get referred back
+    // in this method.
     aspectRatioConstraint = newConstraint
   }
 }

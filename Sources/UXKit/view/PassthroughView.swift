@@ -2,8 +2,8 @@
 
 import UIKit
 
-/// A custom `UIView` that, instead of handling touch events itself, forwards all touch events to
-/// its subviews.
+/// A custom `UIView` that, instead of handling touch events itself, forwards
+/// all touch events to its subviews.
 open class PassthroughView: UIView {
 
   open override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
