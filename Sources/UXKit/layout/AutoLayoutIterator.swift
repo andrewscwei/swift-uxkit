@@ -1300,6 +1300,18 @@ public class AutoLayoutIterator {
     return constraint
   }
 
+  @discardableResult public func horizontalSpacing(from fromView: UIView, spacing: CGFloat = 0.0, useSafeArea: Bool = false) -> NSLayoutConstraint {
+    var constraint: NSLayoutConstraint
+    if #available(iOS 11.0, *) {
+      constraint = fromView.rightAnchor.constraint(equalTo: useSafeArea ? view.safeAreaLayoutGuide.leftAnchor : view.leftAnchor, constant: -spacing)
+    }
+    else {
+      constraint = fromView.rightAnchor.constraint(equalTo: view.leftAnchor, constant: -spacing)
+    }
+    constraint.isActive = true
+    return constraint
+  }
+
   @discardableResult public func verticalSpacing(to toView: UIView, spacing: CGFloat = 0.0, useSafeArea: Bool = false) -> NSLayoutConstraint {
     var constraint: NSLayoutConstraint
     if #available(iOS 11.0, *) {
@@ -1307,6 +1319,18 @@ public class AutoLayoutIterator {
     }
     else {
       constraint = toView.topAnchor.constraint(equalTo: view.bottomAnchor, constant: spacing)
+    }
+    constraint.isActive = true
+    return constraint
+  }
+
+  @discardableResult public func verticalSpacing(from fromView: UIView, spacing: CGFloat = 0.0, useSafeArea: Bool = false) -> NSLayoutConstraint {
+    var constraint: NSLayoutConstraint
+    if #available(iOS 11.0, *) {
+      constraint = fromView.bottomAnchor.constraint(equalTo: useSafeArea ? view.safeAreaLayoutGuide.topAnchor : view.topAnchor, constant: -spacing)
+    }
+    else {
+      constraint = fromView.bottomAnchor.constraint(equalTo: view.topAnchor, constant: -spacing)
     }
     constraint.isActive = true
     return constraint
