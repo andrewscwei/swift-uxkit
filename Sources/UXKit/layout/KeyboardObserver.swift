@@ -53,9 +53,10 @@ extension KeyboardObserver {
   /// view. If the view is not provided, the returned rect will be relative to
   /// the base window. If the keyboard is not present, `nil` will be returned.
   ///
-  /// - Parameter view: The view whose coordinate system is one that the
-  ///                   returned rect is based on. If this is `nil`, the
-  ///                   coordinate system of the base window is used instead.
+  /// - Parameters:
+  ///   - view: The view whose coordinate system is one that the returned rect
+  ///           is based on. If this is `nil`, the coordinate system of the base
+  ///           window is used instead.
   ///
   /// - Returns: The current rect of the virtual keyboard relative to specified
   ///            view, `nil` if the keyboard is not present.

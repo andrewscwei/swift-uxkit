@@ -7,7 +7,8 @@ extension CGPoint {
 
   /// Returns the point at the center of a list of points.
   ///
-  /// - Parameter points: A list of points to determine the center point.
+  /// - Parameters:
+  ///   - points: A list of points to determine the center point.
   ///
   /// - Returns: The center point.
   public static func midPoint(_ points: CGPoint...) -> CGPoint? {
@@ -16,7 +17,8 @@ extension CGPoint {
 
   /// Returns the point at the center of a list of points.
   ///
-  /// - Parameter points: A list of points to determine the center point.
+  /// - Parameters:
+  ///   - points: A list of points to determine the center point.
   ///
   /// - Returns: The center point.
   public static func midPoint(_ points: [CGPoint]) -> CGPoint? {

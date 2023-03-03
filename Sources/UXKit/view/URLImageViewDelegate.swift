@@ -22,8 +22,9 @@ public protocol URLImageViewDelegate: AnyObject {
 
   /// Handler invoked when the image is cleared.
   ///
-  /// - Parameter imageView: The `URLImageView` instance that invoked this
-  ///                        delegate method.
+  /// - Parameters:
+  ///   - imageView: The `URLImageView` instance that invoked this delegate
+  ///                method.
   func imageViewDidClear(_ imageView: URLImageView)
 }
 

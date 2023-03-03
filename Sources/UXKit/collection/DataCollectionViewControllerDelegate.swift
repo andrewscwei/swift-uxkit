@@ -43,7 +43,7 @@ public protocol DataCollectionViewControllerDelegate: AnyObject {
 
   /// Method invoked when scrolling the collection view.
   ///
-  /// - Parameter:
+  /// - Parameters:
   ///   - collectionViewController: The `DataCollectionViewController` instance
   ///                               that invoked this method.
   func dataCollectionViewControllerDidScroll(_ collectionViewController: UICollectionViewController)

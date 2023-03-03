@@ -317,7 +317,8 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
 
   /// Thread-safe setter for `dataset`.
   ///
-  /// - Parameter value: The new value.
+  /// - Parameters:
+  ///   - value: The new value.
   private func setDataset(_ value: [Int: [T]]) {
     lockQueue.sync { dataset = value }
 
@@ -333,7 +334,8 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
 
   /// Thread-safe setter for `filteredDataset`.
   ///
-  /// - Parameter value: The new value.
+  /// - Parameters:
+  ///   - value: The new value.
   private func setFilteredDataset(_ value: [Int: [T]]?) {
     lockQueue.sync { filteredDataset = value }
   }
@@ -401,7 +403,7 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
 
   /// Gets the datum (singular) at the specified index path.
   ///
-  /// - Parameter:
+  /// - Parameters:
   ///   - indexPath: The index path.
   ///   - filtered: indicates if the applied data filter should be accounted
   ///               for.
@@ -454,9 +456,10 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
 
   /// Fetches data for all sections.
   ///
-  /// - Parameter completion: Handler invoked upon completion with a `Result` as
-  ///                         either a `.success` with the fetched dataset or a
-  ///                         `.failure` with the first encountered error.
+  /// - Parameters:
+  ///   - completion: Handler invoked upon completion with a `Result` as either
+  ///                 a `.success` with the fetched dataset or a `.failure` with
+  ///                 the first encountered error.
   private func fetchData(completion: @escaping (Result<[Int: [T]], Error>) -> Void) {
     let group = DispatchGroup()
 
@@ -582,7 +585,8 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
 
   /// Thread-safe setter for `selectedDataset`.
   ///
-  /// - Parameter value: The new value.
+  /// - Parameters:
+  ///   - value: The new value.
   private func setSelectedDataset(_ value: [Int: [T]]) {
     lockQueue.sync { selectedDataset = value }
   }
@@ -629,7 +633,8 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
 
   /// Checks to see if a cell is selected at the specified index path.
   ///
-  /// - Parameter indexPath: The index path.
+  /// - Parameters:
+  ///   - indexPath: The index path.
   ///
   /// - Returns: `true` if selected, `false` otherwise.
   public func isCellSelected(at indexPath: IndexPath) -> Bool {
@@ -880,7 +885,8 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
   /// Specifies if the cell at the specified index path should be deselected. This is only invoked
   /// when the cell is manually deselected via user input.
   ///
-  /// - Parameter indexPath: The index path of the cell.
+  /// - Parameters:
+  ///   - indexPath: The index path of the cell.
   ///
   /// - Returns: `true` or `false`.
   open func shouldDeselectCellAt(_ indexPath: IndexPath) -> Bool {
@@ -1073,7 +1079,8 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
   /// Shorthand for registering a class for use in creating new collection view
   /// cells. The reuse identifier is automatically inferred.
   ///
-  /// - Parameter cellClass: The cell class type.
+  /// - Parameters:
+  ///   - cellClass: The cell class type.
   public func registerCell(_ cellClass: AnyClass) {
     collectionView.register(cellClass, forCellWithReuseIdentifier: String(describing: cellClass).components(separatedBy: ".").last!)
   }
@@ -1081,7 +1088,8 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
   /// Shorthand for unregistering a class for use in creating new collection
   /// view cells. The reuse identifier is automatically inferred.
   ///
-  /// - Parameter cellClass: The cell class type.
+  /// - Parameters:
+  ///   - cellClass: The cell class type.
   public func unregisterCell(_ cellClass: AnyClass) {
     collectionView.register(nil as AnyClass?, forCellWithReuseIdentifier: String(describing: cellClass).components(separatedBy: ".").last!)
   }
@@ -1474,7 +1482,8 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
 
   /// Stops all active spinners.
   ///
-  /// - Parameter completion: Handler invoked upon completion.
+  /// - Parameters:
+  ///   - completion: Handler invoked upon completion.
   private func stopSpinnersIfNeeded(completion: @escaping () -> Void = {}) {
     let group = DispatchGroup()
 

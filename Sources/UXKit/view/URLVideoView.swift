@@ -150,8 +150,8 @@ public class URLVideoView: UIView, StateMachineDelegate {
 
   /// Handler invoked the video reaches the end.
   ///
-  /// - Parameter notification: The `Notification` object that triggered this
-  ///                           handler.
+  /// - Parameters:
+  ///   - notification: The `Notification` object that triggered this handler.
   @objc private func didFinishPlaying(notification: Notification) {
     guard let playerItem = playerItem, playerItem == notification.object as? AVPlayerItem else { return }
 
@@ -164,7 +164,8 @@ public class URLVideoView: UIView, StateMachineDelegate {
 
   /// Captures a still image from the current video at the specified time.
   ///
-  /// - Parameter time: The time of the video to capture the still image.
+  /// - Parameters:
+  ///   - time: The time of the video to capture the still image.
   ///
   /// - Returns: The captured image.
   public func captureImageFromVideo(at time: CMTime = CMTimeMake(value: 0, timescale: 1)) -> UIImage? {

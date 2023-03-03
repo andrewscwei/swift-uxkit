@@ -29,7 +29,7 @@ extension Date {
   ///      minute.
   ///
   /// - Returns: String representation of how much time has passed since this
-  ///   `Date`.
+  ///            `Date`.
   public func shortTimeAgoSinceNow() -> String {
     let interval = Calendar.current.dateComponents([.year, .day, .hour, .minute], from: self, to: Date())
 

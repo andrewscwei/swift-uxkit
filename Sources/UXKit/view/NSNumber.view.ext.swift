@@ -15,7 +15,9 @@ extension NSNumber {
   ///   4. `LTXT_NUMBER_SUFFIX_TRILLIONS`: Suffix for trillions (i.e. "T").
   ///   5. `LTXT_NUMBER_SUFFIX_QUADRILLION`: Suffix for quadrillions (i.e. "Q").
   ///
-  /// - Parameter int: The integer.
+  /// - Parameters:
+  ///   - int: The integer.
+  ///   
   /// - Returns: The abbreviated string.
   public class func abbreviatedNumber(from int: Int) -> String {
     let formatter = NumberFormatter()

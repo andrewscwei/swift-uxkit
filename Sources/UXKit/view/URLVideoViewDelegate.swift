@@ -7,14 +7,16 @@ public protocol URLVideoViewDelegate: AnyObject {
 
   /// Handler invoked when the video is ready to be played.
   ///
-  /// - Parameter videoView: The `URLVideoView` instance that invoked this
-  ///                        delegate method.
+  /// - Parameters:
+  ///   - videoView: The `URLVideoView` instance that invoked this delegate
+  ///                method.
   func videoViewDidBecomeReadyToPlay(_ videoView: URLVideoView)
 
   /// Handler invoked when the video finishes playing.
   ///
-  /// - Parameter videoView: The `URLVideoView` instance that invoked this
-  ///                        delegate method.
+  /// - Parameters:
+  ///   - videoView: The `URLVideoView` instance that invoked this delegate
+  ///                method.
   func videoViewDidFinishPlaying(_ videoView: URLVideoView)
 
   /// Handler invoked when the video playback status changes.
@@ -27,8 +29,9 @@ public protocol URLVideoViewDelegate: AnyObject {
 
   /// Handler invoked when the video is cleared.
   ///
-  /// - Parameter videoView: The `URLVideoView` instance that invoked this
-  ///                        delegate method.
+  /// - Parameters:
+  ///   - videoView: The `URLVideoView` instance that invoked this delegate
+  ///                method.
   func videoViewDidClear(_ videoView: URLVideoView)
 }
 
