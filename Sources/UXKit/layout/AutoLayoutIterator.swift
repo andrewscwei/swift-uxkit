@@ -1282,8 +1282,32 @@ public class AutoLayoutIterator {
     return constraint
   }
 
+  @discardableResult public func widthLessThanOrEqualTo(_ value: CGFloat) -> NSLayoutConstraint {
+    let constraint = view.widthAnchor.constraint(lessThanOrEqualToConstant: value)
+    constraint.isActive = true
+    return constraint
+  }
+
+  @discardableResult public func widthGreaterThanOrEqualTo(_ value: CGFloat) -> NSLayoutConstraint {
+    let constraint = view.widthAnchor.constraint(greaterThanOrEqualToConstant: value)
+    constraint.isActive = true
+    return constraint
+  }
+
   @discardableResult public func height(_ value: CGFloat) -> NSLayoutConstraint {
     let constraint = view.heightAnchor.constraint(equalToConstant: value)
+    constraint.isActive = true
+    return constraint
+  }
+
+  @discardableResult public func heightLessThanOrEqualTo(_ value: CGFloat) -> NSLayoutConstraint {
+    let constraint = view.heightAnchor.constraint(lessThanOrEqualToConstant: value)
+    constraint.isActive = true
+    return constraint
+  }
+
+  @discardableResult public func heightGreaterThanOrEqualTo(_ value: CGFloat) -> NSLayoutConstraint {
+    let constraint = view.heightAnchor.constraint(greaterThanOrEqualToConstant: value)
     constraint.isActive = true
     return constraint
   }
