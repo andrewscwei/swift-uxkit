@@ -13,10 +13,6 @@ extension StateType {
   /// configuration, etc, i.e. a dropdown expanding/collapsing its menu.
   public static let mode = StateType.factory()
 
-  /// Use this type when the content of a view has changed, i.e. texts, image,
-  /// etc.
-  public static let content = StateType.factory()
-
   /// Use this type for style changes, i.e. colors, backgrounds, fonts, etc.
   public static let style = StateType.factory()
 }
