@@ -271,7 +271,7 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
       }
     }
 
-    if check.isDirty(.selection) {
+    if check.isDirty(\DataCollectionViewController.selectedDataset, \DataCollectionViewController.selectedData, \DataCollectionViewController.selectedDatum) {
       if let indexPaths = collectionView.indexPathsForSelectedItems {
         for indexPath in indexPaths {
           guard let cell = collectionView.cellForItem(at: indexPath), let datum = datum(at: indexPath) else { continue }
@@ -546,6 +546,8 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
     }
   }
 
+  /// Invalidates current visible cells, subsequently reinitializes (but not
+  /// recreating) them.
   public func invalidateVislbleCells() {
     for cell in collectionView.visibleCells {
       guard let indexPath = collectionView.indexPath(for: cell) else { continue }
@@ -1040,7 +1042,7 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
 
   /// Handler invoked when cell selection changes.
   private func selectionDidChange() {
-    stateMachine.invalidate(.selection)
+    stateMachine.invalidate(\DataCollectionViewController.selectedDataset, \DataCollectionViewController.selectedData, \DataCollectionViewController.selectedDatum)
     delegate?.dataCollectionViewControllerSelectionDidChange(self)
   }
 
@@ -1321,10 +1323,10 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
   // MARK: - Scrolling
 
   /// Specifies if scrolling is enabled (relative to the orientation).
-  @Stateful(.behavior) public var isScrollEnabled: Bool = true
+  @Stateful public var isScrollEnabled: Bool = true
 
   /// Specifies if scroll indicators are visible (relative to the orientation).
-  @Stateful(.behavior) public var showsScrollIndicator: Bool = true
+  @Stateful public var showsScrollIndicator: Bool = true
 
   /// Scrolls to the beginning of the collection.
   ///
