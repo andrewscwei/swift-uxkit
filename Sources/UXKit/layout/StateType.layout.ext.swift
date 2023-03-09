@@ -34,12 +34,6 @@ extension StateType {
   /// collection item focus, etc.
   public static let focus = StateType.factory()
 
-  /// Use this type when the data provided to a view has changed. This may
-  /// overlap a bit with `content`, but remember that `content` only applies to
-  /// things that are presented in the UI, whereas `data` can apply to
-  /// data-related changes that are not visible in the UI.
-  public static let data = StateType.factory()
-
   /// Use this type for style changes, i.e. colors, backgrounds, fonts, etc.
   public static let style = StateType.factory()
 
