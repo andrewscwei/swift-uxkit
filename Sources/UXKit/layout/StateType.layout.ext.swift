@@ -27,20 +27,6 @@ extension StateType {
   /// `UICollectionView`, etc.
   public static let selection = StateType.factory()
 
-  /// Use this type for position changes in the UI, i.e. scroll position.
-  public static let position = StateType.factory()
-
-  /// Use this type when the focus has changed, i.e. text field focus,
-  /// collection item focus, etc.
-  public static let focus = StateType.factory()
-
   /// Use this type for style changes, i.e. colors, backgrounds, fonts, etc.
   public static let style = StateType.factory()
-
-  /// Use this type for changes in application-wide
-  /// configuration/settings/preferences.
-  public static let config = StateType.factory()
-
-  /// Use this type to notify frame advances, i.e. when using `DisplayLink`.
-  public static let frame = StateType.factory()
 }
