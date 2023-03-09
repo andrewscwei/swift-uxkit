@@ -1,6 +1,5 @@
 // © GHOZT
 
-import BaseKit
 import UIKit
 
 public class VSyncMachine {

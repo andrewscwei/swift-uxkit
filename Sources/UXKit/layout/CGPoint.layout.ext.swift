@@ -1,6 +1,5 @@
 // © GHOZT
 
-import CoreGraphics
 import Foundation
 
 extension CGPoint {

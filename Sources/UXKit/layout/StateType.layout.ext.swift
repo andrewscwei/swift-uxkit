@@ -1,7 +1,6 @@
 // © GHOZT
 
 import BaseKit
-import Foundation
 
 /// `StateType` extension for defining common UI state types.
 extension StateType {
