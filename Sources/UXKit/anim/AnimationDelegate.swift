@@ -42,7 +42,6 @@ import UIKit
 /// - SeeAlso:
 ///   https://www.calayer.com/core-animation/2016/05/17/catransaction-in-depth.html
 public class AnimationDelegate: NSObject, CAAnimationDelegate {
-
   /// Specifies if debug logging is enabled.
   public let debugMode: Bool = false
 

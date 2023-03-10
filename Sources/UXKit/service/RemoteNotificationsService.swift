@@ -6,7 +6,6 @@ import UserNotifications
 
 /// Service for handling operations related remote notifications.
 public class RemoteNotificationsService: Observable {
-
   public typealias Observer = RemoteNotificationsServiceObserver
 
   private let remoteDataSource: RemoteNotificationsServiceRemoteDataSource

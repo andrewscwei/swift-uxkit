@@ -25,7 +25,6 @@ public func -(left: UIEdgeInsets, right: UIEdgeInsets) -> UIEdgeInsets {
 }
 
 extension UIEdgeInsets {
-
   /// Initializes a `UIEdgeInsets` value with all edge inset values equal to the
   /// specified constant.
   ///

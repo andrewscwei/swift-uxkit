@@ -16,7 +16,6 @@
 /// }
 /// ```
 public struct StateType: OptionSet {
-
   public let rawValue: Int
 
   /// Static counter for `factory()` method.

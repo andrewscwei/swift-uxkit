@@ -5,7 +5,6 @@ import UIKit
 /// A type conforming to `Measurable` has a statically computable `CGSize` based
 /// on some arbitrary attributes.
 public protocol Measurable: AnyMeasurable  {
-
   /// Attributes used to compute the size of the conforming object.
   associatedtype SizeAttributes
 
@@ -20,7 +19,6 @@ public protocol Measurable: AnyMeasurable  {
 }
 
 extension Measurable {
-
   public func sizeThatFits() -> CGSize {
     return Self.sizeThatFits(with: nil)
   }

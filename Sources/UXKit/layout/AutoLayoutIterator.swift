@@ -4,7 +4,6 @@ import UIKit
 
 /// An object that iteratively applies auto layout rules to a `UIView` instance.
 public class AutoLayoutIterator {
-
   let view: UIView
 
   init(_ view: UIView) {

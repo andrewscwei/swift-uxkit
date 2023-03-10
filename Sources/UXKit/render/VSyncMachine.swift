@@ -3,7 +3,6 @@
 import UIKit
 
 public class VSyncMachine {
-
   private weak var delegate: VSyncMachineDelegate?
 
   /// Local `CADisplayLink` instance.

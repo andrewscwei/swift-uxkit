@@ -4,7 +4,6 @@ import UIKit
 
 /// Delegate protocol for handling `DataCollectionViewController` events.
 public protocol DataCollectionViewControllerDelegate: AnyObject {
-
   /// Method invoked before data is reloaded.
   ///
   /// - Parameters:
@@ -68,20 +67,12 @@ public protocol DataCollectionViewControllerDelegate: AnyObject {
 }
 
 extension DataCollectionViewControllerDelegate {
-
   public func dataCollectionViewControllerWillReloadData(_ collectionViewController: UICollectionViewController) {}
-
   public func dataCollectionViewControllerDidReloadData(_ collectionViewController: UICollectionViewController) {}
-
   public func dataCollectionViewControllerDataStateDidChange(_ collectionViewController: UICollectionViewController) {}
-
   public func dataCollectionViewControllerSelectionDidChange(_ collectionViewController: UICollectionViewController) {}
-
   public func dataCollectionViewController(_ collectionViewController: UICollectionViewController, didTapOnCellAt indexPath: IndexPath) {}
-
   public func dataCollectionViewControllerDidScroll(_ collectionViewController: UICollectionViewController) {}
-
   public func dataCollectionViewControllerWillApplyDefaultSelection(_ collectionViewController: UICollectionViewController) -> Any? { nil }
-
   public func dataCollectionViewControllerDidApplyDefaultSelection(_ collectionViewController: UICollectionViewController) {}
 }

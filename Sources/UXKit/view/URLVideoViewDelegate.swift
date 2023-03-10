@@ -4,7 +4,6 @@ import AVFoundation
 import UIKit
 
 public protocol URLVideoViewDelegate: AnyObject {
-
   /// Handler invoked when the video is ready to be played.
   ///
   /// - Parameters:
@@ -36,12 +35,8 @@ public protocol URLVideoViewDelegate: AnyObject {
 }
 
 extension URLVideoViewDelegate {
-
   public func videoViewDidBecomeReadyToPlay(_ videoView: URLVideoView) {}
-
   public func videoViewDidFinishPlaying(_ videoView: URLVideoView) {}
-
   public func videoView(_ videoView: URLVideoView, didChangePlayStatus status: AVPlayer.TimeControlStatus) {}
-
   public func videoViewDidClear(_ videoView: URLVideoView) {}
 }

@@ -3,7 +3,6 @@
 import Foundation
 
 extension CGPoint {
-
   /// Returns the point at the center of a list of points.
   ///
   /// - Parameters:

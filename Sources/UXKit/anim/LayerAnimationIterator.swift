@@ -4,7 +4,6 @@ import UIKit
 
 /// Iterator of `CALayer` animations.
 public class LayerAnimationIterator {
-
   let delegate: AnimationDelegate
   let layer: CALayer
 

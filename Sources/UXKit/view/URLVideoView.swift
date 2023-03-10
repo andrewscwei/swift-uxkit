@@ -6,7 +6,6 @@ import UIKit
 
 /// Custom `UIView` that displays a video.
 public class URLVideoView: UIView, StateMachineDelegate {
-
   lazy public var stateMachine = StateMachine(self)
 
   weak public var delegate: URLVideoViewDelegate?

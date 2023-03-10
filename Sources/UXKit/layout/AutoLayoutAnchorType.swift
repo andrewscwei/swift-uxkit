@@ -3,7 +3,6 @@
 /// An option set describing how a `UIView` should be anchored auto layout rules
 /// are applied by `AutoLayoutDelegate`.
 public struct AutoLayoutAnchorType: OptionSet {
-
   public let rawValue: Int
 
   public static let top = AutoLayoutAnchorType(rawValue: 1 << 0)

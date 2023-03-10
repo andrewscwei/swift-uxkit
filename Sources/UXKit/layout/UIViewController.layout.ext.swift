@@ -6,7 +6,6 @@ import UIKit
 private var ptr_autoLayoutDelegate: UInt8 = 0
 
 extension UIViewController {
-
   /// Indicates if the view has appeared.
   public var hasViewAppeared: Bool {
     guard isViewLoaded, viewIfLoaded?.window != nil else { return false }

@@ -4,7 +4,6 @@ extension DataCollectionViewController {
 
   /// Specifies how cells are selected in the `DataCollectionViewController`.
   public enum SelectionMode {
-
     /// No selection allowed.
     case none
 

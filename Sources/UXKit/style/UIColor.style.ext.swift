@@ -3,7 +3,6 @@
 import UIKit
 
 extension UIColor {
-
   /// Initializes and creates a color object using the specified opacity and hex
   /// number value.
   ///

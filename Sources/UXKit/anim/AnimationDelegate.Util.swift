@@ -4,7 +4,6 @@ import BaseKit
 import UIKit
 
 extension AnimationDelegate {
-
   /// Converts an animation instance to a unique hash value.
   ///
   /// - Parameters:

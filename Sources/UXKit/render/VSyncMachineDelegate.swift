@@ -7,7 +7,6 @@ import UIKit
 /// `start` on the `VSyncMachine` instance. The object must also invoke `stop`
 /// on the `VSyncMachine` for optimal memory management.
 public protocol VSyncMachineDelegate: AnyObject {
-
   /// The internal `VSyncMachine` instance.
   var vsyncMachine: VSyncMachine { get }
 

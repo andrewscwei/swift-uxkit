@@ -2,7 +2,6 @@ import XCTest
 @testable import UXKit
 
 class StateMachineTests: XCTestCase {
-
   func testStateTypes() {
     let foo = StateType.factory()
     let bar = StateType.factory()

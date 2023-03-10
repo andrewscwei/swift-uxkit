@@ -8,7 +8,6 @@ import UIKit
 /// hit-testing detected) must be registered via `registerUnclippedSubview(_:)`.
 /// `UnclippedView`'s can be nested.
 open class UnclippedView: UIView {
-
   private var unclippedSubviews: [WeakReference<UIView>] = []
 
   public convenience init() {

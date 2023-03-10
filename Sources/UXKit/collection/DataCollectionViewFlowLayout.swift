@@ -6,7 +6,6 @@ import UIKit
 /// that supports section and cell separators and layout orientation (restricted
 /// to a linear direction, no grid layout).
 public class DataCollectionViewFlowLayout: UICollectionViewFlowLayout {
-
   /// The orientation of the collection view in the
   /// `DataCollectionViewController`.
   public var orientation: UICollectionView.ScrollDirection = .horizontal { didSet { invalidateLayout() } }
@@ -93,7 +92,6 @@ public class DataCollectionViewFlowLayout: UICollectionViewFlowLayout {
 
 /// Attributes of each decoration view in `DataCollectionViewFlowLayout`.
 private class DataCollectionViewLayoutAttributes: UICollectionViewLayoutAttributes {
-
   /// The color of the separators.
   var separatorColor: UIColor = .clear
 }

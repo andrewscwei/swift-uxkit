@@ -15,7 +15,6 @@ private var ptr_keyboardRect: UInt8 = 0
 /// `endObservingKeyboardEvents()` (i.e. in `viewDidDisappear(_:)`) to subscribe
 /// to and unsubscribe from the keyboard events, respectively.
 public protocol KeyboardObserver: UIViewController {
-
   /// Handler invoked when the virtual keyboard appears. At this point, calling
   /// `getKeyboardRect(relativeTo:)` will yield the rect of the keyboard in its
   /// fully visible state.
@@ -32,7 +31,6 @@ public protocol KeyboardObserver: UIViewController {
 }
 
 extension KeyboardObserver {
-
   private var keyboardWillShowObserver: NSObjectProtocol? {
     get { return getAssociatedValue(for: self, key: &ptr_keyboardWillShowObserver) }
     set { setAssociatedValue(for: self, key: &ptr_keyboardWillShowObserver, value: newValue) }

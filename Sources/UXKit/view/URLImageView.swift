@@ -5,7 +5,6 @@ import UIKit
 
 /// A custom `UIImageView` that is capable of loading images from a `URL`.
 public class URLImageView: UIImageView {
-
   public weak var delegate: URLImageViewDelegate?
 
   /// A weak reference to the aspect ratio constraint of this view. This is

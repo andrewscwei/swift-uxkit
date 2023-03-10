@@ -49,7 +49,6 @@ import Foundation
 /// satisfied.
 @propertyWrapper
 public struct Stateful<T> {
-
   public typealias WillSet = (T, T) -> Bool
   public typealias DidSet = (T, T) -> Void
 

@@ -3,7 +3,6 @@
 import UIKit
 
 extension NSAttributedString {
-
   /// Height of the attributed string given a width constraint (max width).
   ///
   /// - Parameters:

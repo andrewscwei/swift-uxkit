@@ -15,7 +15,6 @@
 /// before it can begin monitoring state changes. Likewise, the delegate must
 /// invoke `stop()` to pause or stop the `StateMachine`.
 public class StateMachine {
-
   private weak var delegate: StateMachineDelegate?
 
   /// Indicates whether this `StateMachine` is running.

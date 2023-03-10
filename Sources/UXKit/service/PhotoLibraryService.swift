@@ -5,7 +5,6 @@ import Photos
 import UIKit
 
 public class PhotoLibraryService: Observable {
-
   public typealias Observer = PhotoLibraryServiceObserver
 
   public init() {}

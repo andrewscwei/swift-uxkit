@@ -3,7 +3,6 @@
 import UIKit
 
 public protocol URLImageViewDelegate: AnyObject {
-
   /// Handler invoked when the image finishes loading.
   ///
   /// - Parameters:
@@ -29,10 +28,7 @@ public protocol URLImageViewDelegate: AnyObject {
 }
 
 extension URLImageViewDelegate {
-
   public func imageView(_ imageView: URLImageView, didFinishingLoadingImage image: UIImage) {}
-
   public func imageView(_ imageView: URLImageView, didFailToLoadImageWithError error: Error) {}
-
   public func imageViewDidClear(_ imageView: URLImageView) {}
 }

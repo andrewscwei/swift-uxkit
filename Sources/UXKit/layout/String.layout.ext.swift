@@ -3,7 +3,6 @@
 import UIKit
 
 extension String {
-
   /// Height of the attributed string given a font and width constraint (max
   /// width).
   ///

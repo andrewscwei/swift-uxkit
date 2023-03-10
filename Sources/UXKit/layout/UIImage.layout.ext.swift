@@ -3,7 +3,6 @@
 import UIKit
 
 extension UIImage {
-
   /// Sets the shorter edge of this image to the specified length and resizes
   /// the longer edge while maintaining the original aspect ratio.
   ///

@@ -6,7 +6,6 @@ import Foundation
 /// `StateMachine` and handles its state update cycles. An object cannot be a
 /// delegate of more than one `StateMachine`.
 public protocol StateMachineDelegate: AnyObject {
-
   /// The `StateMachine`.
   var stateMachine: StateMachine { get }
 

@@ -4,7 +4,6 @@ import UIKit
 
 /// A collection of animation timing functions.
 public enum TimingModifier {
-
   /// Applies basic ease-in-ease-out modifier on a linear progress decimal `t`.
   ///
   /// - Parameters:

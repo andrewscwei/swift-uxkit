@@ -4,7 +4,6 @@ import UIKit
 
 /// Delegate object for defining and applying auto layout rules to `UIView` and `UIViewController`.
 class AutoLayoutDelegate {
-
   /// Applies auto layout rules to a `UIViewController`'s backing `UIView` using an
   /// `AutoLayoutIterator`.
   ///

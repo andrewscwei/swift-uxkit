@@ -5,7 +5,6 @@ import Foundation
 /// A helper object that checks if any of the states or state types managed by a
 /// `StateMachine` is dirty.
 public struct StateValidator {
-
   private let dirtyStateKeyPaths: Set<AnyKeyPath>?
   private let dirtyStateTypes: StateType
 

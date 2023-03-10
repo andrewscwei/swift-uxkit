@@ -4,7 +4,6 @@ import BaseKit
 import Foundation
 
 extension NSNumber {
-
   /// Returns the abbreviated string of an integer (i.e. "1K", "1M", etc.).
   ///
   /// In order for the correct string to be displayed, the app must define the

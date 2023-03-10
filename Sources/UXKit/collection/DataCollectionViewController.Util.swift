@@ -3,7 +3,6 @@
 import Foundation
 
 extension DataCollectionViewController {
-
   /// Gets the first cell index of a datum at a given section.
   ///
   /// - Parameters:
