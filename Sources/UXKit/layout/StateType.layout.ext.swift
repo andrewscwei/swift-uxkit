@@ -9,10 +9,6 @@ extension StateType {
   /// or its subviews' frame, bounds, constraints, etc.
   public static let layout = StateType.factory()
 
-  /// Use this type when a component is operating in a different mode, state,
-  /// configuration, etc, i.e. a dropdown expanding/collapsing its menu.
-  public static let mode = StateType.factory()
-
   /// Use this type for style changes, i.e. colors, backgrounds, fonts, etc.
   public static let style = StateType.factory()
 }
