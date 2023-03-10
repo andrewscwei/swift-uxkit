@@ -92,7 +92,7 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
   // MARK: - Updating
 
   open func update(check: StateValidator) {
-    if check.isDirty(.layout) {
+    if check.isDirty(\DataCollectionViewController.orientation, \DataCollectionViewController.cellAlignment, \DataCollectionViewController.separatorStyle, \DataCollectionViewController.contentInsets, \DataCollectionViewController.sectionSeparatorWidth, \DataCollectionViewController.cellSeparatorWidth, \DataCollectionViewController.frontSpinner, \DataCollectionViewController.endSpinner) {
       collectionView.contentInset = contentInsets
 
       flowLayout.orientation = orientation
@@ -1138,22 +1138,22 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
   // MARK: - Layout Management
 
   /// Orientation of the collection view.
-  @Stateful(.layout) public var orientation: UICollectionView.ScrollDirection = .horizontal
+  @Stateful public var orientation: UICollectionView.ScrollDirection = .horizontal
 
   /// Alignment of cells in the collection view.
-  @Stateful(.layout) public var cellAlignment: CellAlignment = .start
+  @Stateful public var cellAlignment: CellAlignment = .start
 
   /// Style of the separators.
-  @Stateful(.layout) public var separatorStyle: SeparatorStyle = .none
+  @Stateful public var separatorStyle: SeparatorStyle = .none
 
   /// The content insets of the collection view.
-  @Stateful(.layout) public var contentInsets: UIEdgeInsets = .zero
+  @Stateful public var contentInsets: UIEdgeInsets = .zero
 
   /// Width of the section separators.
-  @Stateful(.layout) open var sectionSeparatorWidth: CGFloat = 1.0
+  @Stateful open var sectionSeparatorWidth: CGFloat = 1.0
 
   /// Width of the cell separators.
-  @Stateful(.layout) open var cellSeparatorWidth: CGFloat = 1.0
+  @Stateful open var cellSeparatorWidth: CGFloat = 1.0
 
   /// Color of the section separators, `nil` translates to a transparent color.
   @Stateful public var sectionSeparatorColor: UIColor? = nil
@@ -1405,7 +1405,7 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
         newSpinner.layer.mask = mask
         frontSpinnerMask = mask
 
-        stateMachine.invalidate(.layout)
+        stateMachine.invalidate(\DataCollectionViewController.frontSpinner)
       }
     }
   }
@@ -1441,7 +1441,7 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
 
         endSpinnerMask = mask
 
-        stateMachine.invalidate(.layout)
+        stateMachine.invalidate(\DataCollectionViewController.endSpinner)
       }
     }
   }
