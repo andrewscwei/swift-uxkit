@@ -565,7 +565,7 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
   open func willPullToReload(in dataState: DataState) -> Bool { false }
 
   /// Handler invoked when data is reloaded.
-  open func dataDidReload() {
+  private func dataDidReload() {
     delegate?.dataCollectionViewControllerDidReloadData(self)
   }
 
