@@ -10,4 +10,3 @@ public protocol BackgroundService: AnyObject {
   /// `UIApplication.shared.beginBackgroundTask`.
   var backgroundTaskIdentifier: UIBackgroundTaskIdentifier { get set }
 }
-
