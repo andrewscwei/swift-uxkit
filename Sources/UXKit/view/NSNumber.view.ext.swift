@@ -1,18 +1,12 @@
 // © GHOZT
 
-import BaseKit
 import Foundation
 
 extension NSNumber {
   /// Returns the abbreviated string of an integer (i.e. "1K", "1M", etc.).
   ///
-  /// In order for the correct string to be displayed, the app must define the
-  /// following strings in `Localizable.strings`:
-  ///   1. `LTXT_NUMBER_SUFFIX_THOUSANDS`: Suffix for thousands (i.e. "K").
-  ///   2. `LTXT_NUMBER_SUFFIX_MILLIONS`: Suffix for millions (i.e. "M").
-  ///   3. `LTXT_NUMBER_SUFFIX_BILLIONS`: Suffix for billions (i.e. "B").
-  ///   4. `LTXT_NUMBER_SUFFIX_TRILLIONS`: Suffix for trillions (i.e. "T").
-  ///   5. `LTXT_NUMBER_SUFFIX_QUADRILLION`: Suffix for quadrillions (i.e. "Q").
+  /// To localize the returned string, the app can create an extension of
+  /// `AbbreviatedNumberSuffix` and conform to the `Localized` protocol.
   ///
   /// - Parameters:
   ///   - int: The integer.
@@ -21,15 +15,15 @@ extension NSNumber {
   public class func abbreviatedNumber(from int: Int) -> String {
     let formatter = NumberFormatter()
 
-    typealias Abbreviation = (threshold: Double, divisor: Double, suffix: String)
+    typealias Abbreviation = (threshold: Double, divisor: Double, suffix: AbbreviatedNumberSuffix)
 
     let abbreviations: [Abbreviation] = [
-      (0, 1, ""),
-      (1000.0, 1000.0, ltxt("LTXT_NUMBER_SUFFIX_THOUSANDS", default: "K")),
-      (100_000.0, 1_000_000.0, ltxt("LTXT_NUMBER_SUFFIX_MILLIONS", default: "M")),
-      (100_000_000.0, 1_000_000_000.0, ltxt("LTXT_NUMBER_SUFFIX_BILLIONS", default: "B")),
-      (100_000_000_000.0, 1_000_000_000_000.0, ltxt("LTXT_NUMBER_SUFFIX_TRILLIONS", default: "T")),
-      (100_000_000_000_000.0, 1_000_000_000_000_000.0, ltxt("LTXT_NUMBER_SUFFIX_QUADRILLION", default: "Q")),
+      (0, 1, .underOneThousand),
+      (1000.0, 1000.0, .thousands),
+      (100_000.0, 1_000_000.0, .millions),
+      (100_000_000.0, 1_000_000_000.0, .billions),
+      (100_000_000_000.0, 1_000_000_000_000.0, .trillions),
+      (100_000_000_000_000.0, 1_000_000_000_000_000.0, .quadrillions),
     ]
 
     let startValue = Double(abs(int))
@@ -45,8 +39,8 @@ extension NSNumber {
     }()
 
     let value = Double(int) / abbreviation.divisor
-    formatter.positiveSuffix = abbreviation.suffix
-    formatter.negativeSuffix = abbreviation.suffix
+    formatter.positiveSuffix = (abbreviation.suffix as? Localized)?.localizedDescription ?? abbreviation.suffix.description
+    formatter.negativeSuffix = (abbreviation.suffix as? Localized)?.localizedDescription ?? abbreviation.suffix.description
     formatter.allowsFloats = true
     formatter.minimumIntegerDigits = 1
     formatter.minimumFractionDigits = 0
