@@ -8,10 +8,16 @@ import UserNotifications
 public class RemoteNotificationsService: Observable {
   public typealias Observer = RemoteNotificationsServiceObserver
 
-  private let remoteDataSource: RemoteNotificationsServiceRemoteDataSource
-
   /// The current push token of the device.
-  public private(set) var pushToken: String?
+  public private(set) var pushToken: String? = nil {
+    didSet {
+      guard pushToken != oldValue else { return }
+
+      notifyObservers {
+        $0.remoteNotificationsService(self, pushTokenDidChange: pushToken)
+      }
+    }
+  }
 
   /// The current authorization status.
   public private(set) var authorizationStatus: AuthorizationStatus = .notDetermined {
@@ -24,9 +30,7 @@ public class RemoteNotificationsService: Observable {
     }
   }
 
-  public init(remoteDataSource: RemoteNotificationsServiceRemoteDataSource) {
-    self.remoteDataSource = remoteDataSource
-
+  public init() {
     NotificationCenter.default.addObserver(self, selector: #selector(applicationDidBecomeActive), name: UIApplication.didBecomeActiveNotification, object: nil)
   }
 
@@ -123,15 +127,6 @@ public class RemoteNotificationsService: Observable {
     log { "Invalidating push token... OK: \(tokenString)" }
 
     pushToken = tokenString
-
-    remoteDataSource.write(tokenString) { result in
-      switch result {
-      case .failure(let error):
-        log(.error) { "Syncing push token... ERR: \(error)" }
-      case .success:
-        log { "Syncing push token... OK: \(tokenString)" }
-      }
-    }
   }
 
   /// Handler invoked by the app delegate when the app fails to register for
@@ -143,14 +138,5 @@ public class RemoteNotificationsService: Observable {
     log(.error) { "Invalidating push token... ERR: \(error)" }
 
     pushToken = nil
-
-    remoteDataSource.delete { result in
-      switch result {
-      case .failure(let error):
-        log(.error) { "Unsyncing push token... ERR: \(error)" }
-      case .success:
-        log { "Unsyncing push token... OK" }
-      }
-    }
   }
 }
