@@ -2,7 +2,7 @@
 
 import UIKit
 
-class CollectionViewItemSelectionController<S: Hashable, I: Hashable>: NSObject, UICollectionViewDelegate, StateMachineDelegate {
+class CollectionViewItemSelectionDelegate<S: Hashable, I: Hashable>: StateMachineDelegate {
   /// Internal `StateMachine` instance.
   lazy var stateMachine = StateMachine(self)
 
@@ -10,7 +10,10 @@ class CollectionViewItemSelectionController<S: Hashable, I: Hashable>: NSObject,
   private let collectionView: UICollectionView
 
   /// Internal `UICollectionViewDiffableDataSource` instance.
-  private let collectionViewDataSource: UICollectionViewDiffableDataSource<S, I>
+  private var collectionViewDataSource: UICollectionViewDiffableDataSource<S, I> {
+    guard let dataSource = collectionView.dataSource as? UICollectionViewDiffableDataSource<S, I> else { fatalError("CollectionViewItemSelectionDelegate only works with UICollectionViewDiffableDataSource") }
+    return dataSource
+  }
 
   /// Handler invoked when selected items have changed.
   private let selectionDidChangeHandler: (() -> Void)
@@ -33,20 +36,15 @@ class CollectionViewItemSelectionController<S: Hashable, I: Hashable>: NSObject,
 
   init(
     collectionView: UICollectionView,
-    collectionViewDataSource: UICollectionViewDiffableDataSource<S, I>,
     selectionDidChangeHandler: @escaping () -> Void = {},
     shouldSelectItemHandler: @escaping (I, S) -> Bool = { _, _ in true },
     shouldDeselectItemHandler: @escaping (I, S) -> Bool = { _, _ in true }
   ) {
     self.collectionView = collectionView
-    self.collectionViewDataSource = collectionViewDataSource
     self.selectionDidChangeHandler = selectionDidChangeHandler
     self.shouldSelectItemHandler = shouldSelectItemHandler
     self.shouldDeselectItemHandler = shouldDeselectItemHandler
 
-    super.init()
-
-    collectionView.delegate = self
     stateMachine.start()
   }
 
@@ -239,8 +237,7 @@ class CollectionViewItemSelectionController<S: Hashable, I: Hashable>: NSObject,
     return deselectedItems
   }
 
-  /// Indicates if an item should be selected, used in tandem with delegate
-  /// method `collectionViewItemSelectionController(_:shouldSelectItem:in:)`.
+  /// Indicates if an item should be selected.
   ///
   /// - Parameters:
   ///   - item: Item.
@@ -256,6 +253,17 @@ class CollectionViewItemSelectionController<S: Hashable, I: Hashable>: NSObject,
     case .none:
       return false && flag
     }
+  }
+
+  /// Indicates if an item at the specified index path should be selected.
+  ///
+  /// - Parameter indexPath: Index path.
+  ///
+  /// - Returns: `true` indicates item should be selected, `false` otherwise.
+  func shouldSelctItem(at indexPath: IndexPath) -> Bool {
+    guard let item = mapIndexPathToItem(indexPath), let section = collectionViewDataSource.snapshot().sectionIdentifier(containingItem: item) else { return false }
+
+    return shouldSelectItem(item, in: section)
   }
 
   /// Indicates if an item should be deselected, used in tandem with delegate
@@ -277,6 +285,17 @@ class CollectionViewItemSelectionController<S: Hashable, I: Hashable>: NSObject,
     case .none:
       return false && flag
     }
+  }
+
+  /// Indicates if an item at the specified index path should be deselected.
+  ///
+  /// - Parameter indexPath: Index path.
+  ///
+  /// - Returns: `true` indicates item should be deselected, `false` otherwise.
+  func shouldDeselectItem(at indexPath: IndexPath) -> Bool {
+    guard let item = mapIndexPathToItem(indexPath), let section = collectionViewDataSource.snapshot().sectionIdentifier(containingItem: item) else { return false }
+
+    return shouldDeselectItem(item, in: section)
   }
 
   /// Invalidates the selected items, ensuring that it is in sync with
@@ -306,58 +325,8 @@ class CollectionViewItemSelectionController<S: Hashable, I: Hashable>: NSObject,
     indexPathsToDeselect.forEach { collectionView.deselectItem(at: $0, animated: isAnimated) }
   }
 
-  /// Handler invoked before the collection view selects a cell **by user
-  /// input**.
-  ///
-  /// - Parameters:
-  ///   - collectionView: The `UICollectionView`.
-  ///   - indexPath: The index path of the cell to be selected.
-  ///
-  /// - Returns: `true` if the cell should be selected, `false` otherwise.
-  func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
-    guard let item = mapIndexPathToItem(indexPath), let section = collectionViewDataSource.snapshot().sectionIdentifier(containingItem: item) else { return false }
-    return shouldSelectItem(item, in: section)
-  }
-
-  /// Handler invoked before the collection view deselects a cell **by user
-  /// input**.
-  ///
-  /// - Parameters:
-  ///   - collectionView: The `UICollectionView`.
-  ///   - indexPath: The index path of the cell to be selected.
-  ///
-  /// - Returns: `true` if the cell should be deselected, `false` otherwise.
-  func collectionView(_ collectionView: UICollectionView, shouldDeselectItemAt indexPath: IndexPath) -> Bool {
-    guard let item = mapIndexPathToItem(indexPath), let section = collectionViewDataSource.snapshot().sectionIdentifier(containingItem: item) else { return false }
-    return shouldDeselectItem(item, in: section)
-  }
-
-  /// Handler invoked when the collection view selects a cell **by user input**.
-  ///
-  /// - Parameters:
-  ///   - collectionView: The `UICollectionView`.
-  ///   - indexPath: The index path of the selected cell.
-  func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-    guard let item = mapIndexPathToItem(indexPath) else { return }
-    addSelectedItem(item) { $0.isEqual(to: $1) }
-  }
-
-  /// Handler invoked when the collection view deselects a cell **by user
-  /// input**.
-  ///
-  /// This `UICollectionViewDelegate` method is only invoked when the collection
-  /// view allows multiple selections.
-  ///
-  /// - Parameters:
-  ///   - collectionView: The `UICollectionView`.
-  ///   - indexPath: The index path of the deselected cell.
-  func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-    guard let item = mapIndexPathToItem(indexPath) else { return }
-    removeSelectedItem(item) { $0.isEqual(to: $1) }
-  }
-
   func update(check: StateValidator) {
-    if check.isDirty(\CollectionViewItemSelectionController.selectionMode) {
+    if check.isDirty(\CollectionViewItemSelectionDelegate.selectionMode) {
       switch selectionMode {
       case .multiple:
         collectionView.allowsMultipleSelection = true
@@ -376,11 +345,11 @@ class CollectionViewItemSelectionController<S: Hashable, I: Hashable>: NSObject,
       }
     }
 
-    if check.isDirty(\CollectionViewItemSelectionController.dataSet) {
+    if check.isDirty(\CollectionViewItemSelectionDelegate.dataSet) {
       invalidateSelectedItems { $0.isEqual(to: $1) }
     }
 
-    if check.isDirty(\CollectionViewItemSelectionController.dataSet, \CollectionViewItemSelectionController.selectedItems) {
+    if check.isDirty(\CollectionViewItemSelectionDelegate.dataSet, \CollectionViewItemSelectionDelegate.selectedItems) {
       invalidateSelectedIndexPaths()
     }
   }
