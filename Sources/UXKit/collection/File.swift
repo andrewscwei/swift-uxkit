@@ -7,27 +7,6 @@
 //
 //  // MARK: - Life Cycle
 //
-//  required public init?(coder aDecoder: NSCoder) {
-//    self.lockQueue = DispatchQueue(label: "sh.ghozt.uxkit.Foo.\(Self.self).lock-queue", qos: .utility)
-//    self.fetchQueue = DispatchQueue(label: "sh.ghozt.uxkit.Foo.\(Self.self).fetch-queue", qos: .utility, attributes: .concurrent)
-//    super.init(coder: aDecoder)
-//    initSubviews()
-//  }
-//
-//  public init() {
-//    self.lockQueue = DispatchQueue(label: "sh.ghozt.uxkit.Foo.\(Self.self)", qos: .utility)
-//    self.fetchQueue = DispatchQueue(label: "sh.ghozt.uxkit.Foo.\(Self.self).fetch-queue", qos: .utility, attributes: .concurrent)
-//    super.init(collectionViewLayout: flowLayout)
-//  }
-//
-//  override init(collectionViewLayout layout: UICollectionViewLayout) {
-//    fatalError("<\(Self.self)> Restricted use of this initializer because Foo uses a custom UICollectionViewLayout")
-//  }
-//
-//  func initSubviews() {
-//    collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
-//  }
-//
 //  open override func viewDidLoad() {
 //    super.viewDidLoad()
 //
@@ -119,21 +98,6 @@
 //      }
 //    }
 //
-//    if check.isDirty(\Foo.isScrollEnabled) {
-//      collectionView.isScrollEnabled = isScrollEnabled
-//    }
-//
-//    if check.isDirty(\Foo.showsScrollIndicator) {
-//      switch orientation {
-//      case .vertical:
-//        collectionView.showsVerticalScrollIndicator = showsScrollIndicator
-//        collectionView.showsHorizontalScrollIndicator = false
-//      default:
-//        collectionView.showsVerticalScrollIndicator = false
-//        collectionView.showsHorizontalScrollIndicator = showsScrollIndicator
-//      }
-//    }
-//
 //    if check.isDirty(\Foo.dataState) {
 //      switch dataState {
 //      case .loading(let prevDataState):
@@ -215,34 +179,6 @@
 //
 //            self.placeholderView = placeholderView
 //          }
-//        }
-//      }
-//    }
-//
-//    if check.isDirty(\Foo.selectionMode) {
-//      switch selectionMode {
-//      case .multiple:
-//        collectionView.allowsMultipleSelection = true
-//        collectionView.allowsSelection = true
-//      case .single:
-//        // This is enabled for a reason. The native `UICollectionView` behaves
-//        // weirdly, such that if `allowsMultipleSelection` is `false`, and a
-//        // cell has `collectionView:shouldSelectItemAt:` returning `false`, the
-//        // previously selected cell still gets deselected. Hence this custom
-//        // controller manually handles single selection restrictions.
-//        collectionView.allowsMultipleSelection = true
-//        collectionView.allowsSelection = true
-//      default:
-//        collectionView.allowsMultipleSelection = false
-//        collectionView.allowsSelection = true
-//      }
-//    }
-//
-//    if check.isDirty(\Foo.selectedDataset, \Foo.selectedData, \Foo.selectedDatum) {
-//      if let indexPaths = collectionView.indexPathsForSelectedItems {
-//        for indexPath in indexPaths {
-//          guard let cell = collectionView.cellForItem(at: indexPath), let datum = datum(at: indexPath) else { continue }
-//          cell.isSelected = isDatumSelected(datum)
 //        }
 //      }
 //    }
@@ -337,99 +273,6 @@
 //    }
 //  }
 //
-//  /// Fetches data from data sources for the specified section. Override this
-//  /// method to define how data should be fetched from data sources.
-//  ///
-//  /// - Parameters:
-//  ///   - section: The section to fetch data for.
-//  ///   - queue: The queue to fetch data in.
-//  ///   - completion: Handler invoked upon completion with a `Result` of either
-//  ///                 a `.success` value value of the fetched data or a
-//  ///                 `.failure` with the error.
-//  open func fetchData(for section: Int, queue: DispatchQueue, completion: @escaping (Result<[T], Error>) -> Void) {
-//    completion(.success(getDataset()[section] ?? []))
-//  }
-//
-//  /// Fetches data for all sections.
-//  ///
-//  /// - Parameters:
-//  ///   - completion: Handler invoked upon completion with a `Result` as either
-//  ///                 a `.success` with the fetched dataset or a `.failure` with
-//  ///                 the first encountered error.
-//  private func fetchData(completion: @escaping (Result<[Int: [T]], Error>) -> Void) {
-//    let group = DispatchGroup()
-//
-//    var firstEncounteredError: Error? = nil
-//    var newDataset: [Int: [T]] = [:]
-//
-//    for section in 0 ..< numberOfSections {
-//      group.enter()
-//
-//      fetchData(for: section, queue: fetchQueue) { result in
-//        switch result {
-//        case .failure(let error):
-//          if firstEncounteredError == nil {
-//            firstEncounteredError = error
-//          }
-//        case .success(let data):
-//          newDataset[section] = data
-//        }
-//
-//        group.leave()
-//      }
-//    }
-//
-//    group.notify(queue: fetchQueue) {
-//      if let error = firstEncounteredError {
-//        completion(.failure(error))
-//      }
-//      else {
-//        completion(.success(newDataset))
-//      }
-//    }
-//  }
-//
-//  /// Refetches all data, consequently reloading the cells in the collection
-//  /// view. If a previous reload is in progress, it will be cancelled.
-//  open func reloadData() {
-//    delegate?.dataCollectionViewControllerWillReloadData(self)
-//
-//    // Cancel previous reload if it is in progress.
-//    switch dataState {
-//    case .loading(from: _): cancelReload()
-//    default: break
-//    }
-//
-//    dataState = .loading(from: dataState)
-//
-//    fetchData { result in
-//      DispatchQueue.main.async {
-//        switch result {
-//        case .failure(let error):
-//          self.setDataset([:])
-//          self.dataState = .error(error: error)
-//        case .success(let dataset):
-//          self.setDataset(dataset)
-//          self.dataState = self.count() > 0 ? .hasData : .noData
-//        }
-//
-//        // Prior to reloading cells in the collection view, ensure that the
-//        // spinners are stopped and their exit animations are complete.
-//        self.stopSpinnersIfNeeded {
-//          self.reloadCells()
-//
-//          // Only apply default selection if there are no selected cells at the
-//          // moment.
-//          if self.indexPathsForSelectedCells.count == 0 {
-//            self.applyDefaultSelection()
-//          }
-//
-//          self.dataDidReload()
-//        }
-//      }
-//    }
-//  }
-//
 //  /// Cancels the reload operation and reverts the data state back to the
 //  /// previous state.
 //  open func cancelReload() {
@@ -463,57 +306,6 @@
 //  /// Handler invoked when data is reloaded.
 //  private func dataDidReload() {
 //    delegate?.dataCollectionViewControllerDidReloadData(self)
-//  }
-//
-//  // MARK: - Selection Management
-//
-//  /// Invalidates the `selectedDataset`, ensuring that it does not contain any
-//  /// outdated data not in the current dataset.
-//  private func invalidateSelectedDataset() {
-//    let currValue = getSelectedDataset()
-//    let dataset = getDataset()
-//    var newValue: [Int: [T]] = [:]
-//
-//    for (section, entries) in currValue {
-//      guard let data = dataset[section] else { continue }
-//
-//      newValue[section] = entries.filter({ entry in
-//        data.contains { datum in areDataEqual(a: datum, b: entry) }
-//      })
-//    }
-//
-//    setSelectedDataset(newValue)
-//  }
-//
-//  /// Applies default cell selection(s). This is invoked upon initial load and subsequent reloads of
-//  /// the collection view.
-//  private func applyDefaultSelection() {
-//    switch selectionMode {
-//    case .single:
-//      guard let selectedData = delegate?.dataCollectionViewControllerWillApplyDefaultSelection(self) as? T else { return }
-//      guard let indexPath = firstIndexPath(for: selectedData) else { return }
-//
-//      if shouldSelectCellAt(indexPath) {
-//        selectCellInCollectionView(at: indexPath, scrollPosition: orientation == .vertical ? .centeredVertically : .centeredHorizontally)
-//        enqueueSelectedDatum(at: indexPath)
-//      }
-//      else {
-//        scrollToCell(at: indexPath, animated: false)
-//      }
-//
-//      delegate?.dataCollectionViewControllerDidApplyDefaultSelection(self)
-//    case .multiple:
-//      guard let selectedData = delegate?.dataCollectionViewControllerWillApplyDefaultSelection(self) as? [T] else { return }
-//
-//      for data in selectedData {
-//        guard let indexPath = firstIndexPath(for: data), shouldSelectCellAt(indexPath) else { continue }
-//        selectCellInCollectionView(at: indexPath, scrollPosition: .init(rawValue: 0))
-//        enqueueSelectedDatum(at: indexPath)
-//      }
-//
-//      delegate?.dataCollectionViewControllerDidApplyDefaultSelection(self)
-//    case .none: return
-//    }
 //  }
 //
 //  // MARK: - Layout Management
@@ -604,47 +396,6 @@
 //  }
 //
 //  // MARK: - Scrolling
-//
-//  /// Specifies if scrolling is enabled (relative to the orientation).
-//  @Stateful public var isScrollEnabled: Bool = true
-//
-//  /// Specifies if scroll indicators are visible (relative to the orientation).
-//  @Stateful public var showsScrollIndicator: Bool = true
-//
-//  /// Scrolls to the beginning of the collection.
-//  ///
-//  /// - Parameters:
-//  ///   - animated: Specifies if the scrolling is animated.
-//  public func scrollToBeginning(animated: Bool) {
-//    collectionView.setContentOffset(collectionView.minContentOffset, animated: animated)
-//  }
-//
-//  /// Scrolls to the end of the collection.
-//  ///
-//  /// - Parameters:
-//  ///   - animated: Specifies if the scrolling is animated.
-//  public func scrollToEnd(animated: Bool) {
-//    collectionView.setContentOffset(collectionView.maxContentOffset, animated: animated)
-//  }
-//
-//  /// Scrolls to a cell at the specified index path.
-//  ///
-//  /// - Parameters:
-//  ///   - indexPath: The index path of the cell in the collection view.
-//  ///   - animated: Specifies if the scrolling is animated.
-//  public func scrollToCell(at indexPath: IndexPath, animated: Bool = true) {
-//    collectionView.scrollToItem(at: indexPath, at: orientation == .vertical ? .centeredVertically : .centeredHorizontally, animated: animated)
-//  }
-//
-//  /// Scrolls to the first cell with the specified datum.
-//  ///
-//  /// - Parameters:
-//  ///   - datum: The datum of the cell.
-//  ///   - animated: Specifies if the scrolling is animated.
-//  public func scrollToDatum(_ datum: T, animated: Bool = true) {
-//    guard let indexPath = firstIndexPath(for: datum) else { return }
-//    scrollToCell(at: indexPath, animated: animated)
-//  }
 //
 //  open override func scrollViewDidScroll(_ scrollView: UIScrollView) {
 //    layoutSpinnersIfNeeded()

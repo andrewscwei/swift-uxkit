@@ -2,7 +2,7 @@
 
 import UIKit
 
-class CollectionViewItemSelectionDelegate<S: Hashable, I: Hashable>: StateMachineDelegate {
+class CollectionViewItemSelectionDelegate<S: Hashable, I: Hashable> {
   /// Internal `StateMachine` instance.
   lazy var stateMachine = StateMachine(self)
 
@@ -44,12 +44,6 @@ class CollectionViewItemSelectionDelegate<S: Hashable, I: Hashable>: StateMachin
     self.selectionDidChangeHandler = selectionDidChangeHandler
     self.shouldSelectItemHandler = shouldSelectItemHandler
     self.shouldDeselectItemHandler = shouldDeselectItemHandler
-
-    stateMachine.start()
-  }
-
-  deinit {
-    stateMachine.stop()
   }
 
   /// Returns the sections of the currently selected items.
@@ -306,7 +300,7 @@ class CollectionViewItemSelectionDelegate<S: Hashable, I: Hashable>: StateMachin
   /// - Parameters:
   ///   - predicate: Method that iterates over every selected item and data set
   ///                item to determine equality.
-  func invalidateSelectedItems(where predicate: (any Hashable, any Hashable) -> Bool) {
+  private func invalidateSelectedItems(where predicate: (any Hashable, any Hashable) -> Bool) {
     let items = dataSet.reduce([]) { $0 + $1.value }
     selectedItems = selectedItems.filter({ item in items.contains(where: { predicate($0, item) }) })
   }
@@ -314,7 +308,7 @@ class CollectionViewItemSelectionDelegate<S: Hashable, I: Hashable>: StateMachin
   /// Invalidates the index paths of selected items in the collection view,
   /// ensuring that it is in sync with `selectedItems` which is the source of
   /// truth for which items are selected.
-  func invalidateSelectedIndexPaths() {
+  private func invalidateSelectedIndexPaths() {
     let isAnimated = false
     let oldSelectedIndexPaths = getIndexPathsForSelectedItems()
     let newSelectedIndexPaths = selectedItems.compactMap { mapItemToIndexPath($0) }
@@ -323,35 +317,6 @@ class CollectionViewItemSelectionDelegate<S: Hashable, I: Hashable>: StateMachin
 
     indexPathsToSelect.forEach { collectionView.selectItem(at: $0, animated: isAnimated, scrollPosition: .init(rawValue: 0)) }
     indexPathsToDeselect.forEach { collectionView.deselectItem(at: $0, animated: isAnimated) }
-  }
-
-  func update(check: StateValidator) {
-    if check.isDirty(\CollectionViewItemSelectionDelegate.selectionMode) {
-      switch selectionMode {
-      case .multiple:
-        collectionView.allowsMultipleSelection = true
-        collectionView.allowsSelection = true
-      case .single:
-        // This is enabled for a reason. The native `UICollectionView` behaves
-        // weirdly, such that if `allowsMultipleSelection` is `false`, and a
-        // cell has `collectionView:shouldSelectItemAt:` returning `false`, the
-        // previously selected cell still gets deselected. Hence this custom
-        // controller manually handles single selection restrictions.
-        collectionView.allowsMultipleSelection = true
-        collectionView.allowsSelection = true
-      default:
-        collectionView.allowsMultipleSelection = false
-        collectionView.allowsSelection = true
-      }
-    }
-
-    if check.isDirty(\CollectionViewItemSelectionDelegate.dataSet) {
-      invalidateSelectedItems { $0.isEqual(to: $1) }
-    }
-
-    if check.isDirty(\CollectionViewItemSelectionDelegate.dataSet, \CollectionViewItemSelectionDelegate.selectedItems) {
-      invalidateSelectedIndexPaths()
-    }
   }
 
   @discardableResult private func addSelectedItem(_ item: I, where predicate: (any Hashable, any Hashable) -> Bool) -> I? {
@@ -423,5 +388,36 @@ class CollectionViewItemSelectionDelegate<S: Hashable, I: Hashable>: StateMachin
     }
 
     return true
+  }
+}
+
+extension CollectionViewItemSelectionDelegate: StateMachineDelegate {
+  func update(check: StateValidator) {
+    if check.isDirty(\CollectionViewItemSelectionDelegate.selectionMode) {
+      switch selectionMode {
+      case .multiple:
+        collectionView.allowsMultipleSelection = true
+        collectionView.allowsSelection = true
+      case .single:
+        // This is enabled for a reason. The native `UICollectionView` behaves
+        // weirdly, such that if `allowsMultipleSelection` is `false`, and a
+        // cell has `collectionView:shouldSelectItemAt:` returning `false`, the
+        // previously selected cell still gets deselected. Hence this custom
+        // controller manually handles single selection restrictions.
+        collectionView.allowsMultipleSelection = true
+        collectionView.allowsSelection = true
+      default:
+        collectionView.allowsMultipleSelection = false
+        collectionView.allowsSelection = true
+      }
+    }
+
+    if check.isDirty(\CollectionViewItemSelectionDelegate.dataSet) {
+      invalidateSelectedItems { $0.isEqual(to: $1) }
+    }
+
+    if check.isDirty(\CollectionViewItemSelectionDelegate.dataSet, \CollectionViewItemSelectionDelegate.selectedItems) {
+      invalidateSelectedIndexPaths()
+    }
   }
 }

@@ -18,6 +18,19 @@ import UIKit
 ///     `willPullToReload(in:)`)
 open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UIViewController, UICollectionViewDelegate, StateMachineDelegate {
 
+  // MARK: - Delegation
+
+  public weak var delegate: CollectionViewControllerDelegate?
+
+  private lazy var itemSelectionDelegate = CollectionViewItemSelectionDelegate<S, I>(
+    collectionView: collectionView,
+    selectionDidChangeHandler: { self.selectionDidChange() },
+    shouldSelectItemHandler: { self.shouldSelectItem(item: $0, section: $1) },
+    shouldDeselectItemHandler: { self.shouldDeselectItem(item: $0, section: $1) }
+  )
+
+  private lazy var scrollDelegate = CollectionViewScrollDelegate<S, I>(collectionView: collectionView)
+
   // MARK: - Layout
 
   public lazy var collectionViewLayout = layoutFactory()
@@ -37,6 +50,17 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
   /// TODO: Enforce no duplicate items in each section.
   @Stateful public var dataSet: [S: [I]] = S.allCases.reduce([:]) { $0.merging([$1: []]) { $1 } }
 
+  // MARK: - Properties
+
+  /// The data source object.
+  private lazy var dataSource: UICollectionViewDiffableDataSource<S, I> = dataSourceFactory()
+
+  /// Indicates if an item filter currently exists.
+  public var hasItemFilter: Bool { false }
+
+  /// Indicates the number of sections.
+  public var numberOfSections: Int { dataSource.snapshot().numberOfSections }
+
   /// The currently selected items.
   public var selectedItems: [I] {
     get { itemSelectionDelegate.getSelectedItems() }
@@ -49,21 +73,22 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
     set { itemSelectionDelegate.setSelectedItems(newValue.map { [$0] } ?? []) }
   }
 
-  // MARK: - Properties
-
-  /// The data source object.
-  private lazy var dataSource: UICollectionViewDiffableDataSource<S, I> = dataSourceFactory()
-
-  /// Indicates if an item filter currently exists.
-  public var hasItemFilter: Bool { false }
-
-  /// Indicates the number of sections.
-  public var numberOfSections: Int { dataSource.snapshot().numberOfSections }
-
   /// Specifies how the collection view selects its cells.
   public var selectionMode: CollectionViewSelectionMode {
     get { itemSelectionDelegate.selectionMode }
     set { itemSelectionDelegate.selectionMode = newValue }
+  }
+
+  /// Specifies if scroling is enabled.
+  public var isScrollEnabled: Bool {
+    get { scrollDelegate.isScrollEnabled }
+    set { scrollDelegate.isScrollEnabled = newValue }
+  }
+
+  /// Specifies if scroll indicators are visible.
+  public var showsScrollIndicator: Bool {
+    get { scrollDelegate.showsScrollIndicator }
+    set { scrollDelegate.showsScrollIndicator = newValue }
   }
 
   // MARK: - Life Cycle
@@ -85,11 +110,15 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
     super.viewWillAppear(animated)
 
     stateMachine.start()
+    itemSelectionDelegate.stateMachine.start()
+    scrollDelegate.stateMachine.start()
   }
 
   open override func viewDidDisappear(_ animated: Bool) {
     super.viewDidDisappear(animated)
 
+    scrollDelegate.stateMachine.stop()
+    itemSelectionDelegate.stateMachine.stop()
     stateMachine.stop()
   }
 
@@ -149,55 +178,82 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
 
   // MARK: - Selection Management
 
-  public func isItemSelected(_ item: I, where predicate: (I, I) -> Bool = { $0.isEqual(to: $1) }) -> Bool { itemSelectionDelegate.isItemSelected(item, where: predicate) }
+  public func isItemSelected(_ item: I, where predicate: (I, I) -> Bool = { $0.isEqual(to: $1) }) -> Bool {
+    itemSelectionDelegate.isItemSelected(item, where: predicate)
+  }
 
-  public func areAllItemsSelected(in section: S, where predicate: (I, I) -> Bool = { $0.isEqual(to: $1) }) -> Bool { itemSelectionDelegate.areAllItemsSelected(in: section, where: predicate) }
+  public func areAllItemsSelected(in section: S, where predicate: (I, I) -> Bool = { $0.isEqual(to: $1) }) -> Bool {
+    itemSelectionDelegate.areAllItemsSelected(in: section, where: predicate)
+  }
 
-  public func areAllItemsDeselected(in section: S, where predicate: (I, I) -> Bool = { $0.isEqual(to: $1) }) -> Bool { itemSelectionDelegate.areAllItemsDeselected(in: section, where: predicate) }
+  public func areAllItemsDeselected(in section: S, where predicate: (I, I) -> Bool = { $0.isEqual(to: $1) }) -> Bool {
+    itemSelectionDelegate.areAllItemsDeselected(in: section, where: predicate)
+  }
 
   @discardableResult public func selectItem(_ item: I, shouldScroll: Bool = true, animated: Bool = true) -> I? {
     guard let item = itemSelectionDelegate.selectItem(item, where: { $0.isEqual(to: $1) }) else { return nil }
 
-//    let shouldAnimate = hasViewAppeared ? shouldScroll && animated : false
-//    let scrollPosition: UICollectionView.ScrollPosition = (indexPath.section == 0 && indexPath.item == 0) ? [.top, .left] : [.centeredHorizontally, .centeredVertically]
+    if shouldScroll {
+      scrollToItem(item, animated: animated)
+    }
 
     return item
   }
 
-  @discardableResult public func selectAllItems(in section: S) -> [I] { itemSelectionDelegate.selectAllItems(in: section, where: { $0.isEqual(to: $1) }) }
+  @discardableResult public func selectAllItems(in section: S) -> [I] {
+    itemSelectionDelegate.selectAllItems(in: section, where: { $0.isEqual(to: $1) })
+  }
 
-  @discardableResult public func deselectItem(_ item: I) -> I? { itemSelectionDelegate.deselectItem(item, where: { $0.isEqual(to: $1) }) }
+  @discardableResult public func deselectItem(_ item: I) -> I? {
+    itemSelectionDelegate.deselectItem(item, where: { $0.isEqual(to: $1) })
+  }
 
-  @discardableResult public func deselectAllItems(in section: S) -> [I] { itemSelectionDelegate.deselectAllItems(in: section, where: { $0.isEqual(to: $1) }) }
+  @discardableResult public func deselectAllItems(in section: S) -> [I] {
+    itemSelectionDelegate.deselectAllItems(in: section, where: { $0.isEqual(to: $1) })
+  }
 
-  open func selectionDidChange() {
+  private func selectionDidChange() {
     stateMachine.invalidate(\CollectionViewController.selectedItem, \CollectionViewController.selectedItems)
     delegate?.collectionViewControllerSelectionDidChange(self)
   }
 
-  open func shouldSelectItem(item: I, section: S) -> Bool {
+  private func shouldSelectItem(item: I, section: S) -> Bool {
     delegate?.collectionViewController(self, shouldSelectItem: item, in: section) ?? true
   }
 
-  open func shouldDeselectItem(item: I, section: S) -> Bool {
+  private func shouldDeselectItem(item: I, section: S) -> Bool {
     delegate?.collectionViewController(self, shouldDeselectItem: item, in: section) ?? true
   }
 
-  // MARK: - Delegation
+  final public func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
+    itemSelectionDelegate.shouldSelctItem(at: indexPath)
+  }
 
-  public weak var delegate: CollectionViewControllerDelegate?
+  final public func collectionView(_ collectionView: UICollectionView, shouldDeselectItemAt indexPath: IndexPath) -> Bool {
+    itemSelectionDelegate.shouldDeselectItem(at: indexPath)
+  }
 
-  private lazy var itemSelectionDelegate = CollectionViewItemSelectionDelegate<S, I>(
-    collectionView: collectionView,
-    selectionDidChangeHandler: { self.selectionDidChange() },
-    shouldSelectItemHandler: { self.shouldSelectItem(item: $0, section: $1) },
-    shouldDeselectItemHandler: { self.shouldDeselectItem(item: $0, section: $1) }
-  )
+  final public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    itemSelectionDelegate.selectItem(at: indexPath, where: { $0.isEqual(to: $1) })
+  }
 
-  final public func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool { itemSelectionDelegate.shouldSelctItem(at: indexPath) }
-  final public func collectionView(_ collectionView: UICollectionView, shouldDeselectItemAt indexPath: IndexPath) -> Bool { itemSelectionDelegate.shouldDeselectItem(at: indexPath) }
-  final public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) { itemSelectionDelegate.selectItem(at: indexPath, where: { $0.isEqual(to: $1) }) }
-  final public func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) { itemSelectionDelegate.deselectItem(at: indexPath, where: { $0.isEqual(to: $1) }) }
+  final public func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+    itemSelectionDelegate.deselectItem(at: indexPath, where: { $0.isEqual(to: $1) })
+  }
+
+  // MARK: - Scroll Management
+
+  public func scrollToBeginning(animated: Bool = true) {
+    scrollDelegate.scrollToBeginning(animated: animated)
+  }
+
+  public func scrollToEnd(animated: Bool = true) {
+    scrollDelegate.scrollToEnd(animated: animated)
+  }
+
+  public func scrollToItem(_ item: I, animated: Bool = true) {
+    scrollDelegate.scrollToItem(item, animated: animated)
+  }
 
   // MARK: - Layout Management
 
