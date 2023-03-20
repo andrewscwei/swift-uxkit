@@ -17,7 +17,7 @@ class CollectionViewReloadDelegate {
   private let didPullToReloadHandler: () -> Void
 
   /// Reload control spinner at the front of the collection view.
-  var frontSpinner: (any DataCollectionViewSpinner)? {
+  var frontSpinner: (any CollectionViewSpinner)? {
     willSet {
       guard let oldSpinner = frontSpinner else { return }
       oldSpinner.removeFromSuperview()
@@ -42,7 +42,7 @@ class CollectionViewReloadDelegate {
   }
 
   /// Reload control spinner at the end of the collection view.
-  var endSpinner: (any DataCollectionViewSpinner)? {
+  var endSpinner: (any CollectionViewSpinner)? {
     willSet {
       guard let oldSpinner = endSpinner else { return }
       oldSpinner.removeFromSuperview()

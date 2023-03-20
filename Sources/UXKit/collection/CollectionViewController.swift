@@ -10,7 +10,7 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
 
   // MARK: - Delegation
 
-  public weak var delegate: CollectionViewControllerDelegate?
+  public weak var delegate: (any CollectionViewControllerDelegate<S, I>)?
 
   private lazy var itemSelectionDelegate = CollectionViewItemSelectionDelegate<S, I>(
     collectionView: collectionView,
@@ -22,12 +22,15 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
   private lazy var scrollDelegate = CollectionViewScrollDelegate<S, I>(collectionView: collectionView)
 
   private lazy var reloadDelegate = CollectionViewReloadDelegate(
-    collectionView: collectionView
+    collectionView: collectionView,
+    willPullToReload: { self.willPullToReload() },
+    didPullToReload: { self.didPullToReload() }
   )
 
   // MARK: - Layout
 
   public lazy var collectionViewLayout = layoutFactory()
+  
   public lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionViewLayout)
 
   // MARK: - States
@@ -112,6 +115,18 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
     set { reloadDelegate.contentInsets = newValue }
   }
 
+  /// Reload control spinner at the front of the collection view.
+  public var frontSpinner: (any CollectionViewSpinner)? {
+    get { reloadDelegate.frontSpinner }
+    set { reloadDelegate.frontSpinner = newValue }
+  }
+
+  /// Reload control spinner at the end of the collection view.
+  public var endSpinner: (any CollectionViewSpinner)? {
+    get { reloadDelegate.endSpinner }
+    set { reloadDelegate.endSpinner = newValue }
+  }
+
   // MARK: - Life Cycle
 
   open override func viewDidLoad() {
@@ -123,6 +138,7 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
     collectionView.bounces = true
     collectionView.contentInsetAdjustmentBehavior = .never
     collectionView.dataSource = dataSource
+    collectionView.delaysContentTouches = false
     collectionView.delegate = self
     collectionView.autoLayout { $0.alignToSuperview() }
   }
@@ -154,20 +170,6 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
     }
   }
 
-  // MARK: - Data Management
-
-  /// Factory for the data source object required by the collection view.
-  ///
-  /// - Returns: The data source object.
-  private func dataSourceFactory() -> UICollectionViewDiffableDataSource<S, I> {
-    let dataSource = UICollectionViewDiffableDataSource<S, I>(collectionView: collectionView) { collectionView, indexPath, item in
-      let section = self.dataSource.snapshot().sectionIdentifiers[indexPath.section]
-      return self.cellFactory(at: indexPath, section: section, item: item)
-    }
-
-    return dataSource
-  }
-
   /// Updates the current snapshot of the data source with a data set.
   ///
   /// - Parameter dataSet: The data set.
@@ -183,20 +185,6 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
     }
 
     dataSource.apply(snapshot)
-  }
-
-  // MARK: - Cell Management
-
-  /// Cell factory method.
-  ///
-  /// - Parameters:
-  ///   - indexPath: Index path.
-  ///   - section: Section.
-  ///   - item: Item.
-  ///
-  /// - Returns: The cell.
-  open func cellFactory(at indexPath: IndexPath, section: S, item: I) -> UICollectionViewCell {
-    fatalError("Derived class <\(Self.self)> must implement this method")
   }
 
   // MARK: - Selection Management
@@ -308,9 +296,42 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
     reloadDelegate.startSpinnersIfNeeded()
   }
 
-  // MARK: - Layout Management
+  // MARK: - Factories
 
+  private func dataSourceFactory() -> UICollectionViewDiffableDataSource<S, I> {
+    let dataSource = UICollectionViewDiffableDataSource<S, I>(collectionView: collectionView) { collectionView, indexPath, item in
+      let section = self.dataSource.snapshot().sectionIdentifiers[indexPath.section]
+      return self.cellFactory(at: indexPath, section: section, item: item)
+    }
+
+    return dataSource
+  }
+
+  private func cellFactory(at indexPath: IndexPath, section: S, item: I) -> UICollectionViewCell {
+    guard let cell = delegate?.collectionViewController(self, cellAtIndexPath: indexPath, section: section, item: item) else {
+      fatalError("CollectionViewController requires a CollectionViewControllerDelegate to implement collectionViewController(_:cellAtIndexPath:section:item:).")
+    }
+
+    return cell
+  }
+
+  /// Factory method for the `UICollectionViewLayout` object of the collection
+  /// view.
+  ///
+  /// Subclasses can override this method to create custom layouts.
+  ///
+  /// - Returns: `UICollectionViewLayout` instance.
   open func layoutFactory() -> UICollectionViewLayout {
-    DataCollectionViewFlowLayout()
+    let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
+    let item = NSCollectionLayoutItem(layoutSize: itemSize)
+    item.contentInsets = .zero
+
+    let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(50.0))
+    let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
+
+    let section = NSCollectionLayoutSection(group: group)
+    //    section.boundarySupplementaryItems = [headerLayout()]
+
+    return UICollectionViewCompositionalLayout(section: section)
   }
 }
