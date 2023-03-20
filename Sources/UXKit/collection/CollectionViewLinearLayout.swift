@@ -2,44 +2,43 @@
 
 import UIKit
 
-/// A custom `UICollectionViewFlowLayout` for `DataCollectionViewController`
-/// that supports section and cell separators and layout orientation (restricted
-/// to a linear direction, no grid layout).
-class DataCollectionViewFlowLayout: UICollectionViewFlowLayout {
+/// A custom `UICollectionViewFlowLayout` with linear orientation (horizontal or
+/// vertical).
+public class CollectionViewLinearLayout: UICollectionViewFlowLayout {
   /// The orientation of the collection view in the
   /// `DataCollectionViewController`.
-  var orientation: UICollectionView.ScrollDirection = .horizontal { didSet { invalidateLayout() } }
+  public var orientation: UICollectionView.ScrollDirection = .horizontal { didSet { if orientation != oldValue { invalidateLayout() } } }
 
   /// The width of the section separator up to the last section of the
   /// collection view (the last section has no separator after it).
-  var sectionSeparatorWidth: CGFloat = 0.0 { didSet { invalidateLayout() } }
+  public var sectionSeparatorWidth: CGFloat = 0.0 { didSet { if sectionSeparatorWidth != oldValue { invalidateLayout() } } }
 
   /// The color of the section separator, defaults to transparent.
-  var sectionSeparatorColor: UIColor = .clear { didSet { invalidateLayout() } }
+  public var sectionSeparatorColor: UIColor = .clear { didSet { if sectionSeparatorColor != oldValue { invalidateLayout() } } }
 
   /// The width of the cell separator up the the last cell of each section (the
   /// last cell of each section has no separator after it).
-  var cellSeparatorWidth: CGFloat = 0.0 { didSet { invalidateLayout() } }
+  public var cellSeparatorWidth: CGFloat = 0.0 { didSet { if cellSeparatorWidth != oldValue { invalidateLayout() } } }
 
   /// The color of the cell separator, defaults to transparent.
-  var cellSeparatorColor: UIColor = .clear { didSet { invalidateLayout() } }
+  public var cellSeparatorColor: UIColor = .clear { didSet { if cellSeparatorColor != oldValue { invalidateLayout() } } }
 
   /// The padding between the separator and the cell before and/or after it.
-  var separatorPadding: CGFloat = 0.0
+  public var separatorPadding: CGFloat = 0.0 { didSet { if separatorPadding != oldValue { invalidateLayout() } } }
 
-  override func prepare() {
+  public override func prepare() {
     super.prepare()
 
-    register(DataCollectionSeparatorView.self, forDecorationViewOfKind: DataCollectionSeparatorView.className)
+    register(SeparatorView.self, forDecorationViewOfKind: SeparatorView.className)
   }
 
-  override func layoutAttributesForDecorationView(ofKind elementKind: String, at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
+  public override func layoutAttributesForDecorationView(ofKind elementKind: String, at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
     guard let collectionView = collectionView else {
       return super.layoutAttributesForDecorationView(ofKind: elementKind, at: indexPath)
     }
 
     let cellFrame = layoutAttributesForItem(at: indexPath)?.frame ?? .zero
-    let layoutAttributes = DataCollectionViewLayoutAttributes(forDecorationViewOfKind: elementKind, with: indexPath)
+    let layoutAttributes = LayoutAttributes(forDecorationViewOfKind: elementKind, with: indexPath)
     let isLastCell = indexPath.item >= (collectionView.numberOfItems(inSection: indexPath.section) - 1)
     let isLastSection = indexPath.section >= (collectionView.numberOfSections - 1)
 
@@ -51,7 +50,7 @@ class DataCollectionViewFlowLayout: UICollectionViewFlowLayout {
     }
     else {
       switch elementKind {
-      case DataCollectionSeparatorView.className:
+      case SeparatorView.className:
         switch orientation {
         case .vertical:
           let x = cellFrame.minX
@@ -76,12 +75,12 @@ class DataCollectionViewFlowLayout: UICollectionViewFlowLayout {
     return layoutAttributes
   }
 
-  override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
+  public override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
     guard let baseLayoutAttributes = super.layoutAttributesForElements(in: rect) else { return nil }
 
     var layoutAttributes = baseLayoutAttributes
     baseLayoutAttributes.filter { $0.representedElementCategory == .cell }.forEach { layoutAttribute in
-      if let t = layoutAttributesForDecorationView(ofKind: DataCollectionSeparatorView.className, at: layoutAttribute.indexPath) {
+      if let t = layoutAttributesForDecorationView(ofKind: SeparatorView.className, at: layoutAttribute.indexPath) {
         layoutAttributes.append(t)
       }
     }
@@ -90,18 +89,15 @@ class DataCollectionViewFlowLayout: UICollectionViewFlowLayout {
   }
 }
 
-/// Attributes of each decoration view in `DataCollectionViewFlowLayout`.
-private class DataCollectionViewLayoutAttributes: UICollectionViewLayoutAttributes {
-  /// The color of the separators.
+private class LayoutAttributes: UICollectionViewLayoutAttributes {
   var separatorColor: UIColor = .clear
 }
 
-/// A separator style decoration view for `DataCollectionViewFlowLayout`.
-private class DataCollectionSeparatorView: UICollectionReusableView {
+private class SeparatorView: UICollectionReusableView {
   override func apply(_ layoutAttributes: UICollectionViewLayoutAttributes) {
     super.apply(layoutAttributes)
 
-    if let layoutAttributes = layoutAttributes as? DataCollectionViewLayoutAttributes {
+    if let layoutAttributes = layoutAttributes as? LayoutAttributes {
       backgroundColor = layoutAttributes.separatorColor
     }
   }

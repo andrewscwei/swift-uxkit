@@ -1,5 +1,7 @@
 // © GHOZT
 
+import Foundation
+
 /// A state container that manages stateful properties for an object and emits
 /// an event to the object whenever those properties are modified. The object
 /// assumes the role of the delegate and must conform to the protocol
@@ -22,7 +24,10 @@ public class StateMachine {
 
   /// Indicates whether an update transaction has been initiated but has yet to
   /// be committed.
-  public private(set) var isInTransaction: Bool = false
+  public var isInTransaction: Bool { numberOfPendingTransactions > 0 }
+
+  /// Number of pending transactions.
+  private var numberOfPendingTransactions: Int = 0
 
   /// State types that are currently dirty.
   private var dirtyStateTypes: StateType = .all
@@ -47,7 +52,7 @@ public class StateMachine {
   /// Stops capturing state updates.
   public func stop() {
     isRunning = false
-    isInTransaction = false
+    numberOfPendingTransactions = 0
 
     // Whenever `StateMachine` stops, mark every state as dirty so that all
     // states will be invalidated upon calling the next `start()`.
@@ -59,17 +64,18 @@ public class StateMachine {
   /// is explicitly committed by invoking `commit()`, changes to states will not
   /// trigger an update cycle.
   public func beginTransaction() {
-    guard !isInTransaction else { return }
-    isInTransaction = true
+    numberOfPendingTransactions += 1
   }
 
   /// Commits the current *transaction*, if it exists, consequently triggering
   /// an update cycle. All modified states up to this point will be marked as
   /// dirty in this update cycle.
   public func commit() {
-    guard isInTransaction else { return }
-    isInTransaction = false
-    notifyStateUpdate()
+    numberOfPendingTransactions -= 1
+
+    if !isInTransaction {
+      notifyStateUpdate()
+    }
   }
 
   /// Marks all key paths and state types as dirty, consequently triggering an
