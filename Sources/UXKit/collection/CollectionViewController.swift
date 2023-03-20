@@ -2,20 +2,10 @@
 
 import UIKit
 
-// TODO: Scrolling, pull to refresh 
-
 /// A custom `UIViewController` that manages a `UICollectionView` whose items
 /// are derived from a `UICollectionViewDiffableDataSource`. Since items are
 /// expected to be diffable, their values must be unique across sections even if
 /// they are the same type.
-///
-/// `CollectionViewController` has native support for the following features:
-///   - item filtering
-///   - single/multiple cell selection (see `selectionMode`), persisted across
-///     cell reloads
-///   - customizable pull-to-reload triggers and indicators from both ends of
-///     the collection view (see `frontSpinner`, `endSpinner`, and
-///     `willPullToReload(in:)`)
 open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UIViewController, UICollectionViewDelegate, StateMachineDelegate {
 
   // MARK: - Delegation
@@ -24,12 +14,16 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
 
   private lazy var itemSelectionDelegate = CollectionViewItemSelectionDelegate<S, I>(
     collectionView: collectionView,
-    selectionDidChangeHandler: { self.selectionDidChange() },
-    shouldSelectItemHandler: { self.shouldSelectItem(item: $0, section: $1) },
-    shouldDeselectItemHandler: { self.shouldDeselectItem(item: $0, section: $1) }
+    selectionDidChange: { self.selectionDidChange() },
+    shouldSelectItem: { self.shouldSelectItem(item: $0, section: $1) },
+    shouldDeselectItem: { self.shouldDeselectItem(item: $0, section: $1) }
   )
 
   private lazy var scrollDelegate = CollectionViewScrollDelegate<S, I>(collectionView: collectionView)
+
+  private lazy var reloadDelegate = CollectionViewReloadDelegate(
+    collectionView: collectionView
+  )
 
   // MARK: - Layout
 
@@ -91,6 +85,33 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
     set { scrollDelegate.showsScrollIndicator = newValue }
   }
 
+  /// Distance required to overscroll in order to trigger a reload (consequently
+  /// showing the spinner). This value INCLUDES the content insets of the
+  /// collection view.
+  public var displacementToTriggerReload: CGFloat {
+    get { reloadDelegate.displacementToTriggerReload }
+    set { reloadDelegate.displacementToTriggerReload = newValue }
+  }
+
+  /// Specifies whether user can pull to reload at end of collection (as
+  /// opposed to only the front).
+  public var canPullFromEndToReload: Bool {
+    get { reloadDelegate.canPullFromEndToReload }
+    set { reloadDelegate.canPullFromEndToReload = newValue }
+  }
+
+  /// Specifies the orientation of the loading spinners.
+  public var orientation: UICollectionView.ScrollDirection {
+    get { reloadDelegate.orientation }
+    set { reloadDelegate.orientation = newValue }
+  }
+
+  /// The content insets of the collection view.
+  public var contentInsets: UIEdgeInsets {
+    get { reloadDelegate.contentInsets }
+    set { reloadDelegate.contentInsets = newValue }
+  }
+
   // MARK: - Life Cycle
 
   open override func viewDidLoad() {
@@ -112,11 +133,13 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
     stateMachine.start()
     itemSelectionDelegate.stateMachine.start()
     scrollDelegate.stateMachine.start()
+    reloadDelegate.stateMachine.start()
   }
 
   open override func viewDidDisappear(_ animated: Bool) {
     super.viewDidDisappear(animated)
 
+    reloadDelegate.stateMachine.stop()
     scrollDelegate.stateMachine.stop()
     itemSelectionDelegate.stateMachine.stop()
     stateMachine.stop()
@@ -225,19 +248,19 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
     delegate?.collectionViewController(self, shouldDeselectItem: item, in: section) ?? true
   }
 
-  final public func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
+  open func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
     itemSelectionDelegate.shouldSelctItem(at: indexPath)
   }
 
-  final public func collectionView(_ collectionView: UICollectionView, shouldDeselectItemAt indexPath: IndexPath) -> Bool {
+  open func collectionView(_ collectionView: UICollectionView, shouldDeselectItemAt indexPath: IndexPath) -> Bool {
     itemSelectionDelegate.shouldDeselectItem(at: indexPath)
   }
 
-  final public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+  open func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
     itemSelectionDelegate.selectItem(at: indexPath, where: { $0.isEqual(to: $1) })
   }
 
-  final public func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+  open func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
     itemSelectionDelegate.deselectItem(at: indexPath, where: { $0.isEqual(to: $1) })
   }
 
@@ -253,6 +276,36 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
 
   public func scrollToItem(_ item: I, animated: Bool = true) {
     scrollDelegate.scrollToItem(item, animated: animated)
+  }
+
+  // MARK: - Pull-to-Refresh Management
+
+  private func willPullToReload() -> Bool {
+    delegate?.collectionViewControllerWillPullToReload(self) ?? false
+  }
+
+  private func didPullToReload() {
+    delegate?.collectionViewControllerDidPullToReload(self)
+  }
+
+  public func notifyReloadComplete(completion: @escaping () -> Void = {}) {
+    reloadDelegate.stopSpinnersIfNeeded(completion: completion)
+  }
+
+  open override func viewDidLayoutSubviews() {
+    super.viewDidLayoutSubviews()
+
+    reloadDelegate.layoutSublayersIfNeeded()
+  }
+
+  open func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    reloadDelegate.layoutSubviewsIfNeeded()
+    
+    delegate?.collectionViewControllerDidScroll(self)
+  }
+
+  open func scrollViewWillBeginDecelerating(_ scrollView: UIScrollView) {
+    reloadDelegate.startSpinnersIfNeeded()
   }
 
   // MARK: - Layout Management

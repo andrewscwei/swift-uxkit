@@ -16,13 +16,13 @@ class CollectionViewItemSelectionDelegate<S: Hashable, I: Hashable> {
   }
 
   /// Handler invoked when selected items have changed.
-  private let selectionDidChangeHandler: (() -> Void)
+  private let selectionDidChangeHandler: () -> Void
 
   /// Handler that determines if an item should be selected.
-  private let shouldSelectItemHandler: ((I, S) -> Bool)
+  private let shouldSelectItemHandler: (I, S) -> Bool
 
   /// Handler that determines if an item should be deselected.
-  private let shouldDeselectItemHandler: ((I, S) -> Bool)
+  private let shouldDeselectItemHandler: (I, S) -> Bool
 
   /// Data set used as a reference mirroring the actual items intended for the
   /// collection view.
@@ -36,14 +36,14 @@ class CollectionViewItemSelectionDelegate<S: Hashable, I: Hashable> {
 
   init(
     collectionView: UICollectionView,
-    selectionDidChangeHandler: @escaping () -> Void = {},
-    shouldSelectItemHandler: @escaping (I, S) -> Bool = { _, _ in true },
-    shouldDeselectItemHandler: @escaping (I, S) -> Bool = { _, _ in true }
+    selectionDidChange: @escaping () -> Void = {},
+    shouldSelectItem: @escaping (I, S) -> Bool = { _, _ in true },
+    shouldDeselectItem: @escaping (I, S) -> Bool = { _, _ in true }
   ) {
     self.collectionView = collectionView
-    self.selectionDidChangeHandler = selectionDidChangeHandler
-    self.shouldSelectItemHandler = shouldSelectItemHandler
-    self.shouldDeselectItemHandler = shouldDeselectItemHandler
+    self.selectionDidChangeHandler = selectionDidChange
+    self.shouldSelectItemHandler = shouldSelectItem
+    self.shouldDeselectItemHandler = shouldDeselectItem
   }
 
   /// Returns the sections of the currently selected items.
