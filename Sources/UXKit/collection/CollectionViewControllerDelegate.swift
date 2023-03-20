@@ -63,6 +63,26 @@ public protocol CollectionViewControllerDelegate<SectionIdentifier, ItemIdentifi
   ///
   /// - Returns: `UICollectionViewCell` instance.
   func collectionViewController(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>, cellAtIndexPath indexPath: IndexPath, section: SectionIdentifier, item: ItemIdentifier) -> UICollectionViewCell
+
+  /// Handler invoked to create an activity indicator view at the front of the
+  /// collection view which will be used for the internal pull-to-reload
+  /// mechanism.
+  ///
+  /// - Parameters:
+  ///   - viewController: The invoking `CollectionViewController`.
+  ///
+  /// - Returns: Some `CollectionViewSpinner` instance.
+  func collectionViewControllerFrontSpinner(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>) -> (any CollectionViewSpinner)?
+
+  /// Handler invoked to create an activity indicator view at the end of the
+  /// collection view which will be used for the internal pull-to-reload
+  /// mechanism.
+  ///
+  /// - Parameters:
+  ///   - viewController: The invoking `CollectionViewController`.
+  ///
+  /// - Returns: Some `CollectionViewSpinner` instance.
+  func collectionViewControllerEndSpinner(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>) -> (any CollectionViewSpinner)?
 }
 
 extension CollectionViewControllerDelegate {
@@ -72,4 +92,6 @@ extension CollectionViewControllerDelegate {
   public func collectionViewController(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>, shouldDeselectItem item: ItemIdentifier, in section: SectionIdentifier) -> Bool { true }
   public func collectionViewControllerWillPullToReload(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>) -> Bool { false }
   public func collectionViewControllerDidPullToReload(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>) {}
+  public func collectionViewControllerFrontSpinner(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>) -> (any CollectionViewSpinner)? { nil }
+  public func collectionViewControllerEndSpinner(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>) -> (any CollectionViewSpinner)? { nil }
 }

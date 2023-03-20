@@ -96,13 +96,6 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
     set { reloadDelegate.displacementToTriggerReload = newValue }
   }
 
-  /// Specifies whether user can pull to reload at end of collection (as
-  /// opposed to only the front).
-  public var canPullFromEndToReload: Bool {
-    get { reloadDelegate.canPullFromEndToReload }
-    set { reloadDelegate.canPullFromEndToReload = newValue }
-  }
-
   /// Specifies the orientation of the loading spinners.
   public var orientation: UICollectionView.ScrollDirection {
     get { reloadDelegate.orientation }
@@ -141,6 +134,9 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
     collectionView.delaysContentTouches = false
     collectionView.delegate = self
     collectionView.autoLayout { $0.alignToSuperview() }
+
+    frontSpinner = delegate?.collectionViewControllerFrontSpinner(self)
+    endSpinner = delegate?.collectionViewControllerEndSpinner(self)
   }
 
   open override func viewWillAppear(_ animated: Bool) {
@@ -280,14 +276,8 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
     reloadDelegate.stopSpinnersIfNeeded(completion: completion)
   }
 
-  open override func viewDidLayoutSubviews() {
-    super.viewDidLayoutSubviews()
-
-    reloadDelegate.layoutSublayersIfNeeded()
-  }
-
   open func scrollViewDidScroll(_ scrollView: UIScrollView) {
-    reloadDelegate.layoutSubviewsIfNeeded()
+    reloadDelegate.revealSpinnersIfNeeded()
     
     delegate?.collectionViewControllerDidScroll(self)
   }
