@@ -37,20 +37,20 @@ public protocol CollectionViewControllerDelegate<SectionIdentifier, ItemIdentifi
   func collectionViewController(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>, shouldDeselectItem item: ItemIdentifier, in section: SectionIdentifier) -> Bool
 
   /// Handler invoked to determine if pulling from either end of the collection
-  /// view will trigger a reload.
+  /// view will trigger a refresh.
   ///
   /// - Parameters:
   ///   - viewController: The invoking `CollectionViewController`.
   ///
-  /// - Returns: `true` to trigger reload, `false` otherwise.
-  func collectionViewControllerWillPullToReload(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>) -> Bool
+  /// - Returns: `true` to trigger refresh, `false` otherwise.
+  func collectionViewControllerWillPullToRefresh(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>) -> Bool
 
-  /// Handler invoked when reload is triggered after pulling from either end of
+  /// Handler invoked when refresh is triggered after pulling from either end of
   /// the collection view.
   ///
   /// - Parameters:
   ///   - viewController: The invoking `CollectionViewController`.
-  func collectionViewControllerDidPullToReload(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>)
+  func collectionViewControllerDidPullToRefresh(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>)
 
   /// Handler invoked to create each cell at the specified index path with
   /// context for the cell's associated section and item identifiers.
@@ -65,24 +65,24 @@ public protocol CollectionViewControllerDelegate<SectionIdentifier, ItemIdentifi
   func collectionViewController(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>, cellAtIndexPath indexPath: IndexPath, section: SectionIdentifier, item: ItemIdentifier) -> UICollectionViewCell
 
   /// Handler invoked to create an activity indicator view at the front of the
-  /// collection view which will be used for the internal pull-to-reload
+  /// collection view which will be used for the internal pull-to-refresh
   /// mechanism.
   ///
   /// - Parameters:
   ///   - viewController: The invoking `CollectionViewController`.
   ///
-  /// - Returns: Some `CollectionViewSpinner` instance.
-  func collectionViewControllerFrontSpinner(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>) -> (any CollectionViewSpinner)?
+  /// - Returns: Some `CollectionViewRefreshControl` instance.
+  func collectionViewControllerFrontRefreshControl(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>) -> (any CollectionViewRefreshControl)?
 
   /// Handler invoked to create an activity indicator view at the end of the
-  /// collection view which will be used for the internal pull-to-reload
+  /// collection view which will be used for the internal pull-to-refresh
   /// mechanism.
   ///
   /// - Parameters:
   ///   - viewController: The invoking `CollectionViewController`.
   ///
-  /// - Returns: Some `CollectionViewSpinner` instance.
-  func collectionViewControllerEndSpinner(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>) -> (any CollectionViewSpinner)?
+  /// - Returns: Some `CollectionViewRefreshControl` instance.
+  func collectionViewControllerEndRefreshControl(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>) -> (any CollectionViewRefreshControl)?
 
   /// Handler invoked to determine if an item should be included in the current
   /// data source snapshot when the specified filter query is applied.
@@ -101,9 +101,9 @@ extension CollectionViewControllerDelegate {
   public func collectionViewControllerDidScroll(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>)  {}
   public func collectionViewController(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>, shouldSelectItem item: ItemIdentifier, in section: SectionIdentifier) -> Bool { true }
   public func collectionViewController(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>, shouldDeselectItem item: ItemIdentifier, in section: SectionIdentifier) -> Bool { true }
-  public func collectionViewControllerWillPullToReload(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>) -> Bool { false }
-  public func collectionViewControllerDidPullToReload(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>) {}
-  public func collectionViewControllerFrontSpinner(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>) -> (any CollectionViewSpinner)? { nil }
-  public func collectionViewControllerEndSpinner(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>) -> (any CollectionViewSpinner)? { nil }
+  public func collectionViewControllerWillPullToRefresh(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>) -> Bool { false }
+  public func collectionViewControllerDidPullToRefresh(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>) {}
+  public func collectionViewControllerFrontRefreshControl(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>) -> (any CollectionViewRefreshControl)? { nil }
+  public func collectionViewControllerEndRefreshControl(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>) -> (any CollectionViewRefreshControl)? { nil }
   public func collectionViewController(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>, shouldIncludeItem item: ItemIdentifier, withFilterQuery query: Any?) -> Bool { true }
 }

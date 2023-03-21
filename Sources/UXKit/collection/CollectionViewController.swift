@@ -23,12 +23,12 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
     collectionView: collectionView
   )
 
-  private lazy var reloadDelegate = CollectionViewReloadDelegate(
+  private lazy var refreshControlDelegate = CollectionViewRefreshControlDelegate(
     collectionView: collectionView,
-    frontSpinner: self.delegate?.collectionViewControllerFrontSpinner(self),
-    endSpinner: self.delegate?.collectionViewControllerEndSpinner(self),
-    willPullToReload: { self.willPullToReload() },
-    didPullToReload: { self.didPullToReload() }
+    frontRefreshControl: self.delegate?.collectionViewControllerFrontRefreshControl(self),
+    endRefreshControl: self.delegate?.collectionViewControllerEndRefreshControl(self),
+    willPullToRefresh: { self.willPullToRefresh() },
+    didPullToRefresh: { self.didPullToRefresh() }
   )
 
   private lazy var filterDelegate = CollectionViewFilterDelegate<S, I>(
@@ -50,7 +50,7 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
   /// Data set of which the collection view data source is derived from.
   ///
   /// Any changes made to this data set is immediately applied to the current
-  /// data source snapshot, thus reloading the items in the collection view.
+  /// data source snapshot, thus refreshing the items in the collection view.
   ///  Though not explicitly enforced, there should be no duplicate items within
   /// the same section (same item across multiple sections is OK).
   ///
@@ -92,18 +92,18 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
     set { scrollDelegate.showsScrollIndicator = newValue }
   }
 
-  /// Distance required to overscroll in order to trigger a reload (consequently
-  /// showing the spinner). This value INCLUDES the content insets of the
-  /// collection view.
-  public var displacementToTriggerReload: CGFloat {
-    get { reloadDelegate.displacementToTriggerReload }
-    set { reloadDelegate.displacementToTriggerReload = newValue }
+  /// Distance required to overscroll in order to trigger a refresh
+  /// (consequently showing the refresh control). This value INCLUDES the
+  /// content insets of the collection view.
+  public var displacementToTriggerRefresh: CGFloat {
+    get { refreshControlDelegate.displacementToTriggerRefresh }
+    set { refreshControlDelegate.displacementToTriggerRefresh = newValue }
   }
 
-  /// Specifies the orientation of the loading spinners.
+  /// Specifies the orientation of the refresh controls.
   public var refreshControlOrientation: UICollectionView.ScrollDirection {
-    get { reloadDelegate.orientation }
-    set { reloadDelegate.orientation = newValue }
+    get { refreshControlDelegate.orientation }
+    set { refreshControlDelegate.orientation = newValue }
   }
 
   /// Specifies the filter query.
@@ -114,8 +114,8 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
 
   /// The content insets of the collection view.
   public var contentInsets: UIEdgeInsets {
-    get { reloadDelegate.contentInsets }
-    set { reloadDelegate.contentInsets = newValue }
+    get { refreshControlDelegate.contentInsets }
+    set { refreshControlDelegate.contentInsets = newValue }
   }
 
   // MARK: - Life Cycle
@@ -140,7 +140,7 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
     stateMachine.start()
     itemSelectionDelegate.stateMachine.start()
     scrollDelegate.stateMachine.start()
-    reloadDelegate.stateMachine.start()
+    refreshControlDelegate.stateMachine.start()
     filterDelegate.stateMachine.start()
   }
 
@@ -148,7 +148,7 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
     super.viewDidDisappear(animated)
 
     filterDelegate.stateMachine.stop()
-    reloadDelegate.stateMachine.stop()
+    refreshControlDelegate.stateMachine.stop()
     scrollDelegate.stateMachine.stop()
     itemSelectionDelegate.stateMachine.stop()
     stateMachine.stop()
@@ -289,26 +289,26 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
 
   // MARK: - Pull-to-Refresh Management
 
-  private func willPullToReload() -> Bool {
-    delegate?.collectionViewControllerWillPullToReload(self) ?? false
+  private func willPullToRefresh() -> Bool {
+    delegate?.collectionViewControllerWillPullToRefresh(self) ?? false
   }
 
-  private func didPullToReload() {
-    delegate?.collectionViewControllerDidPullToReload(self)
+  private func didPullToRefresh() {
+    delegate?.collectionViewControllerDidPullToRefresh(self)
   }
 
-  public func notifyReloadComplete(completion: @escaping () -> Void = {}) {
-    reloadDelegate.stopSpinnersIfNeeded(completion: completion)
+  public func notifyRefreshComplete(completion: @escaping () -> Void = {}) {
+    refreshControlDelegate.deactivateRefreshControlsIfNeeded(completion: completion)
   }
 
   open func scrollViewDidScroll(_ scrollView: UIScrollView) {
-    reloadDelegate.layoutSpinnersIfNeeded()
+    refreshControlDelegate.layoutRefreshControlsIfNeeded()
     
     delegate?.collectionViewControllerDidScroll(self)
   }
 
   open func scrollViewWillBeginDecelerating(_ scrollView: UIScrollView) {
-    reloadDelegate.startSpinnersIfNeeded()
+    refreshControlDelegate.activateRefreshControlsIfNeeded()
   }
 
   // MARK: - Filter Management

@@ -2,6 +2,6 @@
 
 import UIKit
 
-public protocol CollectionViewSpinner: UIView {
+public protocol CollectionViewRefreshControl: UIView {
   var isActive: Bool { get set }
 }
