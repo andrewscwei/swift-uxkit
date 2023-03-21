@@ -83,14 +83,6 @@ public protocol CollectionViewControllerDelegate<SectionIdentifier, ItemIdentifi
   ///
   /// - Returns: Some `CollectionViewSpinner` instance.
   func collectionViewControllerEndSpinner(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>) -> (any CollectionViewSpinner)?
-
-  /// Handler invoked to create a `UICollectionViewLayout` for the internal
-  /// collection view.
-  ///
-  /// - Parameter viewController: The invoking `CollectionViewController`.
-  ///
-  /// - Returns: `UICollectionViewLayout` instance.
-  func collectionViewControllerViewLayout(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>) -> UICollectionViewLayout?
 }
 
 extension CollectionViewControllerDelegate {
@@ -102,5 +94,4 @@ extension CollectionViewControllerDelegate {
   public func collectionViewControllerDidPullToReload(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>) {}
   public func collectionViewControllerFrontSpinner(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>) -> (any CollectionViewSpinner)? { nil }
   public func collectionViewControllerEndSpinner(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>) -> (any CollectionViewSpinner)? { nil }
-  public func collectionViewControllerViewLayout(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>) -> UICollectionViewLayout? { nil }
 }

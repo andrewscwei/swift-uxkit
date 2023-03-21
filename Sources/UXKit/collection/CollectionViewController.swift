@@ -31,7 +31,7 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
 
   // MARK: - Layout
 
-  public lazy var collectionViewLayout = layoutFactory()
+  private lazy var collectionViewLayout = layoutFactory()
   
   public lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionViewLayout)
 
@@ -307,7 +307,6 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
     let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
 
     let section = NSCollectionLayoutSection(group: group)
-    //    section.boundarySupplementaryItems = [headerLayout()]
 
     return UICollectionViewCompositionalLayout(section: section)
   }
