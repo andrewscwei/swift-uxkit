@@ -17,16 +17,10 @@ class CollectionViewReloadDelegate {
   private let didPullToReloadHandler: () -> Void
 
   /// Reload control spinner at the front of the collection view.
-  var frontSpinner: (any CollectionViewSpinner)? {
-    willSet { removeFrontSpinnerFromSuperView() }
-    didSet { addFrontSpinnerToSuperView() }
-  }
+  private let frontSpinner: (any CollectionViewSpinner)?
 
   /// Reload control spinner at the end of the collection view.
-  var endSpinner: (any CollectionViewSpinner)? {
-    willSet { removeEndSpinnerFromSuperView() }
-    didSet { addEndSpinnerToSuperView() }
-  }
+  private let endSpinner: (any CollectionViewSpinner)?
 
   /// X constraint of the front spinner.
   private var frontSpinnerConstraintX: NSLayoutConstraint?
@@ -57,12 +51,19 @@ class CollectionViewReloadDelegate {
 
   init(
     collectionView: UICollectionView,
+    frontSpinner: (any CollectionViewSpinner)?,
+    endSpinner: (any CollectionViewSpinner)?,
     willPullToReload: @escaping () -> Bool = { true },
     didPullToReload: @escaping () -> Void = {}
   ) {
     self.collectionView = collectionView
+    self.frontSpinner = frontSpinner
+    self.endSpinner = endSpinner
     self.willPullToReloadHandler = willPullToReload
     self.didPullToReloadHandler = didPullToReload
+
+    addFrontSpinnerToSuperView()
+    addEndSpinnerToSuperView()
   }
 
   /// Starts either the front or the end spinners if applicable, depending on
@@ -309,7 +310,7 @@ extension CollectionViewReloadDelegate: StateMachineDelegate {
 
   /// Reveals the spinners depending on the current content offset of the
   /// collection view.
-  func revealSpinnersIfNeeded() {
+  func layoutSpinnersIfNeeded() {
     guard willPullToReloadHandler() else { return }
 
     if frontSpinner?.isActive != true, let mask = frontSpinner?.layer.mask as? CAGradientLayer {

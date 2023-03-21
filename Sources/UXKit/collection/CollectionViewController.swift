@@ -23,6 +23,8 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
 
   private lazy var reloadDelegate = CollectionViewReloadDelegate(
     collectionView: collectionView,
+    frontSpinner: self.delegate?.collectionViewControllerFrontSpinner(self),
+    endSpinner: self.delegate?.collectionViewControllerEndSpinner(self),
     willPullToReload: { self.willPullToReload() },
     didPullToReload: { self.didPullToReload() }
   )
@@ -108,18 +110,6 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
     set { reloadDelegate.contentInsets = newValue }
   }
 
-  /// Reload control spinner at the front of the collection view.
-  public var frontSpinner: (any CollectionViewSpinner)? {
-    get { reloadDelegate.frontSpinner }
-    set { reloadDelegate.frontSpinner = newValue }
-  }
-
-  /// Reload control spinner at the end of the collection view.
-  public var endSpinner: (any CollectionViewSpinner)? {
-    get { reloadDelegate.endSpinner }
-    set { reloadDelegate.endSpinner = newValue }
-  }
-
   // MARK: - Life Cycle
 
   open override func viewDidLoad() {
@@ -134,9 +124,6 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
     collectionView.delaysContentTouches = false
     collectionView.delegate = self
     collectionView.autoLayout { $0.alignToSuperview() }
-
-    frontSpinner = delegate?.collectionViewControllerFrontSpinner(self)
-    endSpinner = delegate?.collectionViewControllerEndSpinner(self)
   }
 
   open override func viewWillAppear(_ animated: Bool) {
@@ -277,7 +264,7 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
   }
 
   open func scrollViewDidScroll(_ scrollView: UIScrollView) {
-    reloadDelegate.revealSpinnersIfNeeded()
+    reloadDelegate.layoutSpinnersIfNeeded()
     
     delegate?.collectionViewControllerDidScroll(self)
   }
