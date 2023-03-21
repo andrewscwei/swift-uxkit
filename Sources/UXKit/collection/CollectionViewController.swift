@@ -308,16 +308,9 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
   ///
   /// - Returns: `UICollectionViewLayout` instance.
   open func layoutFactory() -> UICollectionViewLayout {
-    let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
-    let item = NSCollectionLayoutItem(layoutSize: itemSize)
-    item.contentInsets = .zero
-
-    let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(50.0))
-    let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
-
-    let section = NSCollectionLayoutSection(group: group)
-
-    return UICollectionViewCompositionalLayout(section: section)
+    var configuration = UICollectionLayoutListConfiguration(appearance: .plain)
+    configuration.backgroundColor = .clear
+    return UICollectionViewCompositionalLayout.list(using: configuration)
   }
 
   // MARK: - Updating
