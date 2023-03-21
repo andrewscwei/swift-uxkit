@@ -16,4 +16,17 @@ extension UIViewController {
     let delegate = getAssociatedValue(for: self, key: &ptr_autoLayoutDelegate) { return AutoLayoutDelegate() }
     delegate.commit(self, iterator: iterator)
   }
+
+  public func addChild(_ viewController: UIViewController, toView view: UIView, configure: ((UIViewController) -> Void)? = nil) {
+    addChild(viewController)
+    configure?(viewController)
+    view.addSubview(viewController.view)
+    viewController.didMove(toParent: self)
+  }
+
+  public func removeChild(_ viewController: UIViewController) {
+    viewController.willMove(toParent: nil)
+    viewController.view.removeFromSuperview()
+    viewController.removeFromParent()
+  }
 }
