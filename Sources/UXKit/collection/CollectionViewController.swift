@@ -144,13 +144,17 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
     stateMachine.stop()
   }
 
-  // MARK: - Updating
+  // MARK: - Data Management
 
-  open func update(check: StateValidator) {
-    if check.isDirty(\CollectionViewController.dataSet) {
-      updateSnapshot(with: dataSet)
-      itemSelectionDelegate.dataSet = dataSet
+  private func dataSourceFactory() -> UICollectionViewDiffableDataSource<S, I> {
+    let dataSource = UICollectionViewDiffableDataSource<S, I>(collectionView: collectionView) { collectionView, indexPath, item in
+      let section = self.dataSource.snapshot().sectionIdentifiers[indexPath.section]
+      let cell = self.cellFactory(at: indexPath, section: section, item: item)
+      self.configureCell(cell, at: indexPath, section: section, item: item)
+      return cell
     }
+
+    return dataSource
   }
 
   /// Updates the current snapshot of the data source with a data set.
@@ -168,6 +172,28 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
     }
 
     dataSource.apply(snapshot)
+  }
+
+  // MARK: - Cell Management
+
+  private func cellFactory(at indexPath: IndexPath, section: S, item: I) -> UICollectionViewCell {
+    guard let cell = delegate?.collectionViewController(self, cellAtIndexPath: indexPath, section: section, item: item) else {
+      fatalError("CollectionViewController requires a CollectionViewControllerDelegate to implement collectionViewController(_:cellAtIndexPath:section:item:).")
+    }
+
+    return cell
+  }
+
+  /// Confiugres the cell at the given index path, section and item. This is
+  /// invoked whenever a cell is being configured (i.e. during cell factory).
+  ///
+  /// - Parameters:
+  ///   - cell: Cell.
+  ///   - indexPath: Index path.
+  ///   - section: Section.
+  ///   - item: Item.
+  open func configureCell(_ cell: UICollectionViewCell, at indexPath: IndexPath, section: S, item: I) {
+
   }
 
   // MARK: - Selection Management
@@ -273,24 +299,7 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
     reloadDelegate.startSpinnersIfNeeded()
   }
 
-  // MARK: - Factories
-
-  private func dataSourceFactory() -> UICollectionViewDiffableDataSource<S, I> {
-    let dataSource = UICollectionViewDiffableDataSource<S, I>(collectionView: collectionView) { collectionView, indexPath, item in
-      let section = self.dataSource.snapshot().sectionIdentifiers[indexPath.section]
-      return self.cellFactory(at: indexPath, section: section, item: item)
-    }
-
-    return dataSource
-  }
-
-  private func cellFactory(at indexPath: IndexPath, section: S, item: I) -> UICollectionViewCell {
-    guard let cell = delegate?.collectionViewController(self, cellAtIndexPath: indexPath, section: section, item: item) else {
-      fatalError("CollectionViewController requires a CollectionViewControllerDelegate to implement collectionViewController(_:cellAtIndexPath:section:item:).")
-    }
-
-    return cell
-  }
+  // MARK: - Layout Management
 
   /// Factory method for the `UICollectionViewLayout` object of the collection
   /// view.
@@ -309,5 +318,14 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
     let section = NSCollectionLayoutSection(group: group)
 
     return UICollectionViewCompositionalLayout(section: section)
+  }
+
+  // MARK: - Updating
+
+  open func update(check: StateValidator) {
+    if check.isDirty(\CollectionViewController.dataSet) {
+      updateSnapshot(with: dataSet)
+      itemSelectionDelegate.dataSet = dataSet
+    }
   }
 }
