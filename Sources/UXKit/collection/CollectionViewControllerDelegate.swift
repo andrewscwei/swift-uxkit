@@ -83,6 +83,17 @@ public protocol CollectionViewControllerDelegate<SectionIdentifier, ItemIdentifi
   ///
   /// - Returns: Some `CollectionViewSpinner` instance.
   func collectionViewControllerEndSpinner(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>) -> (any CollectionViewSpinner)?
+
+  /// Handler invoked to determine if an item should be included in the current
+  /// data source snapshot when the specified filter query is applied.
+  ///
+  /// - Parameters:
+  ///   - viewController: The invoking `CollectionViewController`.
+  ///   - item: Item.
+  ///   - query: Filter query.
+  ///
+  /// - Returns: `true` to include the item, `false` otherwise.
+  func collectionViewController(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>, shouldIncludeItem item: ItemIdentifier, withFilterQuery query: Any?) -> Bool
 }
 
 extension CollectionViewControllerDelegate {
@@ -94,4 +105,5 @@ extension CollectionViewControllerDelegate {
   public func collectionViewControllerDidPullToReload(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>) {}
   public func collectionViewControllerFrontSpinner(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>) -> (any CollectionViewSpinner)? { nil }
   public func collectionViewControllerEndSpinner(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>) -> (any CollectionViewSpinner)? { nil }
+  public func collectionViewController(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>, shouldIncludeItem item: ItemIdentifier, withFilterQuery query: Any?) -> Bool { true }
 }

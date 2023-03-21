@@ -19,7 +19,9 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
     shouldDeselectItem: { self.shouldDeselectItem(item: $0, section: $1) }
   )
 
-  private lazy var scrollDelegate = CollectionViewScrollDelegate<S, I>(collectionView: collectionView)
+  private lazy var scrollDelegate = CollectionViewScrollDelegate<S, I>(
+    collectionView: collectionView
+  )
 
   private lazy var reloadDelegate = CollectionViewReloadDelegate(
     collectionView: collectionView,
@@ -27,6 +29,12 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
     endSpinner: self.delegate?.collectionViewControllerEndSpinner(self),
     willPullToReload: { self.willPullToReload() },
     didPullToReload: { self.didPullToReload() }
+  )
+
+  private lazy var filterDelegate = CollectionViewFilterDelegate<S, I>(
+    collectionView: collectionView,
+    filterPredicate: { item, query in self.delegate?.collectionViewController(self, shouldIncludeItem: item, withFilterQuery: query) ?? true },
+    filteredDataSetDidChange: { self.filteredDataSetDidChange() }
   )
 
   // MARK: - Layout
@@ -53,12 +61,6 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
 
   /// The data source object.
   private lazy var dataSource: UICollectionViewDiffableDataSource<S, I> = dataSourceFactory()
-
-  /// Indicates if an item filter currently exists.
-  public var hasItemFilter: Bool { false }
-
-  /// Indicates the number of sections.
-  public var numberOfSections: Int { dataSource.snapshot().numberOfSections }
 
   /// The currently selected items.
   public var selectedItems: [I] {
@@ -99,9 +101,15 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
   }
 
   /// Specifies the orientation of the loading spinners.
-  public var orientation: UICollectionView.ScrollDirection {
+  public var refreshControlOrientation: UICollectionView.ScrollDirection {
     get { reloadDelegate.orientation }
     set { reloadDelegate.orientation = newValue }
+  }
+
+  /// Specifies the filter query.
+  public var filterQuery: Any? {
+    get { filterDelegate.query }
+    set { filterDelegate.query = newValue }
   }
 
   /// The content insets of the collection view.
@@ -133,11 +141,13 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
     itemSelectionDelegate.stateMachine.start()
     scrollDelegate.stateMachine.start()
     reloadDelegate.stateMachine.start()
+    filterDelegate.stateMachine.start()
   }
 
   open override func viewDidDisappear(_ animated: Bool) {
     super.viewDidDisappear(animated)
 
+    filterDelegate.stateMachine.stop()
     reloadDelegate.stateMachine.stop()
     scrollDelegate.stateMachine.stop()
     itemSelectionDelegate.stateMachine.stop()
@@ -172,6 +182,8 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
     }
 
     dataSource.apply(snapshot)
+
+    itemSelectionDelegate.invalidateSelectedIndexPaths()
   }
 
   // MARK: - Cell Management
@@ -299,6 +311,12 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
     reloadDelegate.startSpinnersIfNeeded()
   }
 
+  // MARK: - Filter Management
+
+  private func filteredDataSetDidChange() {
+    updateSnapshot(with: filterDelegate.filteredDataSet)
+  }
+
   // MARK: - Layout Management
 
   /// Factory method for the `UICollectionViewLayout` object of the collection
@@ -319,6 +337,7 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
     if check.isDirty(\CollectionViewController.dataSet) {
       updateSnapshot(with: dataSet)
       itemSelectionDelegate.dataSet = dataSet
+      filterDelegate.dataSet = dataSet
     }
   }
 }

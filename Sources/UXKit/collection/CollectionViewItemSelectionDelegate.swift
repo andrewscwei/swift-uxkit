@@ -24,8 +24,7 @@ class CollectionViewItemSelectionDelegate<S: Hashable, I: Hashable> {
   /// Handler that determines if an item should be deselected.
   private let shouldDeselectItemHandler: (I, S) -> Bool
 
-  /// Data set used as a reference mirroring the actual items intended for the
-  /// collection view.
+  /// Data set of the parent `CollectionViewController`.
   @Stateful var dataSet = [S: [I]]()
 
   /// Internal stored value of the currently selected items.
@@ -36,9 +35,9 @@ class CollectionViewItemSelectionDelegate<S: Hashable, I: Hashable> {
 
   init(
     collectionView: UICollectionView,
-    selectionDidChange: @escaping () -> Void = {},
-    shouldSelectItem: @escaping (I, S) -> Bool = { _, _ in true },
-    shouldDeselectItem: @escaping (I, S) -> Bool = { _, _ in true }
+    selectionDidChange: @escaping () -> Void,
+    shouldSelectItem: @escaping (I, S) -> Bool,
+    shouldDeselectItem: @escaping (I, S) -> Bool
   ) {
     self.collectionView = collectionView
     self.selectionDidChangeHandler = selectionDidChange
@@ -292,23 +291,17 @@ class CollectionViewItemSelectionDelegate<S: Hashable, I: Hashable> {
     return shouldDeselectItem(item, in: section)
   }
 
-  /// Invalidates the selected items, ensuring that it is in sync with
-  /// `dataSet` which is the source of truth for which items are available in
-  /// the collection view (i.e. the current snapshot of the collection view may
-  /// only contain items filtered elsewhere.
-  ///
-  /// - Parameters:
-  ///   - predicate: Method that iterates over every selected item and data set
-  ///                item to determine equality.
-  private func invalidateSelectedItems(where predicate: (any Hashable, any Hashable) -> Bool) {
+  /// Invalidates the selected items, ensuring that it contains only the items
+  /// inside `dataSet` of its parent `CollectionViewController`.
+  func invalidateSelectedItems() {
     let items = dataSet.reduce([]) { $0 + $1.value }
-    selectedItems = selectedItems.filter({ item in items.contains(where: { predicate($0, item) }) })
+    selectedItems = selectedItems.filter({ item in items.contains(where: { $0.isEqual(to: item) }) })
   }
 
   /// Invalidates the index paths of selected items in the collection view,
   /// ensuring that it is in sync with `selectedItems` which is the source of
   /// truth for which items are selected.
-  private func invalidateSelectedIndexPaths() {
+  func invalidateSelectedIndexPaths() {
     let isAnimated = false
     let oldSelectedIndexPaths = getIndexPathsForSelectedItems()
     let newSelectedIndexPaths = selectedItems.compactMap { mapItemToIndexPath($0) }
@@ -413,7 +406,7 @@ extension CollectionViewItemSelectionDelegate: StateMachineDelegate {
     }
 
     if check.isDirty(\CollectionViewItemSelectionDelegate.dataSet) {
-      invalidateSelectedItems { $0.isEqual(to: $1) }
+      invalidateSelectedItems()
     }
 
     if check.isDirty(\CollectionViewItemSelectionDelegate.dataSet, \CollectionViewItemSelectionDelegate.selectedItems) {
