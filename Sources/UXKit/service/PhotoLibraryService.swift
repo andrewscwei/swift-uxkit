@@ -7,8 +7,6 @@ import UIKit
 public class PhotoLibraryService: Observable {
   public typealias Observer = PhotoLibraryServiceObserver
 
-  public init() {}
-
   /// Gets the photo library authorization status.
   public var authorizationStatus: AuthorizationStatus {
     let status = PHPhotoLibrary.authorizationStatus()
@@ -22,11 +20,13 @@ public class PhotoLibraryService: Observable {
     }
   }
 
+  public init() {}
+
   /// Requests for photo library authorization.
   ///
   /// - Parameters:
   ///   - completion: Handler invoked upon completion.
-  public func requestAuthorization(_ completion: (() -> Void)? = nil) {
+  public func requestAuthorization(failure failureHandler: @escaping (AuthorizationStatus) -> Void = { _ in }) {
     let status = authorizationStatus
 
     switch status {
@@ -35,13 +35,15 @@ public class PhotoLibraryService: Observable {
         DispatchQueue.main.async {
           self.notifyObservers { $0.photoLibraryService(self, authorizationStatusDidChange: self.authorizationStatus) }
         }
-        completion?()
       }
     case .restricted,
          .denied:
-      UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!)
+      failureHandler(status)
+//      DispatchQueue.main.async {
+//        UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!)
+//      }
     default:
-      completion?()
+      break
     }
   }
 }
