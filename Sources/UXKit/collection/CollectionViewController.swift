@@ -340,7 +340,7 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
 
   open func update(check: StateValidator) {
     if check.isDirty(\UICollectionView.collectionViewLayout) {
-      collectionView.collectionViewLayout = layoutFactory()
+      collectionView.setCollectionViewLayout(layoutFactory(), animated: hasViewAppeared)
     }
 
     if check.isDirty(\CollectionViewController.dataSet) {
