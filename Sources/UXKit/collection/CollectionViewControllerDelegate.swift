@@ -94,6 +94,15 @@ public protocol CollectionViewControllerDelegate<SectionIdentifier, ItemIdentifi
   ///
   /// - Returns: `true` to include the item, `false` otherwise.
   func collectionViewController(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>, shouldIncludeItem item: ItemIdentifier, withFilterQuery query: Any?) -> Bool
+
+  /// Handler invoked to create the collection view layout for the internal
+  /// collection view.
+  ///
+  /// - Parameter viewController: The invoking `CollectionViewController`.
+  ///
+  /// - Returns: The `UICollectionViewLayout` instance. If `nil`, the default
+  ///            layout will be used.
+  func collectionViewControllerCollectionViewLayout(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>) -> UICollectionViewLayout?
 }
 
 extension CollectionViewControllerDelegate {
@@ -106,4 +115,5 @@ extension CollectionViewControllerDelegate {
   public func collectionViewControllerFrontRefreshControl(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>) -> (any CollectionViewRefreshControl)? { nil }
   public func collectionViewControllerEndRefreshControl(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>) -> (any CollectionViewRefreshControl)? { nil }
   public func collectionViewController(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>, shouldIncludeItem item: ItemIdentifier, withFilterQuery query: Any?) -> Bool { true }
+  public func collectionViewControllerCollectionViewLayout(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>) -> UICollectionViewLayout? { nil }
 }

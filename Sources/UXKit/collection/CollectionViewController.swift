@@ -39,9 +39,7 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
 
   // MARK: - Layout
 
-  private lazy var collectionViewLayout = layoutFactory()
-  
-  public lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionViewLayout)
+  public lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: .init())
 
   // MARK: - States
 
@@ -125,6 +123,7 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
 
     view.addSubview(collectionView)
 
+    collectionView.collectionViewLayout = layoutFactory()
     collectionView.backgroundColor = .clear
     collectionView.bounces = true
     collectionView.contentInsetAdjustmentBehavior = .never
@@ -196,7 +195,7 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
     return cell
   }
 
-  /// Confiugres the cell at the given index path, section and item. This is
+  /// Configures the cell at the given index path, section and item. This is
   /// invoked whenever a cell is being configured (i.e. during cell factory).
   ///
   /// - Parameters:
@@ -325,7 +324,11 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
   /// Subclasses can override this method to create custom layouts.
   ///
   /// - Returns: `UICollectionViewLayout` instance.
-  open func layoutFactory() -> UICollectionViewLayout {
+  private func layoutFactory() -> UICollectionViewLayout {
+    if let layout = delegate?.collectionViewControllerCollectionViewLayout(self) {
+      return layout
+    }
+    
     var configuration = UICollectionLayoutListConfiguration(appearance: .plain)
     configuration.backgroundColor = .clear
     return UICollectionViewCompositionalLayout.list(using: configuration)
