@@ -32,9 +32,7 @@ public class PhotoLibraryService: Observable {
     switch status {
     case .notDetermined:
       PHPhotoLibrary.requestAuthorization { (_) in
-        DispatchQueue.main.async {
-          self.notifyObservers { $0.photoLibraryService(self, authorizationStatusDidChange: self.authorizationStatus) }
-        }
+        self.notifyObservers { $0.photoLibraryService(self, authorizationStatusDidChange: self.authorizationStatus) }
       }
     case .restricted,
          .denied:

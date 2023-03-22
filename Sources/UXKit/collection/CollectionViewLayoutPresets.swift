@@ -20,17 +20,21 @@ public struct CollectionViewLayoutPresets {
     return UICollectionViewCompositionalLayout.list(using: configuration)
   }
 
-  public static func fooLayout() -> UICollectionViewCompositionalLayout {
-    let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
-    let item = NSCollectionLayoutItem(layoutSize: itemSize)
-    item.contentInsets = .zero
+  public static func horizontalLayout(sectionContentInsets: NSDirectionalEdgeInsets = .zero, itemContentInsets: NSDirectionalEdgeInsets = .zero) -> UICollectionViewCompositionalLayout {
+    let config = UICollectionViewCompositionalLayoutConfiguration()
+    config.scrollDirection = .horizontal
 
-    let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(50.0))
+    let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
+    let item = NSCollectionLayoutItem(layoutSize: itemSize)
+    item.contentInsets = itemContentInsets
+
+    let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalHeight(0.75), heightDimension: .fractionalHeight(1.0))
     let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
 
     let section = NSCollectionLayoutSection(group: group)
+    section.contentInsets = sectionContentInsets
 
-    let layout = UICollectionViewCompositionalLayout(section: section)
+    let layout = UICollectionViewCompositionalLayout(section: section, configuration: config)
 
     return layout
   }
