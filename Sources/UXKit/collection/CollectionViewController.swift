@@ -1,5 +1,6 @@
 // © GHOZT
 
+import BaseKit
 import UIKit
 
 /// A custom `UIViewController` that manages a `UICollectionView` whose items
@@ -123,7 +124,6 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
 
     view.addSubview(collectionView)
 
-    collectionView.collectionViewLayout = layoutFactory()
     collectionView.backgroundColor = .clear
     collectionView.bounces = true
     collectionView.contentInsetAdjustmentBehavior = .never
@@ -135,6 +135,8 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
 
   open override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
+
+    collectionView.collectionViewLayout = layoutFactory()
 
     stateMachine.start()
     itemSelectionDelegate.stateMachine.start()
@@ -318,25 +320,29 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
 
   // MARK: - Layout Management
 
-  /// Factory method for the `UICollectionViewLayout` object of the collection
-  /// view.
-  ///
-  /// Subclasses can override this method to create custom layouts.
-  ///
-  /// - Returns: `UICollectionViewLayout` instance.
   private func layoutFactory() -> UICollectionViewLayout {
-    if let layout = delegate?.collectionViewControllerCollectionViewLayout(self) {
-      return layout
+    guard let layout = delegate?.collectionViewControllerCollectionViewLayout(self) else {
+      log(.debug) { "Creating collection view layout... WARN: No collection view layout provided, please implement the delegate method collectionViewControllerCollectionViewLayout(_:)" }
+
+      return UICollectionViewLayout()
     }
-    
-    var configuration = UICollectionLayoutListConfiguration(appearance: .plain)
-    configuration.backgroundColor = .clear
-    return UICollectionViewCompositionalLayout.list(using: configuration)
+
+    return layout
+  }
+
+  /// Invalidates the collection view layout, reapplying it to the collection
+  /// view again.
+  public func invalidateCollectionViewLayout() {
+    stateMachine.invalidate(\UICollectionView.collectionViewLayout)
   }
 
   // MARK: - Updating
 
   open func update(check: StateValidator) {
+    if check.isDirty(\UICollectionView.collectionViewLayout) {
+      collectionView.collectionViewLayout = layoutFactory()
+    }
+
     if check.isDirty(\CollectionViewController.dataSet) {
       updateSnapshot(with: dataSet)
       itemSelectionDelegate.dataSet = dataSet
