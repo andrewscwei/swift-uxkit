@@ -78,7 +78,7 @@ public class AutoLayoutIterator {
     return alignLessThanOrEqualToSuperview(anchorType, to: superview, offset: offset, useSafeArea: useSafeArea)
   }
 
-  @discardableResult public func align(_ anchorType: AutoLayoutAnchorType, to toView: UIView, offset: CGFloat = 0.0, useSafeArea: Bool = false) -> [NSLayoutConstraint] {
+  @discardableResult public func align(_ anchorType: AutoLayoutAnchorType = [.top, .right, .bottom, .left], to toView: UIView, offset: CGFloat = 0.0, useSafeArea: Bool = false) -> [NSLayoutConstraint] {
     var constraints = [NSLayoutConstraint]()
 
     if anchorType.contains(.top) {
