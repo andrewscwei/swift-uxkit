@@ -122,21 +122,29 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
   open override func viewDidLoad() {
     super.viewDidLoad()
 
-    view.addSubview(collectionView)
-
     collectionView.backgroundColor = .clear
     collectionView.bounces = true
     collectionView.contentInsetAdjustmentBehavior = .never
     collectionView.dataSource = dataSource
     collectionView.delaysContentTouches = false
     collectionView.delegate = self
+
+    initSubviews()
+  }
+
+  /// Adds and configures all subviews in view and defines autolayout
+  /// constraints.
+  ///
+  /// This method by default sets the autolayout constraints of the internal
+  /// collection view. Override this method without calling `super` to provide
+  /// your own constraints.
+  open func initSubviews() {
+    view.addSubview(collectionView)
     collectionView.autoLayout { $0.alignToSuperview() }
   }
 
   open override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
-
-    collectionView.collectionViewLayout = layoutFactory()
 
     stateMachine.start()
     itemSelectionDelegate.stateMachine.start()

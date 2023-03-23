@@ -28,7 +28,7 @@ public struct CollectionViewLayoutPresets {
     let item = NSCollectionLayoutItem(layoutSize: itemSize)
     item.contentInsets = itemContentInsets
 
-    let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalHeight(0.75), heightDimension: .fractionalHeight(1.0))
+    let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalHeight(1.0), heightDimension: .fractionalHeight(1.0))
     let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
 
     let section = NSCollectionLayoutSection(group: group)

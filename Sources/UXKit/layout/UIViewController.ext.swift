@@ -17,15 +17,24 @@ extension UIViewController {
     delegate.commit(self, iterator: iterator)
   }
 
-  public func addChild(_ viewController: UIViewController, toView view: UIView, configure: ((UIViewController) -> Void)? = nil) {
+  public func addChild<T: UIViewController, V: UIView>(_ viewController: T, toView view: V, configure: (T) -> Void = { _ in }) {
     addChild(viewController)
-    configure?(viewController)
-    view.addSubview(viewController.view)
+
+    if let stackView = view as? UIStackView {
+      stackView.addArrangedSubview(viewController.view)
+    }
+    else {
+      view.addSubview(viewController.view)
+    }
+
+    configure(viewController)
+
     viewController.didMove(toParent: self)
   }
 
-  public func removeChild(_ viewController: UIViewController) {
+  public func removeChild<T: UIViewController>(_ viewController: T, unconfigure: (T) -> Void = { _ in }) {
     viewController.willMove(toParent: nil)
+    unconfigure(viewController)
     viewController.view.removeFromSuperview()
     viewController.removeFromParent()
   }
