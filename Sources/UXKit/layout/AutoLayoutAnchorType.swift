@@ -14,8 +14,9 @@ public struct AutoLayoutAnchorType: OptionSet {
   public static let width = AutoLayoutAnchorType(rawValue: 1 << 6)
   public static let height = AutoLayoutAnchorType(rawValue: 1 << 7)
   public static let center: AutoLayoutAnchorType = [.centerX, .centerY]
+  public static let x: AutoLayoutAnchorType = [.left, .right]
+  public static let y: AutoLayoutAnchorType = [.top, .bottom]
   public static let size: AutoLayoutAnchorType = [.width, .height]
-  public static let edges: AutoLayoutAnchorType = [.top, .right, .bottom, .left]
 
   public init(rawValue: Int) {
     self.rawValue = rawValue
