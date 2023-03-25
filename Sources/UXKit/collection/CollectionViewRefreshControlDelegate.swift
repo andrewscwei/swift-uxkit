@@ -17,10 +17,10 @@ class CollectionViewRefreshControlDelegate {
   private let didPullToRefreshHandler: () -> Void
 
   /// Refresh control at the front of the collection view.
-  private let frontRefreshControl: (any CollectionViewRefreshControl)?
+  let frontRefreshControl: (any CollectionViewRefreshControl)?
 
   /// Refresh control at the end of the collection view.
-  private let endRefreshControl: (any CollectionViewRefreshControl)?
+  let endRefreshControl: (any CollectionViewRefreshControl)?
 
   /// X constraint of the front refresh control.
   private var frontRefreshControlConstraintX: NSLayoutConstraint?

@@ -42,6 +42,10 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
 
   public lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: .init())
 
+  public var frontRefreshControl: (any CollectionViewRefreshControl)? { refreshControlDelegate.frontRefreshControl }
+
+  public var endRefreshControl: (any CollectionViewRefreshControl)? { refreshControlDelegate.endRefreshControl }
+
   // MARK: - States
 
   public lazy var stateMachine = StateMachine(self)
@@ -282,6 +286,8 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
     itemSelectionDelegate.deselectItem(at: indexPath, where: { $0.isEqual(to: $1) })
   }
 
+  open func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {}
+
   // MARK: - Scroll Management
 
   public func scrollToBeginning(animated: Bool = true) {
@@ -295,6 +301,28 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
   public func scrollToItem(_ item: I, animated: Bool = true) {
     scrollDelegate.scrollToItem(item, animated: animated)
   }
+
+  open func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {}
+
+  open func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {}
+
+  open func scrollViewShouldScrollToTop(_ scrollView: UIScrollView) -> Bool { true }
+
+  open func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {}
+
+  open func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {}
+
+  open func scrollViewDidZoom(_ scrollView: UIScrollView) {}
+
+  open func scrollViewDidScrollToTop(_ scrollView: UIScrollView) {}
+
+  open func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {}
+
+  open func scrollViewWillBeginZooming(_ scrollView: UIScrollView, with view: UIView?) {}
+
+  open func scrollViewDidChangeAdjustedContentInset(_ scrollView: UIScrollView) {}
+
+  open func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {}
 
   // MARK: - Pull-to-Refresh Management
 
