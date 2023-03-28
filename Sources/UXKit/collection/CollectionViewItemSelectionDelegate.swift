@@ -253,7 +253,7 @@ class CollectionViewItemSelectionDelegate<S: Hashable, I: Hashable> {
   /// - Parameter indexPath: Index path.
   ///
   /// - Returns: `true` indicates item should be selected, `false` otherwise.
-  func shouldSelctItem(at indexPath: IndexPath) -> Bool {
+  func shouldSelectItem(at indexPath: IndexPath) -> Bool {
     guard let item = mapIndexPathToItem(indexPath), let section = collectionViewDataSource.snapshot().sectionIdentifier(containingItem: item) else { return false }
 
     return shouldSelectItem(item, in: section)

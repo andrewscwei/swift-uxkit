@@ -41,7 +41,7 @@ class CollectionViewFilterDelegate<S: Hashable, I: Hashable> {
     self.filteredDataSetDidChange = filteredDataSetDidChange
   }
 
-  /// Invaldates the filtered data set, ensuring that it contains only the items
+  /// Invalidates the filtered data set, ensuring that it contains only the items
   /// inside `dataSet` of its parent `CollectionViewController`.
   func invalidateFilteredDataSet() {
     var newFilteredDataSet = filteredDataSet

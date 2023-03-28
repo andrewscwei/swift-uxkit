@@ -83,7 +83,7 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
     set { itemSelectionDelegate.selectionMode = newValue }
   }
 
-  /// Specifies if scroling is enabled.
+  /// Specifies if scrolling is enabled.
   public var isScrollEnabled: Bool {
     get { scrollDelegate.isScrollEnabled }
     set { scrollDelegate.isScrollEnabled = newValue }
@@ -139,10 +139,10 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
     loadSubviews()
   }
 
-  /// Adds and configures all subviews in view and defines autolayout
+  /// Adds and configures all subviews in view and defines auto layout
   /// constraints.
   ///
-  /// This method by default sets the autolayout constraints of the internal
+  /// This method by default sets the auto layout constraints of the internal
   /// collection view. Override this method without calling `super` to provide
   /// your own constraints.
   open func loadSubviews() {
@@ -278,7 +278,7 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
   }
 
   public func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
-    itemSelectionDelegate.shouldSelctItem(at: indexPath)
+    itemSelectionDelegate.shouldSelectItem(at: indexPath)
   }
 
   public func collectionView(_ collectionView: UICollectionView, shouldDeselectItemAt indexPath: IndexPath) -> Bool {
@@ -346,7 +346,7 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
   ///                         its scrolling after dragging ended.
   open func didEndDragging(willDecelerate decelerate: Bool) {}
 
-  /// Handler invoked whenn scroll deceleration ends.
+  /// Handler invoked when scroll deceleration ends.
   open func didEndDeceleratingFromDragging() {}
 
   /// Handler invoked when the collection view scrolls.
@@ -366,7 +366,7 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
 
   public func scrollViewDidScroll(_ scrollView: UIScrollView) {
     refreshControlDelegate.layoutRefreshControlsIfNeeded()
-    
+
     didScroll()
     delegate?.collectionViewControllerDidScroll(self)
   }

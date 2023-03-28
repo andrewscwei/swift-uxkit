@@ -37,7 +37,7 @@ public struct StateValidator {
   /// update cycle.
   ///
   /// - Parameters:
-  ///   - types: The state types. This can be a signle `StateType` or an option
+  ///   - types: The state types. This can be a single `StateType` or an option
   ///            set `StateType`, either works.
   ///
   /// - Returns: `true` if at least one state type is dirty, `false` if none are
