@@ -121,6 +121,9 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
     set { refreshControlDelegate.contentInsets = newValue }
   }
 
+  /// List of handlers to invoke after scroll animation.
+  private var endScrollingAnimationHandlers: [() -> Void] = []
+
   // MARK: - Life Cycle
 
   open override func viewDidLoad() {
@@ -133,7 +136,7 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
     collectionView.delaysContentTouches = false
     collectionView.delegate = self
 
-    initSubviews()
+    loadSubviews()
   }
 
   /// Adds and configures all subviews in view and defines autolayout
@@ -142,7 +145,7 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
   /// This method by default sets the autolayout constraints of the internal
   /// collection view. Override this method without calling `super` to provide
   /// your own constraints.
-  open func initSubviews() {
+  open func loadSubviews() {
     view.addSubview(collectionView)
     collectionView.autoLayout { $0.alignToSuperview() }
   }
@@ -235,6 +238,10 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
     itemSelectionDelegate.areAllItemsDeselected(in: section, where: predicate)
   }
 
+  public func getItem(at indexPath: IndexPath) -> I? { itemSelectionDelegate.mapIndexPathToItem(indexPath) }
+
+  public func getIndexPath(for item: I) -> IndexPath? { itemSelectionDelegate.mapItemToIndexPath(item) }
+
   @discardableResult public func selectItem(_ item: I, shouldScroll: Bool = true, animated: Bool = true) -> I? {
     guard let item = itemSelectionDelegate.selectItem(item, where: { $0.isEqual(to: $1) }) else { return nil }
 
@@ -270,59 +277,107 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
     delegate?.collectionViewController(self, shouldDeselectItem: item, in: section) ?? true
   }
 
-  open func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
+  public func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
     itemSelectionDelegate.shouldSelctItem(at: indexPath)
   }
 
-  open func collectionView(_ collectionView: UICollectionView, shouldDeselectItemAt indexPath: IndexPath) -> Bool {
+  public func collectionView(_ collectionView: UICollectionView, shouldDeselectItemAt indexPath: IndexPath) -> Bool {
     itemSelectionDelegate.shouldDeselectItem(at: indexPath)
   }
 
-  open func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+  public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
     itemSelectionDelegate.selectItem(at: indexPath, where: { $0.isEqual(to: $1) })
   }
 
-  open func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+  public func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
     itemSelectionDelegate.deselectItem(at: indexPath, where: { $0.isEqual(to: $1) })
   }
 
-  open func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {}
+  public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {}
 
   // MARK: - Scroll Management
 
-  public func scrollToBeginning(animated: Bool = true) {
+  /// Scrolls to the beginning of the collection view.
+  ///
+  /// - Parameters:
+  ///   - animated: Specifies if scrolling is animated.
+  ///   - completionHandler: Handler invoked when scrolling is complete.
+  open func scrollToBeginning(animated: Bool = true, completion completionHandler: (() -> Void)? = nil) {
+    if let handler = completionHandler {
+      endScrollingAnimationHandlers.append(handler)
+    }
+
     scrollDelegate.scrollToBeginning(animated: animated)
   }
 
-  public func scrollToEnd(animated: Bool = true) {
+  /// Scrolls to the beginning of the collection view.
+  ///
+  /// - Parameters:
+  ///   - animated: Specifies if scrolling is animated.
+  ///   - completionHandler: Handler invoked when scrolling is complete.
+  open func scrollToEnd(animated: Bool = true, completion completionHandler: (() -> Void)? = nil) {
+    if let handler = completionHandler {
+      endScrollingAnimationHandlers.append(handler)
+    }
+
     scrollDelegate.scrollToEnd(animated: animated)
   }
 
-  public func scrollToItem(_ item: I, animated: Bool = true) {
+  /// Scrolls to an item.
+  ///
+  /// - Parameters:
+  ///   - item: Item.
+  ///   - animated: Specifies if scrolling behavior is animated.
+  ///   - completionHandler: Handler invoked when scrolling is complete.
+  open func scrollToItem(_ item: I, animated: Bool = true, completion completionHandler: (() -> Void)? = nil) {
+    if let handler = completionHandler {
+      endScrollingAnimationHandlers.append(handler)
+    }
+
     scrollDelegate.scrollToItem(item, animated: animated)
   }
 
-  open func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {}
+  /// Handler invoked when the collection view begins dragging.
+  open func willBeginDragging() {}
 
-  open func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {}
+  /// Handler invoked when the collection view ends dragging.
+  ///
+  /// - Parameter decelerate: Indicates if the collection view is decelerating
+  ///                         its scrolling after dragging ended.
+  open func didEndDragging(willDecelerate decelerate: Bool) {}
 
-  open func scrollViewShouldScrollToTop(_ scrollView: UIScrollView) -> Bool { true }
+  /// Handler invoked whenn scroll deceleration ends.
+  open func didEndDeceleratingFromDragging() {}
 
-  open func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {}
+  /// Handler invoked when the collection view scrolls.
+  open func didScroll() {}
 
-  open func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {}
+  public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+    willBeginDragging()
+  }
 
-  open func scrollViewDidZoom(_ scrollView: UIScrollView) {}
+  public func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+    didEndDragging(willDecelerate: decelerate)
+  }
 
-  open func scrollViewDidScrollToTop(_ scrollView: UIScrollView) {}
+  public func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+    didEndDeceleratingFromDragging()
+  }
 
-  open func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {}
+  public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    refreshControlDelegate.layoutRefreshControlsIfNeeded()
+    
+    didScroll()
+    delegate?.collectionViewControllerDidScroll(self)
+  }
 
-  open func scrollViewWillBeginZooming(_ scrollView: UIScrollView, with view: UIView?) {}
+  public func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+    for handler in endScrollingAnimationHandlers {
+      handler()
+    }
 
-  open func scrollViewDidChangeAdjustedContentInset(_ scrollView: UIScrollView) {}
-
-  open func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {}
+    endScrollingAnimationHandlers = []
+  }
 
   // MARK: - Pull-to-Refresh Management
 
@@ -331,20 +386,16 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
   }
 
   private func didPullToRefresh() {
+    collectionView.isScrollEnabled = false
     delegate?.collectionViewControllerDidPullToRefresh(self)
   }
 
   public func notifyRefreshComplete(completion: @escaping () -> Void = {}) {
+    collectionView.isScrollEnabled = isScrollEnabled
     refreshControlDelegate.deactivateRefreshControlsIfNeeded(completion: completion)
   }
 
-  open func scrollViewDidScroll(_ scrollView: UIScrollView) {
-    refreshControlDelegate.layoutRefreshControlsIfNeeded()
-    
-    delegate?.collectionViewControllerDidScroll(self)
-  }
-
-  open func scrollViewWillBeginDecelerating(_ scrollView: UIScrollView) {
+  public func scrollViewWillBeginDecelerating(_ scrollView: UIScrollView) {
     refreshControlDelegate.activateRefreshControlsIfNeeded()
   }
 

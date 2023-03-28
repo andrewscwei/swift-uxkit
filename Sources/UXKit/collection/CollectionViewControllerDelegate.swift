@@ -11,11 +11,6 @@ public protocol CollectionViewControllerDelegate<SectionIdentifier, ItemIdentifi
   /// - Parameter viewController: The invoking `CollectionViewController`.
   func collectionViewControllerSelectionDidChange(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>)
 
-  /// Handler invoked when the collection view scrolls.
-  ///
-  /// - Parameter viewController: The invoking `CollectionViewController`.
-  func collectionViewControllerDidScroll(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>)
-
   /// Handler invoked to determine if an item should be selected.
   ///
   /// - Parameters:
@@ -103,11 +98,15 @@ public protocol CollectionViewControllerDelegate<SectionIdentifier, ItemIdentifi
   /// - Returns: The `UICollectionViewLayout` instance. If `nil`, the default
   ///            layout will be used.
   func collectionViewControllerCollectionViewLayout(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>) -> UICollectionViewLayout?
+
+  /// Handler invoked when the collection view scrolls.
+  ///
+  /// - Parameter viewController: The invoking `CollectionViewController`.
+  func collectionViewControllerDidScroll(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>)
 }
 
 extension CollectionViewControllerDelegate {
   public func collectionViewControllerSelectionDidChange(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>) {}
-  public func collectionViewControllerDidScroll(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>)  {}
   public func collectionViewController(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>, shouldSelectItem item: ItemIdentifier, in section: SectionIdentifier) -> Bool { true }
   public func collectionViewController(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>, shouldDeselectItem item: ItemIdentifier, in section: SectionIdentifier) -> Bool { true }
   public func collectionViewControllerWillPullToRefresh(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>) -> Bool { false }
@@ -116,4 +115,5 @@ extension CollectionViewControllerDelegate {
   public func collectionViewControllerEndRefreshControl(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>) -> (any CollectionViewRefreshControl)? { nil }
   public func collectionViewController(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>, shouldIncludeItem item: ItemIdentifier, withFilterQuery query: Any?) -> Bool { true }
   public func collectionViewControllerCollectionViewLayout(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>) -> UICollectionViewLayout? { nil }
+  public func collectionViewControllerDidScroll(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>)  {}
 }

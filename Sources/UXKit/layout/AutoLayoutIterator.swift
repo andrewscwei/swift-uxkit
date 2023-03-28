@@ -249,7 +249,7 @@ public class AutoLayoutIterator {
     return constraint
   }
 
-  @discardableResult public func aspectRatio(_ constant: CGFloat) -> NSLayoutConstraint {
+  @discardableResult public func aspectRatio(_ constant: CGFloat = 1.0) -> NSLayoutConstraint {
     let constraint = view.widthAnchor.constraint(equalTo: view.heightAnchor, multiplier: constant)
     constraint.isActive = true
     return constraint

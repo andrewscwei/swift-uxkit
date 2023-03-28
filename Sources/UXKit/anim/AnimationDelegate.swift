@@ -55,9 +55,9 @@ public class AnimationDelegate: NSObject, CAAnimationDelegate {
   /// References of registered `CAAnimation` completion handlers.
   private var completionHandlers: [String: () -> Void] = [:]
 
-  /// Creates an explicit CATransaction that wraps a closure, which is supplied
-  /// with a convenience method for creating animations with AnimationDelegate
-  /// for the specified layer.
+  /// Creates an explicit `CATransaction` that wraps a closure, which is
+  /// supplied with a convenience method for creating animations with
+  /// `AnimationDelegate` for the specified layer.
   ///
   /// - Parameters:
   ///   - layer: The layer instance.
@@ -121,7 +121,7 @@ public class AnimationDelegate: NSObject, CAAnimationDelegate {
   ///   - duration: The animation duration (in seconds).
   ///   - timingFunctionName: The timing function name.
   ///   - autoreverses: Indicates if the animation automatically reverses on
-  ///     complete.
+  ///                   complete.
   ///   - repeatCount: Indicates the number of times the animation repeats. 0
   ///                  indicates no repeats, and any number less than 0
   ///                  indicates infinite loop.
@@ -139,18 +139,19 @@ public class AnimationDelegate: NSObject, CAAnimationDelegate {
   ///   - completion: The handler invoked when the animation completes.
   ///
   /// - Returns: The `CABasicAnimation` instance that was created.
-  @discardableResult public func basic(_ view: UIView?,
-                                property: LayerProperty,
-                                to toValue: Any,
-                                from fromValue: Any? = nil,
-                                delay: TimeInterval? = nil,
-                                duration: TimeInterval? = nil,
-                                timingFunctionName: CAMediaTimingFunctionName? = nil,
-                                autoreverses: Bool? = nil,
-                                repeatCount: Int? = nil,
-                                shouldOverwriteExisting: Bool? = nil,
-                                fillMode: CAMediaTimingFillMode? = nil,
-                                completion: (() -> Void)? = nil) -> CAAnimation? {
+  @discardableResult
+  public func basic(_ view: UIView?,
+                    property: LayerProperty,
+                    to toValue: Any,
+                    from fromValue: Any? = nil,
+                    delay: TimeInterval? = nil,
+                    duration: TimeInterval? = nil,
+                    timingFunctionName: CAMediaTimingFunctionName? = nil,
+                    autoreverses: Bool? = nil,
+                    repeatCount: Int? = nil,
+                    shouldOverwriteExisting: Bool? = nil,
+                    fillMode: CAMediaTimingFillMode? = nil,
+                    completion: (() -> Void)? = nil) -> CAAnimation? {
     guard let view = view else { return nil }
     return basic(view.layer, property: property, to: toValue, from: fromValue, delay: delay, duration: duration, timingFunctionName: timingFunctionName, autoreverses: autoreverses, repeatCount: repeatCount, shouldOverwriteExisting: shouldOverwriteExisting, fillMode: fillMode, completion: completion)
   }
@@ -196,18 +197,19 @@ public class AnimationDelegate: NSObject, CAAnimationDelegate {
   ///   - completion: The handler invoked when the animation completes.
   ///
   /// - Returns: The `CABasicAnimation` instance that was created.
-  @discardableResult public func basic(_ layer: CALayer?,
-                                property: LayerProperty,
-                                to toValue: Any,
-                                from fromValue: Any? = nil,
-                                delay: TimeInterval? = nil,
-                                duration: TimeInterval? = nil,
-                                timingFunctionName: CAMediaTimingFunctionName? = nil,
-                                autoreverses: Bool? = nil,
-                                repeatCount: Int? = nil,
-                                shouldOverwriteExisting: Bool? = nil,
-                                fillMode: CAMediaTimingFillMode? = nil,
-                                completion: (() -> Void)? = nil) -> CAAnimation? {
+  @discardableResult
+  public func basic(_ layer: CALayer?,
+                    property: LayerProperty,
+                    to toValue: Any,
+                    from fromValue: Any? = nil,
+                    delay: TimeInterval? = nil,
+                    duration: TimeInterval? = nil,
+                    timingFunctionName: CAMediaTimingFunctionName? = nil,
+                    autoreverses: Bool? = nil,
+                    repeatCount: Int? = nil,
+                    shouldOverwriteExisting: Bool? = nil,
+                    fillMode: CAMediaTimingFillMode? = nil,
+                    completion: (() -> Void)? = nil) -> CAAnimation? {
     guard let layer = layer else { return nil }
 
     let keyPath = property.rawValue
@@ -304,14 +306,14 @@ public class AnimationDelegate: NSObject, CAAnimationDelegate {
   ///                  indicates infinite loop.
   ///   - completion: The handler invoked when the animation completes.
   public func basic(_ constraint: NSLayoutConstraint?,
-             to toValue: Any,
-             from fromValue: Any? = nil,
-             delay: TimeInterval? = nil,
-             duration: TimeInterval? = nil,
-             timingFunctionName: CAMediaTimingFunctionName? = nil,
-             autoreverses: Bool? = nil,
-             repeatCount: Int? = nil,
-             completion: (() -> Void)? = nil
+                    to toValue: Any,
+                    from fromValue: Any? = nil,
+                    delay: TimeInterval? = nil,
+                    duration: TimeInterval? = nil,
+                    timingFunctionName: CAMediaTimingFunctionName? = nil,
+                    autoreverses: Bool? = nil,
+                    repeatCount: Int? = nil,
+                    completion: (() -> Void)? = nil
   ) {
     guard let constraint = constraint, let viewToLayout = (constraint.firstItem as? UIView ?? constraint.secondItem as? UIView)?.superview, let toValue = toCGFloat(toValue) as? CGFloat else { return }
 

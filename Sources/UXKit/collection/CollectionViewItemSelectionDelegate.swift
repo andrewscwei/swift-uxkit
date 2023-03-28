@@ -356,14 +356,14 @@ class CollectionViewItemSelectionDelegate<S: Hashable, I: Hashable> {
     return item
   }
 
-  private func mapIndexPathToItem(_ indexPath: IndexPath) -> I? {
+  func mapIndexPathToItem(_ indexPath: IndexPath) -> I? {
     let section = collectionViewDataSource.snapshot().sectionIdentifiers[indexPath.section]
     let items = collectionViewDataSource.snapshot(for: section).items
 
     return items[indexPath.item]
   }
 
-  private func mapItemToIndexPath(_ item: I) -> IndexPath? {
+  func mapItemToIndexPath(_ item: I) -> IndexPath? {
     guard
       let section = collectionViewDataSource.snapshot().sectionIdentifier(containingItem: item),
       let sectionIdx = collectionViewDataSource.snapshot().indexOfSection(section),
