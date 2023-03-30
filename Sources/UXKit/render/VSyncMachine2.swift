@@ -2,20 +2,30 @@
 
 import UIKit
 
-public class VSyncMachine {
-  private weak var delegate: VSyncMachineDelegate?
+public class VsyncMachine {
+  private weak var delegate: VsyncMachineDelegate?
 
   /// Local `CADisplayLink` instance.
   private var displayLink: CADisplayLink?
 
   /// The time (in milliseconds) of which the most recently created display link
   /// started.
-  private var epoch: TimeInterval?
+  private var epoch: TimeInterval? {
+    didSet {
+      guard epoch != oldValue else { return }
+      delegate?.vsyncMachine(self, epochDidChange: epoch)
+    }
+  }
 
-  /// The time (in milliseconds) elapsed since this `VSyncMachine` started.
-  public private(set) var elapsedTime: TimeInterval = 0
+  /// The time (in milliseconds) elapsed since this `VsyncMachine` started.
+  public private(set) var elapsedTimeSinceEpoch: TimeInterval = 0 {
+    didSet {
+      guard elapsedTimeSinceEpoch != oldValue else { return }
+      delegate?.vsyncMachine(self, elapsedTimeSinceEpochDidChange: elapsedTimeSinceEpoch)
+    }
+  }
 
-  public init(_ delegate: VSyncMachineDelegate) {
+  public init(_ delegate: VsyncMachineDelegate) {
     self.delegate = delegate
   }
 
@@ -31,8 +41,10 @@ public class VSyncMachine {
 
   /// Stops and destroys the active display link.
   public func stop() {
+    displayLink?.isPaused = true
     displayLink?.invalidate()
     displayLink = nil
+    
     reset()
   }
 
@@ -44,14 +56,15 @@ public class VSyncMachine {
 
   /// Resumes the current active display link if it was previously paused.
   public func resume() {
-    displayLink?.isPaused = false
+    guard let displayLink = displayLink else { return start() }
+    displayLink.isPaused = false
   }
 
   /// Resets epoch value, which consequently resets the total elapsed time of
   /// the display link.
   public func reset() {
     epoch = nil
-    elapsedTime = 0
+    elapsedTimeSinceEpoch = 0
   }
 
   /// Handler invoked on every frame advancement for the duration of the current
@@ -59,7 +72,7 @@ public class VSyncMachine {
   ///
   /// - Parameters:
   ///   - displayLink: The current active display link.
-  @objc public func frameWillAdvance(displayLink: CADisplayLink) {
+  @objc private func frameWillAdvance(displayLink: CADisplayLink) {
     let elapsedSinceLastFrame = displayLink.targetTimestamp - displayLink.timestamp
     let epoch = self.epoch ?? displayLink.targetTimestamp
 
@@ -67,8 +80,8 @@ public class VSyncMachine {
       self.epoch = epoch
     }
 
-    elapsedTime = displayLink.targetTimestamp - epoch
+    elapsedTimeSinceEpoch = displayLink.targetTimestamp - epoch
 
-    delegate?.frameWillAdvance(elapsed: elapsedSinceLastFrame, elapsedTotal: elapsedTime)
+    delegate?.vsyncMachineWillAdvanceFrame(self, elapsedTimeSinceLastFrame: elapsedSinceLastFrame)
   }
 }
