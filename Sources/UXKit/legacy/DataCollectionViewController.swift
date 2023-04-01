@@ -41,15 +41,15 @@ open class DataCollectionViewController<T: Equatable>: UICollectionViewControlle
   private let fetchQueue: DispatchQueue
 
   required public init?(coder aDecoder: NSCoder) {
-    self.lockQueue = DispatchQueue(label: "sh.ghozt.uxkit.DataCollectionViewController.\(Self.self).lock-queue", qos: .utility)
-    self.fetchQueue = DispatchQueue(label: "sh.ghozt.uxkit.DataCollectionViewController.\(Self.self).fetch-queue", qos: .utility, attributes: .concurrent)
+    self.lockQueue = DispatchQueue(label: "sh.ghozt.UXKit.DataCollectionViewController.\(Self.self).lock-queue", qos: .utility)
+    self.fetchQueue = DispatchQueue(label: "sh.ghozt.UXKit.DataCollectionViewController.\(Self.self).fetch-queue", qos: .utility, attributes: .concurrent)
     super.init(coder: aDecoder)
     loadSubviews()
   }
 
   public init() {
-    self.lockQueue = DispatchQueue(label: "sh.ghozt.uxkit.DataCollectionViewController.\(Self.self)", qos: .utility)
-    self.fetchQueue = DispatchQueue(label: "sh.ghozt.uxkit.DataCollectionViewController.\(Self.self).fetch-queue", qos: .utility, attributes: .concurrent)
+    self.lockQueue = DispatchQueue(label: "sh.ghozt.UXKit.DataCollectionViewController.\(Self.self)", qos: .utility)
+    self.fetchQueue = DispatchQueue(label: "sh.ghozt.UXKit.DataCollectionViewController.\(Self.self).fetch-queue", qos: .utility, attributes: .concurrent)
     super.init(collectionViewLayout: flowLayout)
   }
 
