@@ -58,7 +58,7 @@ extension UIImage {
     rect.origin.x = (size.width - rect.size.width) / 2
     rect.origin.y = (size.height - rect.size.height) / 2
 
-    UIGraphicsBeginImageContextWithOptions(size, true, 0.0)
+    UIGraphicsBeginImageContextWithOptions(size, true, 0)
     image.draw(in: rect)
     let resizedImage = UIGraphicsGetImageFromCurrentImageContext()
     UIGraphicsEndImageContext()
@@ -85,7 +85,7 @@ extension UIImage {
     rect.origin.x = (size.width - rect.size.width) / 2
     rect.origin.y = (size.height - rect.size.height) / 2
 
-    UIGraphicsBeginImageContextWithOptions(size, true, 0.0)
+    UIGraphicsBeginImageContextWithOptions(size, true, 0)
     image.draw(in: rect)
     let resizedImage = UIGraphicsGetImageFromCurrentImageContext()
     UIGraphicsEndImageContext()
@@ -109,7 +109,7 @@ extension UIImage {
     rect.origin.x = (size.width - rect.size.width) / 2
     rect.origin.y = (size.height - rect.size.height) / 2
 
-    UIGraphicsBeginImageContextWithOptions(size, true, 0.0)
+    UIGraphicsBeginImageContextWithOptions(size, true, 0)
     image.draw(in: rect)
     let resizedImage = UIGraphicsGetImageFromCurrentImageContext()
     UIGraphicsEndImageContext()
@@ -135,7 +135,7 @@ extension UIImage {
     rect.origin.x = (size.width - rect.size.width) / 2
     rect.origin.y = (size.height - rect.size.height) / 2
 
-    UIGraphicsBeginImageContextWithOptions(size, true, 0.0)
+    UIGraphicsBeginImageContextWithOptions(size, true, 0)
     image.draw(in: rect)
     let resizedImage = UIGraphicsGetImageFromCurrentImageContext()
     UIGraphicsEndImageContext()

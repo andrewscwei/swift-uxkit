@@ -18,7 +18,7 @@ public class AutoLayoutIterator {
 
   @discardableResult public func alignToSuperview(
     _ anchorType: AutoLayoutAnchorType = [.top, .right, .bottom, .left],
-    offset: CGFloat = 0.0,
+    offset: CGFloat = 0,
     relation: AutoLayoutRelation = .equalTo,
     guide: AutoLayoutGuide = .none
   ) -> [NSLayoutConstraint] {
@@ -47,7 +47,7 @@ public class AutoLayoutIterator {
   @discardableResult public func align(
     _ anchorType: AutoLayoutAnchorType = [.top, .right, .bottom, .left],
     to toView: UIView,
-    offset: CGFloat = 0.0,
+    offset: CGFloat = 0,
     relation: AutoLayoutRelation = .equalTo,
     guide: AutoLayoutGuide = .none
   ) -> [NSLayoutConstraint] {
@@ -58,7 +58,7 @@ public class AutoLayoutIterator {
     _ anchorType: AutoLayoutAnchorType,
     to toView: UIView,
     for toAnchorType: AutoLayoutAnchorType,
-    offset: CGFloat = 0.0,
+    offset: CGFloat = 0,
     relation: AutoLayoutRelation = .equalTo,
     guide: AutoLayoutGuide = .none
   ) -> [NSLayoutConstraint] {
@@ -172,7 +172,7 @@ public class AutoLayoutIterator {
   @discardableResult public func fitDimensionToSuperview(
     _ anchorType: AutoLayoutAnchorType = [.width, .height],
     multiplier: CGFloat = 1.0,
-    offset: CGFloat = 0.0,
+    offset: CGFloat = 0,
     relation: AutoLayoutRelation = .equalTo,
     guide: AutoLayoutGuide = .none
   ) -> [NSLayoutConstraint] {
@@ -257,7 +257,7 @@ public class AutoLayoutIterator {
 
   @discardableResult public func horizontalSpacing(
     to toView: UIView,
-    spacing: CGFloat = 0.0,
+    spacing: CGFloat = 0,
     relation: AutoLayoutRelation = .equalTo,
     guide: AutoLayoutGuide = .none
   ) -> NSLayoutConstraint {
@@ -267,7 +267,7 @@ public class AutoLayoutIterator {
 
   @discardableResult public func horizontalSpacing(
     from fromView: UIView,
-    spacing: CGFloat = 0.0,
+    spacing: CGFloat = 0,
     relation: AutoLayoutRelation = .equalTo,
     guide: AutoLayoutGuide = .none
   ) -> NSLayoutConstraint {
@@ -277,7 +277,7 @@ public class AutoLayoutIterator {
 
   @discardableResult public func verticalSpacing(
     to toView: UIView,
-    spacing: CGFloat = 0.0,
+    spacing: CGFloat = 0,
     relation: AutoLayoutRelation = .equalTo,
     guide: AutoLayoutGuide = .none
   ) -> NSLayoutConstraint {
@@ -287,7 +287,7 @@ public class AutoLayoutIterator {
 
   @discardableResult public func verticalSpacing(
     from fromView: UIView,
-    spacing: CGFloat = 0.0,
+    spacing: CGFloat = 0,
     relation: AutoLayoutRelation = .equalTo,
     guide: AutoLayoutGuide = .none
   ) -> NSLayoutConstraint {

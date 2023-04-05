@@ -30,7 +30,7 @@ public struct CollectionViewLayoutPresets {
     groupSize: NSCollectionLayoutSize = .init(widthDimension: .fractionalHeight(1.0), heightDimension: .fractionalHeight(1.0)),
     groupContentInsets: NSDirectionalEdgeInsets = .zero,
     sectionContentInsets: NSDirectionalEdgeInsets = .zero,
-    interGroupSpacing: CGFloat = 0.0
+    interGroupSpacing: CGFloat = 0
   ) -> UICollectionViewCompositionalLayout {
     let config = UICollectionViewCompositionalLayoutConfiguration()
     config.scrollDirection = direction

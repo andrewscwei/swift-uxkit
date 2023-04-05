@@ -90,6 +90,6 @@ extension UIColor {
   public var alpha10: UIColor { return self.withAlphaComponent(0.1) }
 
   /// Creates and returns a color object that has the same color space and
-  /// component values as the receiver, but has an alpha component of `0.0`.
-  public var alpha0: UIColor { return self.withAlphaComponent(0.0) }
+  /// component values as the receiver, but has an alpha component of `0`.
+  public var alpha0: UIColor { return self.withAlphaComponent(0) }
 }

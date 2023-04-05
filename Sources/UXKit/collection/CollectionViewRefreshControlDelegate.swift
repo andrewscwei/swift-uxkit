@@ -71,16 +71,16 @@ class CollectionViewRefreshControlDelegate {
   func activateRefreshControlsIfNeeded() {
     guard willPullToRefreshHandler() else { return }
 
-    var frontDelta: CGFloat = 0.0
-    var endDelta: CGFloat = 0.0
+    var frontDelta: CGFloat = 0
+    var endDelta: CGFloat = 0
 
     switch orientation {
     case .vertical:
-      frontDelta = min(0.0, collectionView.contentOffset.y - collectionView.minContentOffset.y)
-      endDelta = max(0.0, collectionView.contentOffset.y - collectionView.maxContentOffset.y)
+      frontDelta = min(0, collectionView.contentOffset.y - collectionView.minContentOffset.y)
+      endDelta = max(0, collectionView.contentOffset.y - collectionView.maxContentOffset.y)
     default:
-      frontDelta = min(0.0, collectionView.contentOffset.x - collectionView.minContentOffset.x)
-      endDelta = max(0.0, collectionView.contentOffset.x - collectionView.maxContentOffset.x)
+      frontDelta = min(0, collectionView.contentOffset.x - collectionView.minContentOffset.x)
+      endDelta = max(0, collectionView.contentOffset.x - collectionView.maxContentOffset.x)
     }
 
     if frontDelta < -displacementToTriggerRefresh {
@@ -150,7 +150,7 @@ class CollectionViewRefreshControlDelegate {
     }
 
     control.isActive = false
-    (control.layer.mask as? CAGradientLayer)?.colors = [UIColor.black.withAlphaComponent(0.0).cgColor, UIColor.black.withAlphaComponent(0.0).cgColor]
+    (control.layer.mask as? CAGradientLayer)?.colors = [UIColor.black.withAlphaComponent(0).cgColor, UIColor.black.withAlphaComponent(0).cgColor]
 
     // Play collapsing animation in the next UI cycle to avoid choppiness.
     DispatchQueue.main.async {
@@ -200,7 +200,7 @@ class CollectionViewRefreshControlDelegate {
     guard let control = endRefreshControl, control.isActive else { return completion() }
 
     control.isActive = false
-    (control.layer.mask as? CAGradientLayer)?.colors = [UIColor.black.withAlphaComponent(0.0).cgColor, UIColor.black.withAlphaComponent(0.0).cgColor]
+    (control.layer.mask as? CAGradientLayer)?.colors = [UIColor.black.withAlphaComponent(0).cgColor, UIColor.black.withAlphaComponent(0).cgColor]
 
     // Play collapsing animation in the next UI cycle to avoid choppiness.
     DispatchQueue.main.async {
@@ -227,7 +227,7 @@ class CollectionViewRefreshControlDelegate {
     mask.colors = [UIColor.black.withAlphaComponent(0).cgColor, UIColor.black.withAlphaComponent(0).cgColor]
     mask.endPoint = CGPoint(x: 1.0, y: 0.5)
     mask.frame = control.bounds
-    mask.startPoint = CGPoint(x: 0.0, y: 0.5)
+    mask.startPoint = CGPoint(x: 0, y: 0.5)
     control.layer.mask = mask
 
     stateMachine.invalidate(\CollectionViewRefreshControlDelegate.frontRefreshControl)
@@ -248,7 +248,7 @@ class CollectionViewRefreshControlDelegate {
     mask.colors = [UIColor.black.withAlphaComponent(0).cgColor, UIColor.black.withAlphaComponent(0).cgColor]
     mask.endPoint = CGPoint(x: 1.0, y: 0.5)
     mask.frame = control.bounds
-    mask.startPoint = CGPoint(x: 0.0, y: 0.5)
+    mask.startPoint = CGPoint(x: 0, y: 0.5)
     control.layer.mask = mask
 
     stateMachine.invalidate(\CollectionViewRefreshControlDelegate.endRefreshControl)
@@ -321,9 +321,9 @@ extension CollectionViewRefreshControlDelegate: StateMachineDelegate {
         mask.colors = [UIColor.black.withAlphaComponent(1.0).cgColor, UIColor.black.withAlphaComponent(1.0).cgColor]
       }
       else {
-        let delta = abs(min(0.0, orientation == .vertical ? collectionView.contentOffset.y - collectionView.minContentOffset.y : collectionView.contentOffset.x - collectionView.minContentOffset.x))
-        let alpha0 = max(0.0, min(1.0, delta / (displacementToTriggerRefresh * 0.5)))
-        let alpha1 = max(0.0, min(1.0, (delta - displacementToTriggerRefresh * 0.5) / (displacementToTriggerRefresh * 0.5)))
+        let delta = abs(min(0, orientation == .vertical ? collectionView.contentOffset.y - collectionView.minContentOffset.y : collectionView.contentOffset.x - collectionView.minContentOffset.x))
+        let alpha0 = max(0, min(1.0, delta / (displacementToTriggerRefresh * 0.5)))
+        let alpha1 = max(0, min(1.0, (delta - displacementToTriggerRefresh * 0.5) / (displacementToTriggerRefresh * 0.5)))
         mask.colors = [UIColor.black.withAlphaComponent(alpha0).cgColor, UIColor.black.withAlphaComponent(alpha1).cgColor]
       }
     }
@@ -336,9 +336,9 @@ extension CollectionViewRefreshControlDelegate: StateMachineDelegate {
         mask.colors = [UIColor.black.withAlphaComponent(1.0).cgColor, UIColor.black.withAlphaComponent(1.0).cgColor]
       }
       else {
-        let delta = abs(max(0.0, orientation == .vertical ? collectionView.contentOffset.y - collectionView.maxContentOffset.y : collectionView.contentOffset.x - collectionView.maxContentOffset.x))
-        let alpha0 = max(0.0, min(1.0, delta / (displacementToTriggerRefresh * 0.5)))
-        let alpha1 = max(0.0, min(1.0, (delta - displacementToTriggerRefresh * 0.5) / (displacementToTriggerRefresh * 0.5)))
+        let delta = abs(max(0, orientation == .vertical ? collectionView.contentOffset.y - collectionView.maxContentOffset.y : collectionView.contentOffset.x - collectionView.maxContentOffset.x))
+        let alpha0 = max(0, min(1.0, delta / (displacementToTriggerRefresh * 0.5)))
+        let alpha1 = max(0, min(1.0, (delta - displacementToTriggerRefresh * 0.5) / (displacementToTriggerRefresh * 0.5)))
         mask.colors = [UIColor.black.withAlphaComponent(alpha0).cgColor, UIColor.black.withAlphaComponent(alpha1).cgColor]
       }
     }
