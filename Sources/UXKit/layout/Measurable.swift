@@ -6,16 +6,16 @@ import UIKit
 /// on some arbitrary attributes.
 public protocol Measurable: AnyMeasurable  {
   /// Attributes used to compute the size of the conforming object.
-  associatedtype SizeAttributes
+  associatedtype MeasurableParams
 
   /// Returns the computed size that fits this object based on a set of
   /// attributes.
   ///
   /// - Parameters:
-  ///   - attributes: Attributes that affect the calculation of the size.
+  ///   - params: Attributes that affect the calculation of the size.
   ///
   /// - Returns: The computed `CGSize`.
-  static func sizeThatFits(with attributes: SizeAttributes?) -> CGSize
+  static func sizeThatFits(with params: MeasurableParams?) -> CGSize
 }
 
 extension Measurable {
