@@ -315,7 +315,7 @@ extension CollectionViewRefreshControlDelegate: StateMachineDelegate {
 
     if frontRefreshControl?.isActive != true, let mask = frontRefreshControl?.layer.mask as? CAGradientLayer {
       let offset = orientation == .vertical ? collectionView.contentOffset.y : collectionView.contentOffset.x
-      let minOffset = orientation == .vertical ? -(displacementToTriggerRefresh + contentInsets.top) : -(displacementToTriggerRefresh + contentInsets.left)
+      let minOffset = orientation == .vertical ? -(displacementToTriggerRefresh + collectionView.minContentOffset.y) : -(displacementToTriggerRefresh + collectionView.minContentOffset.x)
 
       if offset <= minOffset {
         mask.colors = [UIColor.black.withAlphaComponent(1.0).cgColor, UIColor.black.withAlphaComponent(1.0).cgColor]
@@ -330,7 +330,7 @@ extension CollectionViewRefreshControlDelegate: StateMachineDelegate {
 
     if endRefreshControl?.isActive != true, let mask = endRefreshControl?.layer.mask as? CAGradientLayer {
       let offset = orientation == .vertical ? collectionView.contentOffset.y : collectionView.contentOffset.x
-      let maxOffset = orientation == .vertical ? displacementToTriggerRefresh + contentInsets.bottom : displacementToTriggerRefresh + contentInsets.right
+      let maxOffset = orientation == .vertical ? displacementToTriggerRefresh + collectionView.maxContentOffset.y : displacementToTriggerRefresh + collectionView.maxContentOffset.x
 
       if offset >= maxOffset {
         mask.colors = [UIColor.black.withAlphaComponent(1.0).cgColor, UIColor.black.withAlphaComponent(1.0).cgColor]
