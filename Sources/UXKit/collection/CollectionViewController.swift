@@ -11,7 +11,7 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
 
   // MARK: - Delegation
 
-  public weak var delegate: (any CollectionViewControllerDelegate<S, I>)?
+  public weak var delegate: (any CollectionViewControllerDelegate)?
 
   private lazy var itemSelectionDelegate = CollectionViewItemSelectionDelegate<S, I>(
     collectionView: collectionView,
@@ -26,8 +26,8 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
 
   private lazy var refreshControlDelegate = CollectionViewRefreshControlDelegate(
     collectionView: collectionView,
-    frontRefreshControl: self.delegate?.collectionViewControllerFrontRefreshControl(self),
-    endRefreshControl: self.delegate?.collectionViewControllerEndRefreshControl(self),
+    frontRefreshControl: delegate?.collectionViewControllerFrontRefreshControl(self) ?? frontRefreshControlFactory(),
+    endRefreshControl: delegate?.collectionViewControllerEndRefreshControl(self) ?? endRefreshControlFactory(),
     willPullToRefresh: { self.willPullToRefresh() },
     didPullToRefresh: { self.didPullToRefresh() }
   )
@@ -42,9 +42,9 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
 
   public lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: .init())
 
-  public var frontRefreshControl: (any CollectionViewRefreshControl)? { refreshControlDelegate.frontRefreshControl }
+  public var frontRefreshControl: CollectionViewRefreshControl? { refreshControlDelegate.frontRefreshControl }
 
-  public var endRefreshControl: (any CollectionViewRefreshControl)? { refreshControlDelegate.endRefreshControl }
+  public var endRefreshControl: CollectionViewRefreshControl? { refreshControlDelegate.endRefreshControl }
 
   // MARK: - States
 
@@ -175,8 +175,10 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
   private func dataSourceFactory() -> UICollectionViewDiffableDataSource<S, I> {
     let dataSource = UICollectionViewDiffableDataSource<S, I>(collectionView: collectionView) { collectionView, indexPath, item in
       let section = self.dataSource.snapshot().sectionIdentifiers[indexPath.section]
-      let cell = self.cellFactory(at: indexPath, section: section, item: item)
-      self.configureCell(cell, at: indexPath, section: section, item: item)
+      let cell = self.delegate?.collectionViewController(self, cellAtIndexPath: indexPath, section: section, item: item) ?? self.cellFactory(at: indexPath, section: section, item: item)
+
+      self.invalidateCell(cell, at: indexPath, section: section, item: item)
+
       return cell
     }
 
@@ -204,24 +206,25 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
 
   // MARK: - Cell Management
 
-  private func cellFactory(at indexPath: IndexPath, section: S, item: I) -> UICollectionViewCell {
-    guard let cell = delegate?.collectionViewController(self, cellAtIndexPath: indexPath, section: section, item: item) else {
-      fatalError("CollectionViewController requires a CollectionViewControllerDelegate to implement collectionViewController(_:cellAtIndexPath:section:item:).")
-    }
-
-    return cell
-  }
-
-  /// Configures the cell at the given index path, section and item. This is
-  /// invoked whenever a cell is being configured (i.e. during cell factory).
+  /// Factory for cells in the collection view.
   ///
+  /// Cells are resolved from the first non-nil result of the following methods,
+  /// ordered by priority:
+  ///   1. From a `CollectionViewControllerDelegate` implementing
+  ///      `collectionViewController(_:cellAtIndexPath:section:item:)`.
+  ///   2. From a subclass overriding this `cellFactory()`.
+  ///
+  /// It is recommended for cells to be dequeued and reused, such as by using
+  /// `dequeueConfiguredReusableCell(using:for:item:)`.
+  /// `
   /// - Parameters:
-  ///   - cell: Cell.
   ///   - indexPath: Index path.
   ///   - section: Section.
   ///   - item: Item.
-  open func configureCell(_ cell: UICollectionViewCell, at indexPath: IndexPath, section: S, item: I) {
-
+  ///
+  /// - Returns: The `UICollectionViewCell`.
+  open func cellFactory(at indexPath: IndexPath, section: S, item: I) -> UICollectionViewCell {
+    fatalError("CollectionViewController requires cells to be provided by either a CollectionViewControllerDelegate implementing collectionViewController(_:cellAtIndexPath:section:item:) or a subclass overriding cellFactory(at:section:item:)")
   }
 
   // MARK: - Selection Management
@@ -238,9 +241,15 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
     itemSelectionDelegate.areAllItemsDeselected(in: section, where: predicate)
   }
 
-  public func getItem(at indexPath: IndexPath) -> I? { itemSelectionDelegate.mapIndexPathToItem(indexPath) }
+  public func getSection(at indexPath: IndexPath) -> S? {
+    let sectionIdentifiers = dataSource.snapshot().sectionIdentifiers
 
-  public func getIndexPath(for item: I) -> IndexPath? { itemSelectionDelegate.mapItemToIndexPath(item) }
+    guard indexPath.section < sectionIdentifiers.count else { return nil }
+
+    return sectionIdentifiers[indexPath.section]
+  }
+
+  public func getItem(at indexPath: IndexPath) -> I? { itemSelectionDelegate.mapIndexPathToItem(indexPath) }
 
   @discardableResult public func selectItem(_ item: I, shouldScroll: Bool = true, animated: Bool = true) -> I? {
     guard let item = itemSelectionDelegate.selectItem(item, where: { $0.isEqual(to: $1) }) else { return nil }
@@ -278,7 +287,11 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
   }
 
   public func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
-    itemSelectionDelegate.shouldSelectItem(at: indexPath)
+    if let item = getItem(at: indexPath), let section = getSection(at: indexPath) {
+      delegate?.collectionViewController(self, didTapOnItem: item, in: section)
+    }
+
+    return itemSelectionDelegate.shouldSelectItem(at: indexPath)
   }
 
   public func collectionView(_ collectionView: UICollectionView, shouldDeselectItemAt indexPath: IndexPath) -> Bool {
@@ -381,8 +394,36 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
 
   // MARK: - Pull-to-Refresh Management
 
+  /// Factory for the front refresh control. Return `nil` to indicate the
+  /// absence of a front refresh control.
+  ///
+  /// The front refresh control is resolved from the first non-nil result of the
+  /// following methods, ordered by priority:
+  ///   1. From a `CollectionViewControllerDelegate` implementing
+  ///      `collectionViewControllerFrontRefreshControl(_:).
+  ///   2. From a subclass overriding `frontRefreshControlFactory()`.
+  ///
+  /// - Returns: The `CollectionViewRefreshControl` if applicable.
+  open func frontRefreshControlFactory() -> CollectionViewRefreshControl? {
+    nil
+  }
+
+  /// Factory for the end refresh control. Return `nil` to indicate the absence
+  /// of an end refresh control.
+  ///
+  /// The end refresh control is resolved from the first non-nil result of the
+  /// following methods, ordered by priority:
+  ///   1. From a `CollectionViewControllerDelegate` implementing
+  ///      `collectionViewControllerEndRefreshControl(_:).
+  ///   2. From a subclass overriding `endRefreshControlFactory()`.
+  ///
+  /// - Returns: The `CollectionViewRefreshControl` if applicable.
+  open func endRefreshControlFactory() -> CollectionViewRefreshControl? {
+    nil
+  }
+
   private func willPullToRefresh() -> Bool {
-    delegate?.collectionViewControllerWillPullToRefresh(self) ?? false
+    delegate?.collectionViewControllerWillPullToRefresh(self) ?? true
   }
 
   private func didPullToRefresh() {
@@ -407,19 +448,24 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
 
   // MARK: - Layout Management
 
-  private func layoutFactory() -> UICollectionViewLayout {
-    guard let layout = delegate?.collectionViewControllerCollectionViewLayout(self) else {
-      log(.debug) { "Creating collection view layout... WARN: No collection view layout provided, please implement the delegate method collectionViewControllerCollectionViewLayout(_:)" }
+  /// Factory for the collection view layout.
+  ///
+  /// Collection view layout is resolved from the first non-nil result of the
+  /// following methods, ordered by priority:
+  ///   1. From a `CollectionViewControllerDelegate` implementing
+  ///      `collectionViewControllerCollectionViewLayout(_:)`.
+  ///   2. From a subclass overriding `layoutFactory()`.
+  ///
+  /// - Returns: The `UICollectionViewLayout`.
+  open func layoutFactory() -> UICollectionViewLayout {
+    log(.debug) { "Creating collection view layout... WARN: No collection view layout provided, please override layoutFactory() or implement the delegate method collectionViewControllerCollectionViewLayout(_:)" }
 
-      return UICollectionViewLayout()
-    }
-
-    return layout
+    return UICollectionViewLayout()
   }
 
   /// Invalidates the collection view layout, reapplying it to the collection
   /// view again.
-  public func invalidateCollectionViewLayout() {
+  public func invalidateLayout() {
     stateMachine.invalidate(\UICollectionView.collectionViewLayout)
   }
 
@@ -427,7 +473,7 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
 
   open func update(check: StateValidator) {
     if check.isDirty(\UICollectionView.collectionViewLayout) {
-      collectionView.setCollectionViewLayout(layoutFactory(), animated: hasViewAppeared)
+      collectionView.setCollectionViewLayout(delegate?.collectionViewControllerCollectionViewLayout(self) ?? layoutFactory(), animated: hasViewAppeared)
     }
 
     if check.isDirty(\CollectionViewController.dataSet) {
@@ -435,5 +481,38 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
       itemSelectionDelegate.dataSet = dataSet
       filterDelegate.dataSet = dataSet
     }
+  }
+
+  /// Executes a block on each cell currently visible in the collection view.
+  ///
+  /// - Parameters:
+  ///   - update: The update block.
+  public func updateVisibleCells(update: (UICollectionViewCell, IndexPath, S, I) -> Void) {
+    for cell in collectionView.visibleCells {
+      guard let indexPath = collectionView.indexPath(for: cell), let item = getItem(at: indexPath), let section = getSection(at: indexPath) else { continue }
+      update(cell, indexPath, section, item)
+    }
+  }
+
+  /// Invalidates all visible cells.
+  ///
+  /// This convenience method invokes `invalidateCell(_:at:section:item:)` on
+  /// all visible cells.
+  public func invalidateVisibleCells() {
+    updateVisibleCells { self.invalidateCell($0, at: $1, section: $2, item: $3) }
+  }
+
+  /// Invalidates the cell at the given index path, section and item. This is
+  /// automatically invoked whenever a cell is created or reused.
+  ///
+  /// Override this method to configure a cell whenever it is invalidated.
+  ///
+  /// - Parameters:
+  ///   - cell: Cell.
+  ///   - indexPath: Index path.
+  ///   - section: Section.
+  ///   - item: Item.
+  open func invalidateCell(_ cell: UICollectionViewCell, at indexPath: IndexPath, section: S, item: I) {
+
   }
 }

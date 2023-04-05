@@ -395,12 +395,18 @@ extension CollectionViewItemSelectionDelegate: StateMachineDelegate {
         // This is enabled for a reason. The native `UICollectionView` behaves
         // weirdly, such that if `allowsMultipleSelection` is `false`, and a
         // cell has `collectionView:shouldSelectItemAt:` returning `false`, the
-        // previously selected cell still gets deselected. Hence this custom
-        // controller manually handles single selection restrictions.
+        // previously selected cell still gets deselected even though no new
+        // cell is being selected. Hence this custom controller manually handles
+        // single selection behavior.
         collectionView.allowsMultipleSelection = true
         collectionView.allowsSelection = true
       default:
         collectionView.allowsMultipleSelection = false
+        // This is enabled even though the intended selection behavior is none
+        // so that the collection view will still invoke
+        // `collectionView(_:shouldSelectItemAt:)`, which is useful for
+        // capturing tap gesture for free. This controller still discard the
+        // selection automatically to satisfy the intended selection mode.
         collectionView.allowsSelection = true
       }
     }

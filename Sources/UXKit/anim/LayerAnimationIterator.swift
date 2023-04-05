@@ -12,7 +12,6 @@ public class LayerAnimationIterator {
     self.layer = layer
   }
 
-
   public func basic(_ property: AnimationDelegate.LayerProperty,
              to toValue: Any,
              from fromValue: Any? = nil,

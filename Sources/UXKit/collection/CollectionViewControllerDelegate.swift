@@ -2,51 +2,7 @@
 
 import UIKit
 
-public protocol CollectionViewControllerDelegate<SectionIdentifier, ItemIdentifier>: AnyObject {
-  associatedtype SectionIdentifier: CaseIterable & Hashable
-  associatedtype ItemIdentifier: Hashable
-
-  /// Handler invoked when the item selection has changed.
-  ///
-  /// - Parameter viewController: The invoking `CollectionViewController`.
-  func collectionViewControllerSelectionDidChange(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>)
-
-  /// Handler invoked to determine if an item should be selected.
-  ///
-  /// - Parameters:
-  ///   - viewController: The invoking `CollectionViewController`.
-  ///   - item: Item.
-  ///   - section: Section.
-  ///
-  /// - Returns: `true` if the item should be selected, `false` otherwise.
-  func collectionViewController(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>, shouldSelectItem item: ItemIdentifier, in section: SectionIdentifier) -> Bool
-
-  /// Handler invoked to determine if an item should be deselected.
-  ///
-  /// - Parameters:
-  ///   - viewController: The invoking `CollectionViewController`.
-  ///   - item: Item.
-  ///   - section: Section.
-  ///
-  /// - Returns: `true` if the item should be deselected, `false` otherwise.
-  func collectionViewController(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>, shouldDeselectItem item: ItemIdentifier, in section: SectionIdentifier) -> Bool
-
-  /// Handler invoked to determine if pulling from either end of the collection
-  /// view will trigger a refresh.
-  ///
-  /// - Parameters:
-  ///   - viewController: The invoking `CollectionViewController`.
-  ///
-  /// - Returns: `true` to trigger refresh, `false` otherwise.
-  func collectionViewControllerWillPullToRefresh(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>) -> Bool
-
-  /// Handler invoked when refresh is triggered after pulling from either end of
-  /// the collection view.
-  ///
-  /// - Parameters:
-  ///   - viewController: The invoking `CollectionViewController`.
-  func collectionViewControllerDidPullToRefresh(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>)
-
+public protocol CollectionViewControllerDelegate: AnyObject {
   /// Handler invoked to create each cell at the specified index path with
   /// context for the cell's associated section and item identifiers.
   ///
@@ -57,7 +13,65 @@ public protocol CollectionViewControllerDelegate<SectionIdentifier, ItemIdentifi
   ///   - item: Item.
   ///
   /// - Returns: `UICollectionViewCell` instance.
-  func collectionViewController(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>, cellAtIndexPath indexPath: IndexPath, section: SectionIdentifier, item: ItemIdentifier) -> UICollectionViewCell
+  func collectionViewController<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>, cellAtIndexPath indexPath: IndexPath, section: S, item: I) -> UICollectionViewCell?
+
+  /// Handler invoked to create the collection view layout for the internal
+  /// collection view.
+  ///
+  /// - Parameter viewController: The invoking `CollectionViewController`.
+  ///
+  /// - Returns: The `UICollectionViewLayout` instance. If `nil`, the default
+  ///            layout will be used.
+  func collectionViewControllerCollectionViewLayout<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>) -> UICollectionViewLayout?
+
+  /// Handler invoked to determine if an item should be selected.
+  ///
+  /// - Parameters:
+  ///   - viewController: The invoking `CollectionViewController`.
+  ///   - item: Item.
+  ///   - section: Section.
+  ///
+  /// - Returns: `true` if the item should be selected, `false` otherwise.
+  func collectionViewController<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>, shouldSelectItem item: I, in section: S) -> Bool
+
+  /// Handler invoked to determine if an item should be deselected.
+  ///
+  /// - Parameters:
+  ///   - viewController: The invoking `CollectionViewController`.
+  ///   - item: Item.
+  ///   - section: Section.
+  ///
+  /// - Returns: `true` if the item should be deselected, `false` otherwise.
+  func collectionViewController<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>, shouldDeselectItem item: I, in section: S) -> Bool
+
+  /// Handler invoked when an item in the collection view is tapped.
+  ///
+  /// - Parameters:
+  ///   - viewCOntroller: The invoking `CollectionViewController`.
+  ///   - item: Item.
+  ///   - section: Section.
+  func collectionViewController<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>, didTapOnItem item: I, in section: S)
+
+  /// Handler invoked when the item selection has changed.
+  ///
+  /// - Parameter viewController: The invoking `CollectionViewController`.
+  func collectionViewControllerSelectionDidChange<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>)
+
+  /// Handler invoked to determine if pulling from either end of the collection
+  /// view will trigger a refresh.
+  ///
+  /// - Parameters:
+  ///   - viewController: The invoking `CollectionViewController`.
+  ///
+  /// - Returns: `true` to trigger refresh, `false` otherwise.
+  func collectionViewControllerWillPullToRefresh<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>) -> Bool
+
+  /// Handler invoked when refresh is triggered after pulling from either end of
+  /// the collection view.
+  ///
+  /// - Parameters:
+  ///   - viewController: The invoking `CollectionViewController`.
+  func collectionViewControllerDidPullToRefresh<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>)
 
   /// Handler invoked to create an activity indicator view at the front of the
   /// collection view which will be used for the internal pull-to-refresh
@@ -67,7 +81,7 @@ public protocol CollectionViewControllerDelegate<SectionIdentifier, ItemIdentifi
   ///   - viewController: The invoking `CollectionViewController`.
   ///
   /// - Returns: Some `CollectionViewRefreshControl` instance.
-  func collectionViewControllerFrontRefreshControl(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>) -> (any CollectionViewRefreshControl)?
+  func collectionViewControllerFrontRefreshControl<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>) -> (any CollectionViewRefreshControl)?
 
   /// Handler invoked to create an activity indicator view at the end of the
   /// collection view which will be used for the internal pull-to-refresh
@@ -77,7 +91,7 @@ public protocol CollectionViewControllerDelegate<SectionIdentifier, ItemIdentifi
   ///   - viewController: The invoking `CollectionViewController`.
   ///
   /// - Returns: Some `CollectionViewRefreshControl` instance.
-  func collectionViewControllerEndRefreshControl(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>) -> (any CollectionViewRefreshControl)?
+  func collectionViewControllerEndRefreshControl<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>) -> (any CollectionViewRefreshControl)?
 
   /// Handler invoked to determine if an item should be included in the current
   /// data source snapshot when the specified filter query is applied.
@@ -88,32 +102,25 @@ public protocol CollectionViewControllerDelegate<SectionIdentifier, ItemIdentifi
   ///   - query: Filter query.
   ///
   /// - Returns: `true` to include the item, `false` otherwise.
-  func collectionViewController(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>, shouldIncludeItem item: ItemIdentifier, withFilterQuery query: Any?) -> Bool
-
-  /// Handler invoked to create the collection view layout for the internal
-  /// collection view.
-  ///
-  /// - Parameter viewController: The invoking `CollectionViewController`.
-  ///
-  /// - Returns: The `UICollectionViewLayout` instance. If `nil`, the default
-  ///            layout will be used.
-  func collectionViewControllerCollectionViewLayout(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>) -> UICollectionViewLayout?
+  func collectionViewController<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>, shouldIncludeItem item: I, withFilterQuery query: Any?) -> Bool
 
   /// Handler invoked when the collection view scrolls.
   ///
   /// - Parameter viewController: The invoking `CollectionViewController`.
-  func collectionViewControllerDidScroll(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>)
+  func collectionViewControllerDidScroll<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>)
 }
 
 extension CollectionViewControllerDelegate {
-  public func collectionViewControllerSelectionDidChange(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>) {}
-  public func collectionViewController(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>, shouldSelectItem item: ItemIdentifier, in section: SectionIdentifier) -> Bool { true }
-  public func collectionViewController(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>, shouldDeselectItem item: ItemIdentifier, in section: SectionIdentifier) -> Bool { true }
-  public func collectionViewControllerWillPullToRefresh(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>) -> Bool { false }
-  public func collectionViewControllerDidPullToRefresh(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>) {}
-  public func collectionViewControllerFrontRefreshControl(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>) -> (any CollectionViewRefreshControl)? { nil }
-  public func collectionViewControllerEndRefreshControl(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>) -> (any CollectionViewRefreshControl)? { nil }
-  public func collectionViewController(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>, shouldIncludeItem item: ItemIdentifier, withFilterQuery query: Any?) -> Bool { true }
-  public func collectionViewControllerCollectionViewLayout(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>) -> UICollectionViewLayout? { nil }
-  public func collectionViewControllerDidScroll(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>)  {}
+  public func collectionViewController<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>, cellAtIndexPath indexPath: IndexPath, section: S, item: I) -> UICollectionViewCell? { nil }
+  public func collectionViewControllerCollectionViewLayout<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>) -> UICollectionViewLayout? { nil }
+  public func collectionViewController<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>, shouldSelectItem item: I, in section: S) -> Bool { true }
+  public func collectionViewController<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>, shouldDeselectItem item: I, in section: S) -> Bool { true }
+  public func collectionViewController<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>, didTapOnItem item: I, in section: S) {}
+  public func collectionViewControllerSelectionDidChange<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>) {}
+  public func collectionViewControllerWillPullToRefresh<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>) -> Bool { true }
+  public func collectionViewControllerDidPullToRefresh<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>) {}
+  public func collectionViewControllerFrontRefreshControl<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>) -> (any CollectionViewRefreshControl)? { nil }
+  public func collectionViewControllerEndRefreshControl<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>) -> (any CollectionViewRefreshControl)? { nil }
+  public func collectionViewController<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>, shouldIncludeItem item: I, withFilterQuery query: Any?) -> Bool { true }
+  public func collectionViewControllerDidScroll<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>)  {}
 }
