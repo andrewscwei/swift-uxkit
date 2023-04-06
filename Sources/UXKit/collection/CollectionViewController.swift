@@ -176,10 +176,18 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
     let dataSource = UICollectionViewDiffableDataSource<S, I>(collectionView: collectionView) { collectionView, indexPath, item in
       let section = self.dataSource.snapshot().sectionIdentifiers[indexPath.section]
       let cell = self.delegate?.collectionViewController(self, cellAtIndexPath: indexPath, section: section, item: item) ?? self.cellFactory(at: indexPath, section: section, item: item)
-
       self.invalidateCell(cell, at: indexPath, section: section, item: item)
-
       return cell
+    }
+
+    dataSource.supplementaryViewProvider = { collectionView, kind, indexPath in
+      if let view = self.delegate?.collectionViewController(self, supplementaryViewAtIndexPath: indexPath, kind: kind) ?? self.supplementaryViewFactory(at: indexPath, kind: kind) {
+        self.invalidateSupplementaryView(view, at: indexPath, kind: kind)
+        return view
+      }
+      else {
+        return nil
+      }
     }
 
     return dataSource
@@ -212,7 +220,7 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
   /// ordered by priority:
   ///   1. From a `CollectionViewControllerDelegate` implementing
   ///      `collectionViewController(_:cellAtIndexPath:section:item:)`.
-  ///   2. From a subclass overriding this `cellFactory()`.
+  ///   2. From a subclass overriding this `cellFactory(at:section:item:)`.
   ///
   /// It is recommended for cells to be dequeued and reused, such as by using
   /// `dequeueConfiguredReusableCell(using:for:item:)`.
@@ -225,6 +233,29 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
   /// - Returns: The `UICollectionViewCell`.
   open func cellFactory(at indexPath: IndexPath, section: S, item: I) -> UICollectionViewCell {
     fatalError("CollectionViewController requires cells to be provided by either a CollectionViewControllerDelegate implementing collectionViewController(_:cellAtIndexPath:section:item:) or a subclass overriding cellFactory(at:section:item:)")
+  }
+
+  // MARK: - Supplementary Views Management
+
+  /// Factory for supplementary views in the collection view.
+  ///
+  /// Supplementary views are resolved from the first non-nil result of the
+  /// following methods, ordered by priority:
+  ///   1. From a `CollectionViewControllerDelegate` implementing
+  ///      `collectionViewController(_:supplementaryViewAtIndexPath:kind:)`.
+  ///   2. From a subclass overriding this `supplementaryViewFactory(at:kind:)`.
+  ///
+  /// It is recommended for cells to be dequeued and reused, such as by using
+  /// `dequeueConfiguredReusableSupplementary(using:for:)`.
+  /// `
+  /// - Parameters:
+  ///   - indexPath: Index path.
+  ///   - section: Section.
+  ///   - item: Item.
+  ///
+  /// - Returns: The `UICollectionReusableView`.
+  open func supplementaryViewFactory(at indexPath: IndexPath, kind: String) -> UICollectionReusableView? {
+    nil
   }
 
   // MARK: - Selection Management
@@ -241,15 +272,19 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
     itemSelectionDelegate.areAllItemsDeselected(in: section, where: predicate)
   }
 
-  public func getSection(at indexPath: IndexPath) -> S? {
+  public func getSection(at sectionIndex: Int) -> S? {
     let sectionIdentifiers = dataSource.snapshot().sectionIdentifiers
+    guard sectionIndex < sectionIdentifiers.count else { return nil }
+    return sectionIdentifiers[sectionIndex]
+  }
 
-    guard indexPath.section < sectionIdentifiers.count else { return nil }
-
-    return sectionIdentifiers[indexPath.section]
+  public func getIndex(for section: S) -> Int? {
+    return dataSource.snapshot().indexOfSection(section)
   }
 
   public func getItem(at indexPath: IndexPath) -> I? { itemSelectionDelegate.mapIndexPathToItem(indexPath) }
+
+  public func getIndexPath(for item: I) -> IndexPath? { itemSelectionDelegate.mapItemToIndexPath(item) }
 
   @discardableResult public func selectItem(_ item: I, shouldScroll: Bool = true, animated: Bool = true) -> I? {
     guard let item = itemSelectionDelegate.selectItem(item, where: { $0.isEqual(to: $1) }) else { return nil }
@@ -287,7 +322,7 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
   }
 
   public func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
-    if let item = getItem(at: indexPath), let section = getSection(at: indexPath) {
+    if let item = getItem(at: indexPath), let section = getSection(at: indexPath.section) {
       delegate?.collectionViewController(self, didTapOnItem: item, in: section)
     }
 
@@ -463,12 +498,6 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
     return UICollectionViewLayout()
   }
 
-  /// Invalidates the collection view layout, reapplying it to the collection
-  /// view again.
-  public func invalidateLayout() {
-    stateMachine.invalidate(\UICollectionView.collectionViewLayout)
-  }
-
   // MARK: - Updating
 
   open func update(check: StateValidator) {
@@ -489,8 +518,21 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
   ///   - update: The update block.
   public func updateVisibleCells(update: (UICollectionViewCell, IndexPath, S, I) -> Void) {
     for cell in collectionView.visibleCells {
-      guard let indexPath = collectionView.indexPath(for: cell), let item = getItem(at: indexPath), let section = getSection(at: indexPath) else { continue }
+      guard let indexPath = collectionView.indexPath(for: cell), let item = getItem(at: indexPath), let section = getSection(at: indexPath.section) else { continue }
       update(cell, indexPath, section, item)
+    }
+  }
+
+  /// Executes a block on each supplementary view currently visible in the
+  /// collection view.
+  ///
+  /// - Parameters:
+  ///   - kind: Kind
+  ///   - update: The update block.
+  public func updateVisibleSupplementaryViews(ofKind kind: String, update: (UICollectionReusableView, IndexPath, String) -> Void) {
+    for indexPath in collectionView.indexPathsForVisibleSupplementaryElements(ofKind: kind) {
+      guard let view = collectionView.supplementaryView(forElementKind: kind, at: indexPath) else { continue }
+      update(view, indexPath, kind)
     }
   }
 
@@ -514,5 +556,34 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
   ///   - item: Item.
   open func invalidateCell(_ cell: UICollectionViewCell, at indexPath: IndexPath, section: S, item: I) {
 
+  }
+
+  /// Invalidates all visible supplementary views.
+  ///
+  /// - Parameters:
+  ///   - kind: Kind.
+  public func invalidateVisibleSupplementaryViews(ofKind kind: String) {
+    updateVisibleSupplementaryViews(ofKind: kind) { self.invalidateSupplementaryView($0, at: $1, kind: $2) }
+  }
+
+  /// Invalidates the supplementary view at the given index path and kind. This
+  /// is automatically invoked whenever a supplementary view is created or
+  /// reused.
+  ///
+  /// Override this method to configure a supplementary view whenever it is
+  /// invalidated.
+  ///
+  /// - Parameters:
+  ///   - view: Supplementary view.
+  ///   - indexPath: Index path.
+  ///   - kind: Kind.
+  open func invalidateSupplementaryView(_ view: UICollectionReusableView, at indexPath: IndexPath, kind: String) {
+
+  }
+
+  /// Invalidates the collection view layout, reapplying it to the collection
+  /// view again.
+  public func invalidateLayout() {
+    stateMachine.invalidate(\UICollectionView.collectionViewLayout)
   }
 }

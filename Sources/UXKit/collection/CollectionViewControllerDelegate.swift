@@ -15,6 +15,18 @@ public protocol CollectionViewControllerDelegate: AnyObject {
   /// - Returns: `UICollectionViewCell` instance.
   func collectionViewController<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>, cellAtIndexPath indexPath: IndexPath, section: S, item: I) -> UICollectionViewCell?
 
+  /// Handler invoked to create each supplementary view at the specified index
+  /// path. `
+  ///
+  /// - Parameters:
+  ///   - viewController: The invoking `CollectionViewContorller`.
+  ///   - indexPath: Index path.
+  ///   - kind: String identifier representing the kind of supplementary view.
+  ///
+  /// - Returns: `UICollectionReusableView` instance or `nil` indicating no
+  ///             supplementary views.
+  func collectionViewController<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>, supplementaryViewAtIndexPath indexPath: IndexPath, kind: String) -> UICollectionReusableView?
+
   /// Handler invoked to create the collection view layout for the internal
   /// collection view.
   ///
@@ -112,6 +124,7 @@ public protocol CollectionViewControllerDelegate: AnyObject {
 
 extension CollectionViewControllerDelegate {
   public func collectionViewController<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>, cellAtIndexPath indexPath: IndexPath, section: S, item: I) -> UICollectionViewCell? { nil }
+  public func collectionViewController<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>, supplementaryViewAtIndexPath indexPath: IndexPath, kind: String) -> UICollectionReusableView? { nil }
   public func collectionViewControllerCollectionViewLayout<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>) -> UICollectionViewLayout? { nil }
   public func collectionViewController<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>, shouldSelectItem item: I, in section: S) -> Bool { true }
   public func collectionViewController<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>, shouldDeselectItem item: I, in section: S) -> Bool { true }
