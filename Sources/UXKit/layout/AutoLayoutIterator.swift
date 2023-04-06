@@ -11,7 +11,7 @@ public class AutoLayoutIterator {
   init(_ view: UIView) {
     self.view = view
 
-    if !(view is UICollectionViewCell) {
+    if !(view is UICollectionViewCell), !(view is UICollectionReusableView) {
       view.translatesAutoresizingMaskIntoConstraints = false
     }
   }

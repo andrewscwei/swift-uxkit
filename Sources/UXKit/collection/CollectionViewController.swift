@@ -63,7 +63,7 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
   // MARK: - Properties
 
   /// The data source object.
-  private lazy var dataSource: UICollectionViewDiffableDataSource<S, I> = dataSourceFactory()
+  public lazy var dataSource: UICollectionViewDiffableDataSource<S, I> = dataSourceFactory()
 
   /// The currently selected items.
   public var selectedItems: [I] {

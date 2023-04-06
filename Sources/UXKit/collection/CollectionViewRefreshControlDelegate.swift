@@ -314,14 +314,14 @@ extension CollectionViewRefreshControlDelegate: StateMachineDelegate {
     guard willPullToRefreshHandler() else { return }
 
     if frontRefreshControl?.isActive != true, let mask = frontRefreshControl?.layer.mask as? CAGradientLayer {
-      let offset = orientation == .vertical ? collectionView.contentOffset.y : collectionView.contentOffset.x
-      let minOffset = orientation == .vertical ? -(displacementToTriggerRefresh + collectionView.minContentOffset.y) : -(displacementToTriggerRefresh + collectionView.minContentOffset.x)
+      let currentOffset = orientation == .vertical ? collectionView.contentOffset.y : collectionView.contentOffset.x
+      let minOffset = orientation == .vertical ? collectionView.minContentOffset.y : collectionView.minContentOffset.x
 
-      if offset <= minOffset {
+      if currentOffset <= minOffset - displacementToTriggerRefresh {
         mask.colors = [UIColor.black.withAlphaComponent(1.0).cgColor, UIColor.black.withAlphaComponent(1.0).cgColor]
       }
       else {
-        let delta = abs(min(0, orientation == .vertical ? collectionView.contentOffset.y - collectionView.minContentOffset.y : collectionView.contentOffset.x - collectionView.minContentOffset.x))
+        let delta = abs(min(0, currentOffset - minOffset))
         let alpha0 = max(0, min(1.0, delta / (displacementToTriggerRefresh * 0.5)))
         let alpha1 = max(0, min(1.0, (delta - displacementToTriggerRefresh * 0.5) / (displacementToTriggerRefresh * 0.5)))
         mask.colors = [UIColor.black.withAlphaComponent(alpha0).cgColor, UIColor.black.withAlphaComponent(alpha1).cgColor]
@@ -329,14 +329,14 @@ extension CollectionViewRefreshControlDelegate: StateMachineDelegate {
     }
 
     if endRefreshControl?.isActive != true, let mask = endRefreshControl?.layer.mask as? CAGradientLayer {
-      let offset = orientation == .vertical ? collectionView.contentOffset.y : collectionView.contentOffset.x
-      let maxOffset = orientation == .vertical ? displacementToTriggerRefresh + collectionView.maxContentOffset.y : displacementToTriggerRefresh + collectionView.maxContentOffset.x
+      let currentOffset = orientation == .vertical ? collectionView.contentOffset.y : collectionView.contentOffset.x
+      let maxOffset = orientation == .vertical ? collectionView.maxContentOffset.y : collectionView.maxContentOffset.x
 
-      if offset >= maxOffset {
+      if currentOffset >= maxOffset + displacementToTriggerRefresh {
         mask.colors = [UIColor.black.withAlphaComponent(1.0).cgColor, UIColor.black.withAlphaComponent(1.0).cgColor]
       }
       else {
-        let delta = abs(max(0, orientation == .vertical ? collectionView.contentOffset.y - collectionView.maxContentOffset.y : collectionView.contentOffset.x - collectionView.maxContentOffset.x))
+        let delta = abs(max(0, currentOffset - maxOffset))
         let alpha0 = max(0, min(1.0, delta / (displacementToTriggerRefresh * 0.5)))
         let alpha1 = max(0, min(1.0, (delta - displacementToTriggerRefresh * 0.5) / (displacementToTriggerRefresh * 0.5)))
         mask.colors = [UIColor.black.withAlphaComponent(alpha0).cgColor, UIColor.black.withAlphaComponent(alpha1).cgColor]
