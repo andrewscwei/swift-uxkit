@@ -3,7 +3,7 @@
 import BaseKit
 import UIKit
 
-class CollectionViewScrollDelegate<S: Hashable, I: Hashable> {
+class CollectionViewScrollDelegate<SectionIdentifier: Hashable, ItemIdentifier: Hashable> {
   /// Internal `StateMachine` instance.
   lazy var stateMachine = StateMachine(self)
 
@@ -11,8 +11,8 @@ class CollectionViewScrollDelegate<S: Hashable, I: Hashable> {
   private let collectionView: UICollectionView
 
   /// Internal `UICollectionViewDiffableDataSource` instance.
-  private var collectionViewDataSource: UICollectionViewDiffableDataSource<S, I> {
-    guard let dataSource = collectionView.dataSource as? UICollectionViewDiffableDataSource<S, I> else { fatalError("CollectionViewItemSelectionDelegate only works with UICollectionViewDiffableDataSource") }
+  private var collectionViewDataSource: UICollectionViewDiffableDataSource<SectionIdentifier, ItemIdentifier> {
+    guard let dataSource = collectionView.dataSource as? UICollectionViewDiffableDataSource<SectionIdentifier, ItemIdentifier> else { fatalError("CollectionViewItemSelectionDelegate only works with UICollectionViewDiffableDataSource") }
     return dataSource
   }
 
@@ -67,7 +67,7 @@ class CollectionViewScrollDelegate<S: Hashable, I: Hashable> {
   /// - Parameters:
   ///   - item: Item.
   ///   - animated: Specifies if the scrolling is animated.
-  func scrollToItem(_ item: I, animated: Bool) {
+  func scrollToItem(_ item: ItemIdentifier, animated: Bool) {
     guard
       let section = collectionViewDataSource.snapshot().sectionIdentifier(containingItem: item),
       let sectionIdx = collectionViewDataSource.snapshot().indexOfSection(section),

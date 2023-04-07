@@ -13,7 +13,7 @@ public protocol CollectionViewControllerDelegate: AnyObject {
   ///   - item: Item.
   ///
   /// - Returns: `UICollectionViewCell` instance.
-  func collectionViewController<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>, cellAtIndexPath indexPath: IndexPath, section: S, item: I) -> UICollectionViewCell?
+  func collectionViewController<SectionIdentifier: CaseIterable & Hashable, ItemIdentifier: Hashable>(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>, cellAtIndexPath indexPath: IndexPath, section: SectionIdentifier, item: ItemIdentifier) -> UICollectionViewCell?
 
   /// Handler invoked to create each supplementary view at the specified index
   /// path. `
@@ -25,7 +25,7 @@ public protocol CollectionViewControllerDelegate: AnyObject {
   ///
   /// - Returns: `UICollectionReusableView` instance or `nil` indicating no
   ///             supplementary views.
-  func collectionViewController<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>, supplementaryViewAtIndexPath indexPath: IndexPath, kind: String) -> UICollectionReusableView?
+  func collectionViewController<SectionIdentifier: CaseIterable & Hashable, ItemIdentifier: Hashable>(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>, supplementaryViewAtIndexPath indexPath: IndexPath, kind: String) -> UICollectionReusableView?
 
   /// Handler invoked to create the collection view layout for the internal
   /// collection view.
@@ -34,7 +34,7 @@ public protocol CollectionViewControllerDelegate: AnyObject {
   ///
   /// - Returns: The `UICollectionViewLayout` instance. If `nil`, the default
   ///            layout will be used.
-  func collectionViewControllerCollectionViewLayout<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>) -> UICollectionViewLayout?
+  func collectionViewControllerCollectionViewLayout<SectionIdentifier: CaseIterable & Hashable, ItemIdentifier: Hashable>(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>) -> UICollectionViewLayout?
 
   /// Handler invoked to determine if an item should be selected.
   ///
@@ -44,7 +44,7 @@ public protocol CollectionViewControllerDelegate: AnyObject {
   ///   - section: Section.
   ///
   /// - Returns: `true` if the item should be selected, `false` otherwise.
-  func collectionViewController<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>, shouldSelectItem item: I, in section: S) -> Bool
+  func collectionViewController<SectionIdentifier: CaseIterable & Hashable, ItemIdentifier: Hashable>(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>, shouldSelectItem item: ItemIdentifier, in section: SectionIdentifier) -> Bool
 
   /// Handler invoked to determine if an item should be deselected.
   ///
@@ -54,7 +54,7 @@ public protocol CollectionViewControllerDelegate: AnyObject {
   ///   - section: Section.
   ///
   /// - Returns: `true` if the item should be deselected, `false` otherwise.
-  func collectionViewController<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>, shouldDeselectItem item: I, in section: S) -> Bool
+  func collectionViewController<SectionIdentifier: CaseIterable & Hashable, ItemIdentifier: Hashable>(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>, shouldDeselectItem item: ItemIdentifier, in section: SectionIdentifier) -> Bool
 
   /// Handler invoked when an item in the collection view is tapped.
   ///
@@ -62,12 +62,12 @@ public protocol CollectionViewControllerDelegate: AnyObject {
   ///   - viewCOntroller: The invoking `CollectionViewController`.
   ///   - item: Item.
   ///   - section: Section.
-  func collectionViewController<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>, didTapOnItem item: I, in section: S)
+  func collectionViewController<SectionIdentifier: CaseIterable & Hashable, ItemIdentifier: Hashable>(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>, didTapOnItem item: ItemIdentifier, in section: SectionIdentifier)
 
   /// Handler invoked when the item selection has changed.
   ///
   /// - Parameter viewController: The invoking `CollectionViewController`.
-  func collectionViewControllerSelectionDidChange<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>)
+  func collectionViewControllerSelectionDidChange<SectionIdentifier: CaseIterable & Hashable, ItemIdentifier: Hashable>(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>)
 
   /// Handler invoked to determine if pulling from either end of the collection
   /// view will trigger a refresh.
@@ -76,14 +76,14 @@ public protocol CollectionViewControllerDelegate: AnyObject {
   ///   - viewController: The invoking `CollectionViewController`.
   ///
   /// - Returns: `true` to trigger refresh, `false` otherwise.
-  func collectionViewControllerWillPullToRefresh<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>) -> Bool
+  func collectionViewControllerWillPullToRefresh<SectionIdentifier: CaseIterable & Hashable, ItemIdentifier: Hashable>(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>) -> Bool
 
   /// Handler invoked when refresh is triggered after pulling from either end of
   /// the collection view.
   ///
   /// - Parameters:
   ///   - viewController: The invoking `CollectionViewController`.
-  func collectionViewControllerDidPullToRefresh<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>)
+  func collectionViewControllerDidPullToRefresh<SectionIdentifier: CaseIterable & Hashable, ItemIdentifier: Hashable>(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>)
 
   /// Handler invoked to create an activity indicator view at the front of the
   /// collection view which will be used for the internal pull-to-refresh
@@ -93,7 +93,7 @@ public protocol CollectionViewControllerDelegate: AnyObject {
   ///   - viewController: The invoking `CollectionViewController`.
   ///
   /// - Returns: Some `CollectionViewRefreshControl` instance.
-  func collectionViewControllerFrontRefreshControl<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>) -> (any CollectionViewRefreshControl)?
+  func collectionViewControllerFrontRefreshControl<SectionIdentifier: CaseIterable & Hashable, ItemIdentifier: Hashable>(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>) -> (any CollectionViewRefreshControl)?
 
   /// Handler invoked to create an activity indicator view at the end of the
   /// collection view which will be used for the internal pull-to-refresh
@@ -103,7 +103,7 @@ public protocol CollectionViewControllerDelegate: AnyObject {
   ///   - viewController: The invoking `CollectionViewController`.
   ///
   /// - Returns: Some `CollectionViewRefreshControl` instance.
-  func collectionViewControllerEndRefreshControl<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>) -> (any CollectionViewRefreshControl)?
+  func collectionViewControllerEndRefreshControl<SectionIdentifier: CaseIterable & Hashable, ItemIdentifier: Hashable>(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>) -> (any CollectionViewRefreshControl)?
 
   /// Handler invoked to determine if an item should be included in the current
   /// data source snapshot when the specified filter query is applied.
@@ -114,26 +114,26 @@ public protocol CollectionViewControllerDelegate: AnyObject {
   ///   - query: Filter query.
   ///
   /// - Returns: `true` to include the item, `false` otherwise.
-  func collectionViewController<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>, shouldIncludeItem item: I, withFilterQuery query: Any?) -> Bool
+  func collectionViewController<SectionIdentifier: CaseIterable & Hashable, ItemIdentifier: Hashable>(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>, shouldIncludeItem item: ItemIdentifier, withFilterQuery query: Any?) -> Bool
 
   /// Handler invoked when the collection view scrolls.
   ///
   /// - Parameter viewController: The invoking `CollectionViewController`.
-  func collectionViewControllerDidScroll<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>)
+  func collectionViewControllerDidScroll<SectionIdentifier: CaseIterable & Hashable, ItemIdentifier: Hashable>(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>)
 }
 
 extension CollectionViewControllerDelegate {
-  public func collectionViewController<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>, cellAtIndexPath indexPath: IndexPath, section: S, item: I) -> UICollectionViewCell? { nil }
-  public func collectionViewController<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>, supplementaryViewAtIndexPath indexPath: IndexPath, kind: String) -> UICollectionReusableView? { nil }
-  public func collectionViewControllerCollectionViewLayout<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>) -> UICollectionViewLayout? { nil }
-  public func collectionViewController<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>, shouldSelectItem item: I, in section: S) -> Bool { true }
-  public func collectionViewController<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>, shouldDeselectItem item: I, in section: S) -> Bool { true }
-  public func collectionViewController<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>, didTapOnItem item: I, in section: S) {}
-  public func collectionViewControllerSelectionDidChange<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>) {}
-  public func collectionViewControllerWillPullToRefresh<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>) -> Bool { true }
-  public func collectionViewControllerDidPullToRefresh<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>) {}
-  public func collectionViewControllerFrontRefreshControl<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>) -> (any CollectionViewRefreshControl)? { nil }
-  public func collectionViewControllerEndRefreshControl<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>) -> (any CollectionViewRefreshControl)? { nil }
-  public func collectionViewController<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>, shouldIncludeItem item: I, withFilterQuery query: Any?) -> Bool { true }
-  public func collectionViewControllerDidScroll<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>)  {}
+  public func collectionViewController<SectionIdentifier: CaseIterable & Hashable, ItemIdentifier: Hashable>(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>, cellAtIndexPath indexPath: IndexPath, section: SectionIdentifier, item: ItemIdentifier) -> UICollectionViewCell? { nil }
+  public func collectionViewController<SectionIdentifier: CaseIterable & Hashable, ItemIdentifier: Hashable>(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>, supplementaryViewAtIndexPath indexPath: IndexPath, kind: String) -> UICollectionReusableView? { nil }
+  public func collectionViewControllerCollectionViewLayout<SectionIdentifier: CaseIterable & Hashable, ItemIdentifier: Hashable>(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>) -> UICollectionViewLayout? { nil }
+  public func collectionViewController<SectionIdentifier: CaseIterable & Hashable, ItemIdentifier: Hashable>(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>, shouldSelectItem item: ItemIdentifier, in section: SectionIdentifier) -> Bool { true }
+  public func collectionViewController<SectionIdentifier: CaseIterable & Hashable, ItemIdentifier: Hashable>(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>, shouldDeselectItem item: ItemIdentifier, in section: SectionIdentifier) -> Bool { true }
+  public func collectionViewController<SectionIdentifier: CaseIterable & Hashable, ItemIdentifier: Hashable>(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>, didTapOnItem item: ItemIdentifier, in section: SectionIdentifier) {}
+  public func collectionViewControllerSelectionDidChange<SectionIdentifier: CaseIterable & Hashable, ItemIdentifier: Hashable>(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>) {}
+  public func collectionViewControllerWillPullToRefresh<SectionIdentifier: CaseIterable & Hashable, ItemIdentifier: Hashable>(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>) -> Bool { true }
+  public func collectionViewControllerDidPullToRefresh<SectionIdentifier: CaseIterable & Hashable, ItemIdentifier: Hashable>(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>) {}
+  public func collectionViewControllerFrontRefreshControl<SectionIdentifier: CaseIterable & Hashable, ItemIdentifier: Hashable>(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>) -> (any CollectionViewRefreshControl)? { nil }
+  public func collectionViewControllerEndRefreshControl<SectionIdentifier: CaseIterable & Hashable, ItemIdentifier: Hashable>(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>) -> (any CollectionViewRefreshControl)? { nil }
+  public func collectionViewController<SectionIdentifier: CaseIterable & Hashable, ItemIdentifier: Hashable>(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>, shouldIncludeItem item: ItemIdentifier, withFilterQuery query: Any?) -> Bool { true }
+  public func collectionViewControllerDidScroll<SectionIdentifier: CaseIterable & Hashable, ItemIdentifier: Hashable>(_ viewController: CollectionViewController<SectionIdentifier, ItemIdentifier>)  {}
 }

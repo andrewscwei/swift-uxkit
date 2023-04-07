@@ -7,20 +7,20 @@ import UIKit
 /// are derived from a `UICollectionViewDiffableDataSource`. Since items are
 /// expected to be diffable, their values must be unique across sections even if
 /// they are the same type.
-open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UIViewController, UICollectionViewDelegate, StateMachineDelegate {
+open class CollectionViewController<SectionIdentifier: Hashable & CaseIterable, ItemIdentifier: Hashable>: UIViewController, UICollectionViewDelegate, StateMachineDelegate {
 
   // MARK: - Delegation
 
   public weak var delegate: (any CollectionViewControllerDelegate)?
 
-  private lazy var itemSelectionDelegate = CollectionViewItemSelectionDelegate<S, I>(
+  private lazy var itemSelectionDelegate = CollectionViewItemSelectionDelegate<SectionIdentifier, ItemIdentifier>(
     collectionView: collectionView,
     selectionDidChange: { self.selectionDidChange() },
     shouldSelectItem: { self.shouldSelectItem(item: $0, section: $1) },
     shouldDeselectItem: { self.shouldDeselectItem(item: $0, section: $1) }
   )
 
-  private lazy var scrollDelegate = CollectionViewScrollDelegate<S, I>(
+  private lazy var scrollDelegate = CollectionViewScrollDelegate<SectionIdentifier, ItemIdentifier>(
     collectionView: collectionView
   )
 
@@ -32,7 +32,7 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
     didPullToRefresh: { self.didPullToRefresh() }
   )
 
-  private lazy var filterDelegate = CollectionViewFilterDelegate<S, I>(
+  private lazy var filterDelegate = CollectionViewFilterDelegate<SectionIdentifier, ItemIdentifier>(
     collectionView: collectionView,
     filterPredicate: { item, query in self.delegate?.collectionViewController(self, shouldIncludeItem: item, withFilterQuery: query) ?? true },
     filteredDataSetDidChange: { self.filteredDataSetDidChange() }
@@ -58,21 +58,21 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
   /// the same section (same item across multiple sections is OK).
   ///
   /// TODO: Enforce no duplicate items in each section.
-  @Stateful public var dataSet: [S: [I]] = S.allCases.reduce([:]) { $0.merging([$1: []]) { $1 } }
+  @Stateful public var dataSet: [SectionIdentifier: [ItemIdentifier]] = SectionIdentifier.allCases.reduce([:]) { $0.merging([$1: []]) { $1 } }
 
   // MARK: - Properties
 
   /// The data source object.
-  public lazy var dataSource: UICollectionViewDiffableDataSource<S, I> = dataSourceFactory()
+  public lazy var dataSource: UICollectionViewDiffableDataSource<SectionIdentifier, ItemIdentifier> = dataSourceFactory()
 
   /// The currently selected items.
-  public var selectedItems: [I] {
+  public var selectedItems: [ItemIdentifier] {
     get { itemSelectionDelegate.getSelectedItems() }
     set { itemSelectionDelegate.setSelectedItems(newValue) }
   }
 
   /// The currently selected item.
-  public var selectedItem: I? {
+  public var selectedItem: ItemIdentifier? {
     get { itemSelectionDelegate.getSelectedItems().first }
     set { itemSelectionDelegate.setSelectedItems(newValue.map { [$0] } ?? []) }
   }
@@ -172,8 +172,8 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
 
   // MARK: - Data Management
 
-  private func dataSourceFactory() -> UICollectionViewDiffableDataSource<S, I> {
-    let dataSource = UICollectionViewDiffableDataSource<S, I>(collectionView: collectionView) { collectionView, indexPath, item in
+  private func dataSourceFactory() -> UICollectionViewDiffableDataSource<SectionIdentifier, ItemIdentifier> {
+    let dataSource = UICollectionViewDiffableDataSource<SectionIdentifier, ItemIdentifier>(collectionView: collectionView) { collectionView, indexPath, item in
       let section = self.dataSource.snapshot().sectionIdentifiers[indexPath.section]
       let cell = self.delegate?.collectionViewController(self, cellAtIndexPath: indexPath, section: section, item: item) ?? self.cellFactory(at: indexPath, section: section, item: item)
       self.invalidateCell(cell, at: indexPath, section: section, item: item)
@@ -196,10 +196,10 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
   /// Updates the current snapshot of the data source with a data set.
   ///
   /// - Parameter dataSet: The data set.
-  private func updateSnapshot(with dataSet: [S: [I]]) {
-    var snapshot = NSDiffableDataSourceSnapshot<S, I>()
+  private func updateSnapshot(with dataSet: [SectionIdentifier: [ItemIdentifier]]) {
+    var snapshot = NSDiffableDataSourceSnapshot<SectionIdentifier, ItemIdentifier>()
 
-    let sectionsToAppend = S.allCases.reduce([S]()) { (dataSet[$1] ?? []).count > 0 ? $0 + [$1] : $0 }
+    let sectionsToAppend = SectionIdentifier.allCases.reduce([SectionIdentifier]()) { (dataSet[$1] ?? []).count > 0 ? $0 + [$1] : $0 }
 
     snapshot.appendSections(sectionsToAppend)
 
@@ -231,7 +231,7 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
   ///   - item: Item.
   ///
   /// - Returns: The `UICollectionViewCell`.
-  open func cellFactory(at indexPath: IndexPath, section: S, item: I) -> UICollectionViewCell {
+  open func cellFactory(at indexPath: IndexPath, section: SectionIdentifier, item: ItemIdentifier) -> UICollectionViewCell {
     fatalError("CollectionViewController requires cells to be provided by either a CollectionViewControllerDelegate implementing collectionViewController(_:cellAtIndexPath:section:item:) or a subclass overriding cellFactory(at:section:item:)")
   }
 
@@ -260,33 +260,33 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
 
   // MARK: - Selection Management
 
-  public func isItemSelected(_ item: I, where predicate: (I, I) -> Bool = { $0.isEqual(to: $1) }) -> Bool {
+  public func isItemSelected(_ item: ItemIdentifier, where predicate: (ItemIdentifier, ItemIdentifier) -> Bool = { $0.isEqual(to: $1) }) -> Bool {
     itemSelectionDelegate.isItemSelected(item, where: predicate)
   }
 
-  public func areAllItemsSelected(in section: S, where predicate: (I, I) -> Bool = { $0.isEqual(to: $1) }) -> Bool {
+  public func areAllItemsSelected(in section: SectionIdentifier, where predicate: (ItemIdentifier, ItemIdentifier) -> Bool = { $0.isEqual(to: $1) }) -> Bool {
     itemSelectionDelegate.areAllItemsSelected(in: section, where: predicate)
   }
 
-  public func areAllItemsDeselected(in section: S, where predicate: (I, I) -> Bool = { $0.isEqual(to: $1) }) -> Bool {
+  public func areAllItemsDeselected(in section: SectionIdentifier, where predicate: (ItemIdentifier, ItemIdentifier) -> Bool = { $0.isEqual(to: $1) }) -> Bool {
     itemSelectionDelegate.areAllItemsDeselected(in: section, where: predicate)
   }
 
-  public func getSection(at sectionIndex: Int) -> S? {
+  public func getSection(at sectionIndex: Int) -> SectionIdentifier? {
     let sectionIdentifiers = dataSource.snapshot().sectionIdentifiers
     guard sectionIndex < sectionIdentifiers.count else { return nil }
     return sectionIdentifiers[sectionIndex]
   }
 
-  public func getIndex(for section: S) -> Int? {
+  public func getIndex(for section: SectionIdentifier) -> Int? {
     return dataSource.snapshot().indexOfSection(section)
   }
 
-  public func getItem(at indexPath: IndexPath) -> I? { itemSelectionDelegate.mapIndexPathToItem(indexPath) }
+  public func getItem(at indexPath: IndexPath) -> ItemIdentifier? { itemSelectionDelegate.mapIndexPathToItem(indexPath) }
 
-  public func getIndexPath(for item: I) -> IndexPath? { itemSelectionDelegate.mapItemToIndexPath(item) }
+  public func getIndexPath(for item: ItemIdentifier) -> IndexPath? { itemSelectionDelegate.mapItemToIndexPath(item) }
 
-  @discardableResult public func selectItem(_ item: I, shouldScroll: Bool = true, animated: Bool = true) -> I? {
+  @discardableResult public func selectItem(_ item: ItemIdentifier, shouldScroll: Bool = true, animated: Bool = true) -> ItemIdentifier? {
     guard let item = itemSelectionDelegate.selectItem(item, where: { $0.isEqual(to: $1) }) else { return nil }
 
     if shouldScroll {
@@ -296,15 +296,15 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
     return item
   }
 
-  @discardableResult public func selectAllItems(in section: S) -> [I] {
+  @discardableResult public func selectAllItems(in section: SectionIdentifier) -> [ItemIdentifier] {
     itemSelectionDelegate.selectAllItems(in: section, where: { $0.isEqual(to: $1) })
   }
 
-  @discardableResult public func deselectItem(_ item: I) -> I? {
+  @discardableResult public func deselectItem(_ item: ItemIdentifier) -> ItemIdentifier? {
     itemSelectionDelegate.deselectItem(item, where: { $0.isEqual(to: $1) })
   }
 
-  @discardableResult public func deselectAllItems(in section: S) -> [I] {
+  @discardableResult public func deselectAllItems(in section: SectionIdentifier) -> [ItemIdentifier] {
     itemSelectionDelegate.deselectAllItems(in: section, where: { $0.isEqual(to: $1) })
   }
 
@@ -313,11 +313,11 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
     delegate?.collectionViewControllerSelectionDidChange(self)
   }
 
-  private func shouldSelectItem(item: I, section: S) -> Bool {
+  private func shouldSelectItem(item: ItemIdentifier, section: SectionIdentifier) -> Bool {
     delegate?.collectionViewController(self, shouldSelectItem: item, in: section) ?? true
   }
 
-  private func shouldDeselectItem(item: I, section: S) -> Bool {
+  private func shouldDeselectItem(item: ItemIdentifier, section: SectionIdentifier) -> Bool {
     delegate?.collectionViewController(self, shouldDeselectItem: item, in: section) ?? true
   }
 
@@ -377,7 +377,7 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
   ///   - item: Item.
   ///   - animated: Specifies if scrolling behavior is animated.
   ///   - completionHandler: Handler invoked when scrolling is complete.
-  open func scrollToItem(_ item: I, animated: Bool = true, completion completionHandler: (() -> Void)? = nil) {
+  open func scrollToItem(_ item: ItemIdentifier, animated: Bool = true, completion completionHandler: (() -> Void)? = nil) {
     if let handler = completionHandler {
       endScrollingAnimationHandlers.append(handler)
     }
@@ -516,7 +516,7 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
   ///
   /// - Parameters:
   ///   - update: The update block.
-  public func updateVisibleCells(update: (UICollectionViewCell, IndexPath, S, I) -> Void) {
+  public func updateVisibleCells(update: (UICollectionViewCell, IndexPath, SectionIdentifier, ItemIdentifier) -> Void) {
     for cell in collectionView.visibleCells {
       guard let indexPath = collectionView.indexPath(for: cell), let item = getItem(at: indexPath), let section = getSection(at: indexPath.section) else { continue }
       update(cell, indexPath, section, item)
@@ -554,7 +554,7 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
   ///   - indexPath: Index path.
   ///   - section: Section.
   ///   - item: Item.
-  open func invalidateCell(_ cell: UICollectionViewCell, at indexPath: IndexPath, section: S, item: I) {
+  open func invalidateCell(_ cell: UICollectionViewCell, at indexPath: IndexPath, section: SectionIdentifier, item: ItemIdentifier) {
 
   }
 
