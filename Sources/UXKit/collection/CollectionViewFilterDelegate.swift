@@ -3,7 +3,7 @@
 import BaseKit
 import UIKit
 
-class CollectionViewFilterDelegate<SectionIdentifier: Hashable, ItemIdentifier: Hashable> {
+class CollectionViewFilterDelegate<S: Hashable, I: Hashable> {
   /// Internal `StateMachine` instance.
   lazy var stateMachine = StateMachine(self)
 
@@ -11,29 +11,29 @@ class CollectionViewFilterDelegate<SectionIdentifier: Hashable, ItemIdentifier: 
   private let collectionView: UICollectionView
 
   /// Internal `UICollectionViewDiffableDataSource` instance.
-  private var collectionViewDataSource: UICollectionViewDiffableDataSource<SectionIdentifier, ItemIdentifier> {
-    guard let dataSource = collectionView.dataSource as? UICollectionViewDiffableDataSource<SectionIdentifier, ItemIdentifier> else { fatalError("CollectionViewItemSelectionDelegate only works with UICollectionViewDiffableDataSource") }
+  private var collectionViewDataSource: UICollectionViewDiffableDataSource<S, I> {
+    guard let dataSource = collectionView.dataSource as? UICollectionViewDiffableDataSource<S, I> else { fatalError("CollectionViewItemSelectionDelegate only works with UICollectionViewDiffableDataSource") }
     return dataSource
   }
 
   /// Predicate for filtering an item.
-  private let filterPredicate: (ItemIdentifier, Any?) -> Bool
+  private let filterPredicate: (I, Any?) -> Bool
 
   /// Handler invoked when the filtered data set is changed.
   private let filteredDataSetDidChange: () -> Void
 
   /// Data set of the parent `CollectionViewController`.
-  @Stateful var dataSet = [SectionIdentifier: [ItemIdentifier]]()
+  @Stateful var dataSet = [S: [I]]()
 
   /// Filtered data set.
-  @Stateful var filteredDataSet = [SectionIdentifier: [ItemIdentifier]]() { didSet { filteredDataSetDidChange() }}
+  @Stateful var filteredDataSet = [S: [I]]() { didSet { filteredDataSetDidChange() }}
 
   /// Filter query to apply to the data set.
   @Stateful var query: Any?
 
   init(
     collectionView: UICollectionView,
-    filterPredicate: @escaping (ItemIdentifier, Any?) -> Bool,
+    filterPredicate: @escaping (I, Any?) -> Bool,
     filteredDataSetDidChange: @escaping () -> Void
   ) {
     self.collectionView = collectionView
