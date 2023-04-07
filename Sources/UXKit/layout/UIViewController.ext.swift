@@ -35,7 +35,14 @@ extension UIViewController {
   public func removeChild<T: UIViewController>(_ viewController: T, unconfigure: (T) -> Void = { _ in }) {
     viewController.willMove(toParent: nil)
     unconfigure(viewController)
-    viewController.view.removeFromSuperview()
+
+    if let stackView = viewController.view.superview as? UIStackView {
+      stackView.removeArrangedSubview(viewController.view)
+    }
+    else {
+      viewController.view.removeFromSuperview()
+    }
+
     viewController.removeFromParent()
   }
 }
