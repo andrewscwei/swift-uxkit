@@ -17,7 +17,7 @@ open class AutoResizingTextView: UITextView, StateMachineDelegate {
   @Stateful public var horizontalResizeBehavior: ResizeBehavior = .none
   @Stateful public var verticalResizeBehavior: ResizeBehavior = .none
   @Stateful public var placeholder: String?
-  @Stateful public var placeholderAlpha: CGFloat = 0.6
+  @Stateful public var placeholderAlpha: CGFloat = 0.4
   @Stateful public var placeholderTextColor: UIColor?
 
   open override var intrinsicContentSize: CGSize {
