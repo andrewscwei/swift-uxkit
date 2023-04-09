@@ -56,7 +56,7 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
   /// data source snapshot, thus refreshing the items in the collection view.
   ///  Though not explicitly enforced, there should be no duplicate items within
   /// the same section (same item across multiple sections is OK).
-  @Stateful public var dataSet: [S: [I]] = S.allCases.reduce([:]) { $0.merging([$1: []]) { $1 } }
+  @Stateful private var dataSet: [S: [I]] = [:]
 
   // MARK: - Properties
 
@@ -170,6 +170,17 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
 
   // MARK: - Data Management
 
+  /// Sets the data set, consequently updating the data source snapshot.
+  ///
+  /// - Parameters:
+  ///   - dataSet: Data set.
+  ///   - itemsToReconfigure: Specify items to reconfigure.
+  ///   - animated: Specifies if the update should be animated.
+  public func setDataSet(_ dataSet: [S: [I]], reconfiguring itemsToReconfigure: [I] = [], animated: Bool = true) {
+    self.dataSet = dataSet
+    updateSnapshot(with: dataSet, reconfiguring: itemsToReconfigure, animated: animated)
+  }
+
   private func dataSourceFactory() -> UICollectionViewDiffableDataSource<S, I> {
     let dataSource = UICollectionViewDiffableDataSource<S, I>(collectionView: collectionView) { collectionView, indexPath, item in
       let section = self.dataSource.snapshot().sectionIdentifiers[indexPath.section]
@@ -191,10 +202,7 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
     return dataSource
   }
 
-  /// Updates the current snapshot of the data source with a data set.
-  ///
-  /// - Parameter dataSet: The data set.
-  private func updateSnapshot(with dataSet: [S: [I]]) {
+  private func updateSnapshot(with dataSet: [S: [I]], reconfiguring itemsToReconfigure: [I], animated: Bool) {
     var snapshot = NSDiffableDataSourceSnapshot<S, I>()
 
     let sectionsToAppend = S.allCases.reduce([S]()) { (dataSet[$1] ?? []).count > 0 ? $0 + [$1] : $0 }
@@ -205,9 +213,9 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
       snapshot.appendItems(dataSet[section] ?? [], toSection: section)
     }
 
-    dataSource.apply(snapshot)
+    snapshot.reconfigureItems(itemsToReconfigure)
 
-    itemSelectionDelegate.invalidateSelectedIndexPaths()
+    dataSource.apply(snapshot, animatingDifferences: animated)
   }
 
   // MARK: - Cell Management
@@ -476,7 +484,7 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
   // MARK: - Filter Management
 
   private func filteredDataSetDidChange() {
-    updateSnapshot(with: filterDelegate.filteredDataSet)
+    updateSnapshot(with: filterDelegate.filteredDataSet, reconfiguring: [], animated: true)
   }
 
   // MARK: - Layout Management
@@ -504,7 +512,6 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
     }
 
     if check.isDirty(\CollectionViewController.dataSet) {
-      updateSnapshot(with: dataSet)
       itemSelectionDelegate.dataSet = dataSet
       filterDelegate.dataSet = dataSet
     }
