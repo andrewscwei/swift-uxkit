@@ -9,8 +9,8 @@ extension Date {
     return Formatter.iso8601.string(from: self)
   }
   
-  /// Returns a string representation of how much time has passed since this
-  /// `Date`.
+  /// Returns a string representation of how much time has passed since the
+  /// current `Date`.
   ///
   /// To localize the returned string, the app can create an extension of
   /// `TimeAgo` and conform to the `Localized` protocol.
@@ -18,7 +18,19 @@ extension Date {
   /// - Returns: String representation of how much time has passed since this
   ///            `Date`.
   public func shortTimeAgoSinceNow() -> String {
-    let interval = Calendar.current.dateComponents([.year, .day, .hour, .minute], from: self, to: Date())
+    shortTimeAgoSince(Date())
+  }
+
+  /// Returns a string representation of how much time has passed since the
+  /// specified `Date`.
+  ///
+  /// To localize the returned string, the app can create an extension of
+  /// `TimeAgo` and conform to the `Localized` protocol.
+  ///
+  /// - Returns: String representation of how much time has passed since this
+  ///            `Date`.
+  public func shortTimeAgoSince(_ date: Date) -> String {
+    let interval = Calendar.current.dateComponents([.year, .day, .hour, .minute], from: self, to: date)
     let timeAgo: TimeAgo
 
     if let val = interval.year, val > 0 {
