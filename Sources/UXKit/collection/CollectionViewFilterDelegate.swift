@@ -58,7 +58,7 @@ class CollectionViewFilterDelegate<S: Hashable, I: Hashable> {
 
     for (section, items) in dataSet {
       guard let filteredItems = newFilteredDataSet[section] else { continue }
-      newFilteredDataSet[section] = filteredItems.filter { filteredItem in items.contains(where: { $0.isEqual(to: filteredItem) }) }
+      newFilteredDataSet[section] = filteredItems.filter { filteredItem in items.contains(where: { $0 == filteredItem }) }
     }
   }
 

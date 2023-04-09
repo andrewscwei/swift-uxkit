@@ -56,8 +56,6 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
   /// data source snapshot, thus refreshing the items in the collection view.
   ///  Though not explicitly enforced, there should be no duplicate items within
   /// the same section (same item across multiple sections is OK).
-  ///
-  /// TODO: Enforce no duplicate items in each section.
   @Stateful public var dataSet: [S: [I]] = S.allCases.reduce([:]) { $0.merging([$1: []]) { $1 } }
 
   // MARK: - Properties
@@ -260,15 +258,15 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
 
   // MARK: - Selection Management
 
-  public func isItemSelected(_ item: I, where predicate: (I, I) -> Bool = { $0.isEqual(to: $1) }) -> Bool {
+  public func isItemSelected(_ item: I, where predicate: (I, I) -> Bool = { $0 == $1 }) -> Bool {
     itemSelectionDelegate.isItemSelected(item, where: predicate)
   }
 
-  public func areAllItemsSelected(in section: S, where predicate: (I, I) -> Bool = { $0.isEqual(to: $1) }) -> Bool {
+  public func areAllItemsSelected(in section: S, where predicate: (I, I) -> Bool = { $0 == $1 }) -> Bool {
     itemSelectionDelegate.areAllItemsSelected(in: section, where: predicate)
   }
 
-  public func areAllItemsDeselected(in section: S, where predicate: (I, I) -> Bool = { $0.isEqual(to: $1) }) -> Bool {
+  public func areAllItemsDeselected(in section: S, where predicate: (I, I) -> Bool = { $0 == $1 }) -> Bool {
     itemSelectionDelegate.areAllItemsDeselected(in: section, where: predicate)
   }
 
@@ -287,7 +285,7 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
   public func getIndexPath(for item: I) -> IndexPath? { itemSelectionDelegate.mapItemToIndexPath(item) }
 
   @discardableResult public func selectItem(_ item: I, shouldScroll: Bool = true, animated: Bool = true) -> I? {
-    guard let item = itemSelectionDelegate.selectItem(item, where: { $0.isEqual(to: $1) }) else { return nil }
+    guard let item = itemSelectionDelegate.selectItem(item, where: { $0 == $1 }) else { return nil }
 
     if shouldScroll {
       scrollToItem(item, animated: animated)
@@ -297,15 +295,15 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
   }
 
   @discardableResult public func selectAllItems(in section: S) -> [I] {
-    itemSelectionDelegate.selectAllItems(in: section, where: { $0.isEqual(to: $1) })
+    itemSelectionDelegate.selectAllItems(in: section, where: { $0 == $1 })
   }
 
   @discardableResult public func deselectItem(_ item: I) -> I? {
-    itemSelectionDelegate.deselectItem(item, where: { $0.isEqual(to: $1) })
+    itemSelectionDelegate.deselectItem(item, where: { $0 == $1 })
   }
 
   @discardableResult public func deselectAllItems(in section: S) -> [I] {
-    itemSelectionDelegate.deselectAllItems(in: section, where: { $0.isEqual(to: $1) })
+    itemSelectionDelegate.deselectAllItems(in: section, where: { $0 == $1 })
   }
 
   private func selectionDidChange() {
@@ -334,11 +332,11 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
   }
 
   public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-    itemSelectionDelegate.selectItem(at: indexPath, where: { $0.isEqual(to: $1) })
+    itemSelectionDelegate.selectItem(at: indexPath, where: { $0 == $1 })
   }
 
   public func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-    itemSelectionDelegate.deselectItem(at: indexPath, where: { $0.isEqual(to: $1) })
+    itemSelectionDelegate.deselectItem(at: indexPath, where: { $0 == $1 })
   }
 
   public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {}

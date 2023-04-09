@@ -28,7 +28,7 @@ class CollectionViewItemSelectionDelegate<S: Hashable, I: Hashable> {
   @Stateful var dataSet = [S: [I]]()
 
   /// Internal stored value of the currently selected items.
-  @Stateful private var selectedItems = [I]() { didSet { selectionDidChangeHandler() } }
+  @Stateful private var selectedItems = [I]() { didSet { if selectedItems != oldValue { selectionDidChangeHandler() } } }
 
   /// Specifies how cells are selected in the collection view.
   @Stateful var selectionMode: CollectionViewSelectionMode = .none
@@ -128,7 +128,7 @@ class CollectionViewItemSelectionDelegate<S: Hashable, I: Hashable> {
   ///   - predicate: Method that determines the equality of two items.
   ///
   /// - Returns: The selected item, if any.
-  @discardableResult func selectItem(at indexPath: IndexPath, where predicate: (any Hashable, any Hashable) -> Bool) -> I? {
+  @discardableResult func selectItem(at indexPath: IndexPath, where predicate: (I, I) -> Bool) -> I? {
     guard let item = mapIndexPathToItem(indexPath) else { return nil }
 
     return selectItem(item, where: predicate)
@@ -141,7 +141,7 @@ class CollectionViewItemSelectionDelegate<S: Hashable, I: Hashable> {
   ///   - predicate: Method that determines the equality of two items.
   ///
   /// - Returns: The selected item if any.
-  @discardableResult func selectItem(_ item: I, where predicate: (any Hashable, any Hashable) -> Bool) -> I? {
+  @discardableResult func selectItem(_ item: I, where predicate: (I, I) -> Bool) -> I? {
     guard let section = collectionViewDataSource.snapshot().sectionIdentifier(containingItem: item), shouldSelectItem(item, in: section) else { return nil }
 
     return addSelectedItem(item, where: predicate)
@@ -155,7 +155,7 @@ class CollectionViewItemSelectionDelegate<S: Hashable, I: Hashable> {
   ///   - predicate: Method that determines the equality of two items.
   ///
   /// - Returns: The selected items.
-  @discardableResult func selectAllItems(in section: S, where predicate: (any Hashable, any Hashable) -> Bool) -> [I] {
+  @discardableResult func selectAllItems(in section: S, where predicate: (I, I) -> Bool) -> [I] {
     guard case .multiple = selectionMode else { return [] }
 
     stateMachine.beginTransaction()
@@ -183,7 +183,7 @@ class CollectionViewItemSelectionDelegate<S: Hashable, I: Hashable> {
   ///   - predicate: Method that determines the equality of two items.
   ///
   /// - Returns: The deselected item, if any.
-  @discardableResult func deselectItem(at indexPath: IndexPath, where predicate: (any Hashable, any Hashable) -> Bool) -> I? {
+  @discardableResult func deselectItem(at indexPath: IndexPath, where predicate: (I, I) -> Bool) -> I? {
     guard let item = mapIndexPathToItem(indexPath) else { return nil }
 
     return deselectItem(item, where: predicate)
@@ -196,7 +196,7 @@ class CollectionViewItemSelectionDelegate<S: Hashable, I: Hashable> {
   ///   - predicate: Method that determines the equality of two items.
   ///
   /// - Returns: The deselected item if any.
-  @discardableResult func deselectItem(_ item: I, where predicate: (any Hashable, any Hashable) -> Bool) -> I? {
+  @discardableResult func deselectItem(_ item: I, where predicate: (I, I) -> Bool) -> I? {
     guard let section = collectionViewDataSource.snapshot().sectionIdentifier(containingItem: item), shouldDeselectItem(item, in: section) else { return nil }
 
     return removeSelectedItem(item, where: predicate)
@@ -210,7 +210,7 @@ class CollectionViewItemSelectionDelegate<S: Hashable, I: Hashable> {
   ///   - predicate: Method that determines the equality of two items.
   ///
   /// - Returns: The deselected items.
-  @discardableResult func deselectAllItems(in section: S, where predicate: (any Hashable, any Hashable) -> Bool) -> [I] {
+  @discardableResult func deselectAllItems(in section: S, where predicate: (I, I) -> Bool) -> [I] {
     if case .none = selectionMode { return [] }
 
     stateMachine.beginTransaction()
@@ -295,7 +295,7 @@ class CollectionViewItemSelectionDelegate<S: Hashable, I: Hashable> {
   /// inside `dataSet` of its parent `CollectionViewController`.
   func invalidateSelectedItems() {
     let items = dataSet.reduce([]) { $0 + $1.value }
-    selectedItems = selectedItems.filter({ item in items.contains(where: { $0.isEqual(to: item) }) })
+    selectedItems = selectedItems.filter({ item in items.contains(where: { $0 == item }) })
   }
 
   /// Invalidates the index paths of selected items in the collection view,
@@ -312,7 +312,7 @@ class CollectionViewItemSelectionDelegate<S: Hashable, I: Hashable> {
     indexPathsToDeselect.forEach { collectionView.deselectItem(at: $0, animated: isAnimated) }
   }
 
-  @discardableResult private func addSelectedItem(_ item: I, where predicate: (any Hashable, any Hashable) -> Bool) -> I? {
+  @discardableResult private func addSelectedItem(_ item: I, where predicate: (I, I) -> Bool) -> I? {
     guard collectionViewDataSource.snapshot().indexOfItem(item) != nil else { return nil }
 
     var newSet = selectedItems
@@ -334,7 +334,7 @@ class CollectionViewItemSelectionDelegate<S: Hashable, I: Hashable> {
     return item
   }
 
-  @discardableResult private func removeSelectedItem(_ item: I, where predicate: (any Hashable, any Hashable) -> Bool) -> I? {
+  @discardableResult private func removeSelectedItem(_ item: I, where predicate: (I, I) -> Bool) -> I? {
     guard collectionViewDataSource.snapshot().indexOfItem(item) != nil else { return nil }
 
     var newSet = selectedItems
@@ -373,11 +373,11 @@ class CollectionViewItemSelectionDelegate<S: Hashable, I: Hashable> {
     return IndexPath(item: itemIdx, section: sectionIdx)
   }
 
-  private func areOrderedItemsEqual(a: [I], b: [I], where predicate: (any Hashable, any Hashable) -> Bool) -> Bool {
-    guard a.count == b.count else { return false }
+  private func areOrderedItemsEqual(p0: [I], p1: [I], where predicate: (I, I) -> Bool) -> Bool {
+    guard p0.count == p1.count else { return false }
 
-    for (index, item) in a.enumerated() {
-      guard item.isEqual(to: b[index]) else { return false }
+    for (index, item) in p0.enumerated() {
+      guard item == p1[index] else { return false }
     }
 
     return true
