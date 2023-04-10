@@ -310,8 +310,19 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
     itemSelectionDelegate.deselectItem(item, where: { $0 == $1 })
   }
 
-  @discardableResult public func deselectAllItems(in section: S) -> [I] {
-    itemSelectionDelegate.deselectAllItems(in: section, where: { $0 == $1 })
+  @discardableResult public func deselectAllItems(in section: S? = nil) -> [I] {
+    if let section = section {
+      return itemSelectionDelegate.deselectAllItems(in: section, where: { $0 == $1 })
+    }
+    else {
+      var deselectedItems: [I] = []
+
+      for section in dataSource.snapshot().sectionIdentifiers {
+        deselectedItems += itemSelectionDelegate.deselectAllItems(in: section, where: { $0 == $1 })
+      }
+
+      return deselectedItems
+    }
   }
 
   private func selectionDidChange() {

@@ -25,14 +25,14 @@ open class AutoResizingTextView: UITextView, StateMachineDelegate {
 
     switch horizontalResizeBehavior {
     case let .matchContent(min, max):
-      size.width = (min...max).clamp(contentSize.width)
+      size.width = contentSize.width.clamped(in: min...max)
     case .none:
       break
     }
 
     switch verticalResizeBehavior {
     case let .matchContent(min, max):
-      size.height = (min...max).clamp(contentSize.height)
+      size.height = contentSize.height.clamped(in: min...max)
     case .none:
       break
     }
