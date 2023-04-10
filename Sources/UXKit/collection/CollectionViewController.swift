@@ -517,6 +517,20 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
     }
   }
 
+  /// Reconfigures visible items in the collection view.
+  ///
+  /// - Parameters:
+  ///   - animated: Specifies if the reconfiguration of the visible items is
+  ///               animated.
+  public func invalidateVisibleItems(animated: Bool = true) {
+    let visibleIndexPaths = collectionView.indexPathsForVisibleItems
+    let visibleItems = visibleIndexPaths.compactMap { getItem(at: $0) }
+
+    var snapshot = dataSource.snapshot()
+    snapshot.reconfigureItems(visibleItems)
+    dataSource.apply(snapshot, animatingDifferences: animated)
+  }
+
   /// Executes a block on each cell currently visible in the collection view.
   ///
   /// - Parameters:
@@ -539,14 +553,6 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
       guard let view = collectionView.supplementaryView(forElementKind: kind, at: indexPath) else { continue }
       update(view, indexPath, kind)
     }
-  }
-
-  /// Invalidates all visible cells.
-  ///
-  /// This convenience method invokes `invalidateCell(_:at:section:item:)` on
-  /// all visible cells.
-  public func invalidateVisibleCells() {
-    updateVisibleCells { self.invalidateCell($0, at: $1, section: $2, item: $3) }
   }
 
   /// Invalidates the cell at the given index path, section and item. This is
