@@ -174,11 +174,10 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
   ///
   /// - Parameters:
   ///   - dataSet: Data set.
-  ///   - itemsToReconfigure: Specify items to reconfigure.
   ///   - animated: Specifies if the update should be animated.
-  public func setDataSet(_ dataSet: [S: [I]], reconfiguring itemsToReconfigure: [I] = [], animated: Bool = true) {
+  public func setDataSet(_ dataSet: [S: [I]], animated: Bool = true) {
     self.dataSet = dataSet
-    updateSnapshot(with: dataSet, reconfiguring: itemsToReconfigure, animated: animated)
+    updateSnapshot(with: dataSet, animated: animated)
   }
 
   private func dataSourceFactory() -> UICollectionViewDiffableDataSource<S, I> {
@@ -202,9 +201,12 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
     return dataSource
   }
 
-  private func updateSnapshot(with dataSet: [S: [I]], reconfiguring itemsToReconfigure: [I], animated: Bool) {
+  private func updateSnapshot(with dataSet: [S: [I]], animated: Bool) {
     var snapshot = NSDiffableDataSourceSnapshot<S, I>()
 
+    let oldItems = dataSource.snapshot().itemIdentifiers
+    let newItems = dataSet.reduce([I]()) { $0 + $1.value }
+    let itemsToReconfigure = Array(Set(oldItems).intersection(Set(newItems)))
     let sectionsToAppend = S.allCases.reduce([S]()) { (dataSet[$1] ?? []).count > 0 ? $0 + [$1] : $0 }
 
     snapshot.appendSections(sectionsToAppend)
@@ -216,6 +218,8 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
     snapshot.reconfigureItems(itemsToReconfigure)
 
     dataSource.apply(snapshot, animatingDifferences: animated)
+
+    itemSelectionDelegate.invalidateSelectedIndexPaths()
   }
 
   // MARK: - Cell Management
@@ -495,7 +499,7 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
   // MARK: - Filter Management
 
   private func filteredDataSetDidChange() {
-    updateSnapshot(with: filterDelegate.filteredDataSet, reconfiguring: [], animated: true)
+    updateSnapshot(with: filterDelegate.filteredDataSet, animated: true)
   }
 
   // MARK: - Layout Management
