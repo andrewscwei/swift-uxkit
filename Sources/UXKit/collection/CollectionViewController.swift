@@ -282,6 +282,11 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
     itemSelectionDelegate.areAllItemsDeselected(in: section, where: predicate)
   }
 
+  public func hasSection(_ section: S) -> Bool {
+    let sectionIdentifiers = dataSource.snapshot().sectionIdentifiers
+    return sectionIdentifiers.contains(section)
+  }
+
   public func getSection(at sectionIndex: Int) -> S? {
     let sectionIdentifiers = dataSource.snapshot().sectionIdentifiers
     guard sectionIndex < sectionIdentifiers.count else { return nil }
@@ -292,16 +297,17 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
     return dataSource.snapshot().indexOfSection(section)
   }
 
+  public func hasItem(_ item: I) -> Bool {
+    let itemIdentifiers = dataSource.snapshot().itemIdentifiers
+    return itemIdentifiers.contains(item)
+  }
+
   public func getItem(at indexPath: IndexPath) -> I? { itemSelectionDelegate.mapIndexPathToItem(indexPath) }
 
   public func getIndexPath(for item: I) -> IndexPath? { itemSelectionDelegate.mapItemToIndexPath(item) }
 
-  @discardableResult public func selectItem(_ item: I, shouldScroll: Bool = true, animated: Bool = true) -> I? {
+  @discardableResult public func selectItem(_ item: I) -> I? {
     guard let item = itemSelectionDelegate.selectItem(item, where: { $0 == $1 }) else { return nil }
-
-    if shouldScroll {
-      scrollToItem(item, animated: animated)
-    }
 
     return item
   }
