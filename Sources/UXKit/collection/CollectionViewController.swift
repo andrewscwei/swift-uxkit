@@ -405,6 +405,8 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
   ///   - animated: Specifies if scrolling behavior is animated.
   ///   - completionHandler: Handler invoked when scrolling is complete.
   open func scrollToItem(_ item: I, animated: Bool = true, completion completionHandler: (() -> Void)? = nil) {
+    guard hasItem(item) else { return }
+    
     if let handler = completionHandler {
       endScrollingAnimationHandlers.append(handler)
     }
