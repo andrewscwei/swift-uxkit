@@ -26,15 +26,15 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
 
   private lazy var refreshControlDelegate = CollectionViewRefreshControlDelegate(
     collectionView: collectionView,
-    frontRefreshControl: delegate?.collectionViewControllerFrontRefreshControl(self) ?? frontRefreshControlFactory(),
-    endRefreshControl: delegate?.collectionViewControllerEndRefreshControl(self) ?? endRefreshControlFactory(),
+    frontRefreshControl: delegate?.collectionFrontRefreshControl(self) ?? frontRefreshControlFactory(),
+    endRefreshControl: delegate?.collectionEndRefreshControl(self) ?? endRefreshControlFactory(),
     willPullToRefresh: { self.willPullToRefresh() },
     didPullToRefresh: { self.didPullToRefresh() }
   )
 
   private lazy var filterDelegate = CollectionViewFilterDelegate<S, I>(
     collectionView: collectionView,
-    filterPredicate: { item, query in self.delegate?.collectionViewController(self, shouldIncludeItem: item, withFilterQuery: query) ?? true },
+    filterPredicate: { item, query in self.delegate?.collection(self, shouldIncludeItem: item, withFilterQuery: query) ?? true },
     filteredDataSetDidChange: { self.filteredDataSetDidChange() }
   )
 
@@ -183,13 +183,13 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
   private func dataSourceFactory() -> UICollectionViewDiffableDataSource<S, I> {
     let dataSource = UICollectionViewDiffableDataSource<S, I>(collectionView: collectionView) { collectionView, indexPath, item in
       let section = self.dataSource.snapshot().sectionIdentifiers[indexPath.section]
-      let cell = self.delegate?.collectionViewController(self, cellAtIndexPath: indexPath, section: section, item: item) ?? self.cellFactory(at: indexPath, section: section, item: item)
+      let cell = self.delegate?.collection(self, cellAtIndexPath: indexPath, section: section, item: item) ?? self.cellFactory(at: indexPath, section: section, item: item)
       self.invalidateCell(cell, at: indexPath, section: section, item: item)
       return cell
     }
 
     dataSource.supplementaryViewProvider = { collectionView, kind, indexPath in
-      if let view = self.delegate?.collectionViewController(self, supplementaryViewAtIndexPath: indexPath, kind: kind) ?? self.supplementaryViewFactory(at: indexPath, kind: kind) {
+      if let view = self.delegate?.collection(self, supplementaryViewAtIndexPath: indexPath, kind: kind) ?? self.supplementaryViewFactory(at: indexPath, kind: kind) {
         self.invalidateSupplementaryView(view, at: indexPath, kind: kind)
         return view
       }
@@ -229,7 +229,7 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
   /// Cells are resolved from the first non-nil result of the following methods,
   /// ordered by priority:
   ///   1. From a `CollectionViewControllerDelegate` implementing
-  ///      `collectionViewController(_:cellAtIndexPath:section:item:)`.
+  ///      `collection(_:cellAtIndexPath:section:item:)`.
   ///   2. From a subclass overriding this `cellFactory(at:section:item:)`.
   ///
   /// It is recommended for cells to be dequeued and reused, such as by using
@@ -242,7 +242,7 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
   ///
   /// - Returns: The `UICollectionViewCell`.
   open func cellFactory(at indexPath: IndexPath, section: S, item: I) -> UICollectionViewCell {
-    fatalError("CollectionViewController requires cells to be provided by either a CollectionViewControllerDelegate implementing collectionViewController(_:cellAtIndexPath:section:item:) or a subclass overriding cellFactory(at:section:item:)")
+    fatalError("CollectionViewController requires cells to be provided by either a CollectionViewControllerDelegate implementing collection(_:cellAtIndexPath:section:item:) or a subclass overriding cellFactory(at:section:item:)")
   }
 
   // MARK: - Supplementary Views Management
@@ -252,7 +252,7 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
   /// Supplementary views are resolved from the first non-nil result of the
   /// following methods, ordered by priority:
   ///   1. From a `CollectionViewControllerDelegate` implementing
-  ///      `collectionViewController(_:supplementaryViewAtIndexPath:kind:)`.
+  ///      `collection(_:supplementaryViewAtIndexPath:kind:)`.
   ///   2. From a subclass overriding this `supplementaryViewFactory(at:kind:)`.
   ///
   /// It is recommended for cells to be dequeued and reused, such as by using
@@ -337,20 +337,20 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
 
   private func selectionDidChange() {
     stateMachine.invalidate(\CollectionViewController.selectedItem, \CollectionViewController.selectedItems)
-    delegate?.collectionViewControllerSelectionDidChange(self)
+    delegate?.collectionSelectionDidChange(self)
   }
 
   private func shouldSelectItem(item: I, section: S) -> Bool {
-    delegate?.collectionViewController(self, shouldSelectItem: item, in: section) ?? true
+    delegate?.collection(self, shouldSelectItem: item, in: section) ?? true
   }
 
   private func shouldDeselectItem(item: I, section: S) -> Bool {
-    delegate?.collectionViewController(self, shouldDeselectItem: item, in: section) ?? true
+    delegate?.collection(self, shouldDeselectItem: item, in: section) ?? true
   }
 
   public func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
     if let item = getItem(at: indexPath), let section = getSection(at: indexPath.section) {
-      delegate?.collectionViewController(self, didTapOnItem: item, in: section)
+      delegate?.collection(self, didTapOnItem: item, in: section)
     }
 
     return itemSelectionDelegate.shouldSelectItem(at: indexPath)
@@ -429,21 +429,24 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
 
   public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
     willBeginDragging()
+    delegate?.collectioWillBeginDragging(self)
   }
 
   public func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
     didEndDragging(willDecelerate: decelerate)
+    delegate?.collectionDidEndDragging(self, willDecelerate: decelerate)
   }
 
   public func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
     didEndDeceleratingFromDragging()
+    delegate?.collectionDidEndDeceleratingFromDragging(self)
   }
 
   public func scrollViewDidScroll(_ scrollView: UIScrollView) {
     refreshControlDelegate.layoutRefreshControlsIfNeeded()
 
     didScroll()
-    delegate?.collectionViewControllerDidScroll(self)
+    delegate?.collectionDidScroll(self)
   }
 
   public func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
@@ -462,7 +465,7 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
   /// The front refresh control is resolved from the first non-nil result of the
   /// following methods, ordered by priority:
   ///   1. From a `CollectionViewControllerDelegate` implementing
-  ///      `collectionViewControllerFrontRefreshControl(_:).
+  ///      `collectionFrontRefreshControl(_:).
   ///   2. From a subclass overriding `frontRefreshControlFactory()`.
   ///
   /// - Returns: The `CollectionViewRefreshControl` if applicable.
@@ -476,7 +479,7 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
   /// The end refresh control is resolved from the first non-nil result of the
   /// following methods, ordered by priority:
   ///   1. From a `CollectionViewControllerDelegate` implementing
-  ///      `collectionViewControllerEndRefreshControl(_:).
+  ///      `collectionEndRefreshControl(_:).
   ///   2. From a subclass overriding `endRefreshControlFactory()`.
   ///
   /// - Returns: The `CollectionViewRefreshControl` if applicable.
@@ -485,12 +488,12 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
   }
 
   private func willPullToRefresh() -> Bool {
-    delegate?.collectionViewControllerWillPullToRefresh(self) ?? true
+    delegate?.collectionWillPullToRefresh(self) ?? true
   }
 
   private func didPullToRefresh() {
     collectionView.isScrollEnabled = false
-    delegate?.collectionViewControllerDidPullToRefresh(self)
+    delegate?.collectionDidPullToRefresh(self)
   }
 
   public func notifyRefreshComplete(completion: @escaping () -> Void = {}) {
@@ -515,12 +518,12 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
   /// Collection view layout is resolved from the first non-nil result of the
   /// following methods, ordered by priority:
   ///   1. From a `CollectionViewControllerDelegate` implementing
-  ///      `collectionViewControllerCollectionViewLayout(_:)`.
+  ///      `collectionViewLayout(_:)`.
   ///   2. From a subclass overriding `layoutFactory()`.
   ///
   /// - Returns: The `UICollectionViewLayout`.
   open func layoutFactory() -> UICollectionViewLayout {
-    log(.debug) { "Creating collection view layout... WARN: No collection view layout provided, please override layoutFactory() or implement the delegate method collectionViewControllerCollectionViewLayout(_:)" }
+    log(.debug) { "Creating collection view layout... WARN: No collection view layout provided, please override layoutFactory() or implement the delegate method collectionViewLayout(_:)" }
 
     return UICollectionViewLayout()
   }
@@ -529,7 +532,7 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
 
   open func update(check: StateValidator) {
     if check.isDirty(\UICollectionView.collectionViewLayout) {
-      collectionView.setCollectionViewLayout(delegate?.collectionViewControllerCollectionViewLayout(self) ?? layoutFactory(), animated: hasViewAppeared)
+      collectionView.setCollectionViewLayout(delegate?.collectionViewLayout(self) ?? layoutFactory(), animated: hasViewAppeared)
     }
 
     if check.isDirty(\CollectionViewController.dataSet) {

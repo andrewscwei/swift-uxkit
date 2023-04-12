@@ -60,7 +60,7 @@ public class RemoteNotificationsService: Observable {
       case .denied, .restricted:
         failureHandler(status)
       case .authorized:
-        log(.default) { "Requesting for remote notifications authorization... SKIP: Already granted" }
+        log { "Requesting for remote notifications authorization... SKIP: Already granted" }
       }
     }
   }
@@ -124,7 +124,7 @@ public class RemoteNotificationsService: Observable {
   public func didRegisterForRemoteNotificationsWithDeviceToken(_ token: Data) {
     let tokenString = token.reduce("", {$0 + String(format: "%02X", $1)})
 
-    log { "Invalidating push token... OK: \(tokenString)" }
+    log(.info) { "Invalidating push token... OK: \(tokenString)" }
 
     pushToken = tokenString
   }
