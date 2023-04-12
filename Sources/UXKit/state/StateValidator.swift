@@ -51,4 +51,11 @@ public struct StateValidator {
 
     return false
   }
+
+  /// Returns the currently dirty key paths.
+  ///
+  /// - Returns: The dirty key paths.
+  public func dump() -> Set<AnyKeyPath> {
+    dirtyStateKeyPaths ?? Set()
+  }
 }
