@@ -338,9 +338,7 @@ public class AnimationDelegate: NSObject, CAAnimationDelegate {
 
       if autoreverses == true { options.insert(.autoreverse) }
 
-      if let repeatCount = repeatCount {
-        if repeatCount != 0 { options.insert(.repeat) }
-      }
+      if let repeatCount = repeatCount, repeatCount != 0 { options.insert(.repeat) }
 
       if viewToLayout.window != nil {
         viewToLayout.layoutIfNeeded()
@@ -349,9 +347,8 @@ public class AnimationDelegate: NSObject, CAAnimationDelegate {
       CATransaction.begin()
       CATransaction.setAnimationTimingFunction(CAMediaTimingFunction(name: timingFunctionName ?? .easeInEaseOut))
       UIView.animate(withDuration: duration, delay: delay, options: options, animations: {
-        if let repeatCount = repeatCount {
-          UIView.setAnimationRepeatCount(Float(repeatCount))
-        }
+        UIView.modifyAnimations(withRepeatCount: CGFloat(repeatCount ?? 0), autoreverses: autoreverses ?? false) {}
+
         constraint.constant = toValue
 
         if viewToLayout.window != nil {
