@@ -5,23 +5,23 @@ import UIKit
 /// Overloaded `+` operator for two `UIEdgeInsets` values.
 ///
 /// - Parameters:
-///   - left: LHS `UIEdgeInsets` value.
-///   - right: RHS `UIEdgeInsets` value.
+///   - lhs: LHS `UIEdgeInsets` value.
+///   - rhs: RHS `UIEdgeInsets` value.
 ///
 /// - Returns: The resulting `UIEdgeInsets` value.
-public func +(left: UIEdgeInsets, right: UIEdgeInsets) -> UIEdgeInsets {
-  return UIEdgeInsets(top: left.top + right.top, left: left.left + right.left, bottom: left.bottom + right.bottom, right: left.right + right.right)
+public func +(lhs: UIEdgeInsets, rhs: UIEdgeInsets) -> UIEdgeInsets {
+  return UIEdgeInsets(top: lhs.top + rhs.top, left: lhs.left + rhs.left, bottom: lhs.bottom + rhs.bottom, right: lhs.right + rhs.right)
 }
 
 /// Overloaded `-` operator for two `UIEdgeInsets` values.
 ///
 /// - Parameters:
-///   - left: LHS `UIEdgeInsets` value.
-///   - right: RHS `UIEdgeInsets` value.
+///   - lhs: LHS `UIEdgeInsets` value.
+///   - rhs: RHS `UIEdgeInsets` value.
 ///
 /// - Returns: The resulting `UIEdgeInsets` value.
-public func -(left: UIEdgeInsets, right: UIEdgeInsets) -> UIEdgeInsets {
-  return UIEdgeInsets(top: left.top - right.top, left: left.left - right.left, bottom: left.bottom - right.bottom, right: left.right - right.right)
+public func -(lhs: UIEdgeInsets, rhs: UIEdgeInsets) -> UIEdgeInsets {
+  return UIEdgeInsets(top: lhs.top - rhs.top, left: lhs.left - rhs.left, bottom: lhs.bottom - rhs.bottom, right: lhs.right - rhs.right)
 }
 
 extension UIEdgeInsets {
