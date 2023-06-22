@@ -165,6 +165,23 @@ extension UIColor {
     return UIColor(red: max(0, min(1, red + value)), green: max(0, min(1, green + value)), blue: max(0, min(1, blue + value)), alpha: alpha)
   }
 
+  /// Creates and returns a new color with the specified RGB multiplier.
+  ///
+  /// - Parameters:
+  ///   - value: The RGB offset value.
+  ///
+  /// - Returns: The new color.
+  public func withRGBMultiplier(_ value: CGFloat) -> UIColor {
+    var red: CGFloat = 0
+    var blue: CGFloat = 0
+    var green: CGFloat = 0
+    var alpha: CGFloat = 0
+
+    getRed(&red, green: &green, blue: &blue, alpha: &alpha)
+
+    return UIColor(red: max(0, min(1, red * value)), green: max(0, min(1, green * value)), blue: max(0, min(1, blue * value)), alpha: alpha)
+  }
+
   /// Creates and returns a new color with the specified alpha offset.
   ///
   /// - Parameters:
@@ -180,5 +197,22 @@ extension UIColor {
     getRed(&red, green: &green, blue: &blue, alpha: &alpha)
 
     return UIColor(red: red, green: green, blue: blue, alpha: max(0, min(1, alpha + value)))
+  }
+
+  /// Creates and returns a new color with the specified alpha multiplier.
+  ///
+  /// - Parameters:
+  ///   - value: The alpha multiplier value.
+  ///
+  /// - Returns: The new color.
+  public func withAlphaMultiplier(_ value: CGFloat) -> UIColor {
+    var red: CGFloat = 0
+    var blue: CGFloat = 0
+    var green: CGFloat = 0
+    var alpha: CGFloat = 0
+
+    getRed(&red, green: &green, blue: &blue, alpha: &alpha)
+
+    return UIColor(red: red, green: green, blue: blue, alpha: max(0, min(1, alpha * value)))
   }
 }
