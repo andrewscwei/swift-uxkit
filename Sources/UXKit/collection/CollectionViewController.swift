@@ -38,7 +38,7 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
     filteredDataSetDidChange: { self.filteredDataSetDidChange() }
   )
 
-  // MARK: - Layout
+  // MARK: - Subviews
 
   public lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: .init())
 
@@ -513,7 +513,7 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
     updateSnapshot(with: filterDelegate.filteredDataSet, animated: true)
   }
 
-  // MARK: - Layout Management
+  // MARK: - Layout
 
   /// Factory for the collection view layout.
   ///

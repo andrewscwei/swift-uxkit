@@ -95,66 +95,66 @@ extension UIColor {
 
 
   /// Creates and returns a new color that is dimmed by 10%.
-  public var dimmed10: UIColor { return self.withOffset(-0.1) }
+  public var dimmed10: UIColor { return self.withRGBOffset(-0.1) }
 
   /// Creates and returns a new color that is dimmed by 20%.
-  public var dimmed20: UIColor { return self.withOffset(-0.2) }
+  public var dimmed20: UIColor { return self.withRGBOffset(-0.2) }
 
   /// Creates and returns a new color that is dimmed by 30%.
-  public var dimmed30: UIColor { return self.withOffset(-0.3) }
+  public var dimmed30: UIColor { return self.withRGBOffset(-0.3) }
 
   /// Creates and returns a new color that is dimmed by 40%.
-  public var dimmed40: UIColor { return self.withOffset(-0.4) }
+  public var dimmed40: UIColor { return self.withRGBOffset(-0.4) }
 
   /// Creates and returns a new color that is dimmed by 50%.
-  public var dimmed50: UIColor { return self.withOffset(-0.5) }
+  public var dimmed50: UIColor { return self.withRGBOffset(-0.5) }
 
   /// Creates and returns a new color that is dimmed by 60%.
-  public var dimmed60: UIColor { return self.withOffset(-0.6) }
+  public var dimmed60: UIColor { return self.withRGBOffset(-0.6) }
 
   /// Creates and returns a new color that is dimmed by 70%.
-  public var dimmed70: UIColor { return self.withOffset(-0.7) }
+  public var dimmed70: UIColor { return self.withRGBOffset(-0.7) }
 
   /// Creates and returns a new color that is dimmed by 80%.
-  public var dimmed80: UIColor { return self.withOffset(-0.8) }
+  public var dimmed80: UIColor { return self.withRGBOffset(-0.8) }
 
   /// Creates and returns a new color that is dimmed by 90%.
-  public var dimmed90: UIColor { return self.withOffset(-0.9) }
+  public var dimmed90: UIColor { return self.withRGBOffset(-0.9) }
 
   /// Creates and returns a new color that is brightened by 10%.
-  public var brightened10: UIColor { return self.withOffset(0.1) }
+  public var brightened10: UIColor { return self.withRGBOffset(0.1) }
 
   /// Creates and returns a new color that is brightened by 20%.
-  public var brightened20: UIColor { return self.withOffset(0.2) }
+  public var brightened20: UIColor { return self.withRGBOffset(0.2) }
 
   /// Creates and returns a new color that is brightened by 30%.
-  public var brightened30: UIColor { return self.withOffset(0.3) }
+  public var brightened30: UIColor { return self.withRGBOffset(0.3) }
 
   /// Creates and returns a new color that is brightened by 40%.
-  public var brightened40: UIColor { return self.withOffset(0.4) }
+  public var brightened40: UIColor { return self.withRGBOffset(0.4) }
 
   /// Creates and returns a new color that is brightened by 50%.
-  public var brightened50: UIColor { return self.withOffset(0.5) }
+  public var brightened50: UIColor { return self.withRGBOffset(0.5) }
 
   /// Creates and returns a new color that is brightened by 60%.
-  public var brightened60: UIColor { return self.withOffset(0.6) }
+  public var brightened60: UIColor { return self.withRGBOffset(0.6) }
 
   /// Creates and returns a new color that is brightened by 70%.
-  public var brightened70: UIColor { return self.withOffset(0.7) }
+  public var brightened70: UIColor { return self.withRGBOffset(0.7) }
 
   /// Creates and returns a new color that is brightened by 80%.
-  public var brightened80: UIColor { return self.withOffset(0.8) }
+  public var brightened80: UIColor { return self.withRGBOffset(0.8) }
 
   /// Creates and returns a new color that is brightened by 90%.
-  public var brightened90: UIColor { return self.withOffset(0.9) }
+  public var brightened90: UIColor { return self.withRGBOffset(0.9) }
 
-  /// Creates and returns a new color with the specified offset (0 - 1).
+  /// Creates and returns a new color with the specified RGB offset.
   ///
   /// - Parameters:
-  ///   - value: The offset value.
+  ///   - value: The RGB offset value (0.0 - 1.0).
   ///
   /// - Returns: The new color.
-  public func withOffset(_ value: CGFloat) -> UIColor {
+  public func withRGBOffset(_ value: CGFloat) -> UIColor {
     var red: CGFloat = 0
     var blue: CGFloat = 0
     var green: CGFloat = 0
@@ -163,5 +163,22 @@ extension UIColor {
     getRed(&red, green: &green, blue: &blue, alpha: &alpha)
 
     return UIColor(red: max(0, min(1, red + value)), green: max(0, min(1, green + value)), blue: max(0, min(1, blue + value)), alpha: alpha)
+  }
+
+  /// Creates and returns a new color with the specified alpha offset.
+  ///
+  /// - Parameters:
+  ///   - value: The alpha offset value (0.0 - 1.0).
+  ///
+  /// - Returns: The new color.
+  public func withAlphaOffset(_ value: CGFloat) -> UIColor {
+    var red: CGFloat = 0
+    var blue: CGFloat = 0
+    var green: CGFloat = 0
+    var alpha: CGFloat = 0
+
+    getRed(&red, green: &green, blue: &blue, alpha: &alpha)
+
+    return UIColor(red: red, green: green, blue: blue, alpha: max(0, min(1, alpha + value)))
   }
 }
