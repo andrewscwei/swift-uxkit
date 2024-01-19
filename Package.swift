@@ -28,7 +28,7 @@ enum Environment: String {
 }
 
 var dependencies: [Package.Dependency] = [
-  .package(url: "https://github.com/SDWebImage/SDWebImage.git", from: "5.15.4"),
+  .package(url: "https://github.com/SDWebImage/SDWebImage.git", from: "5.18.10"),
 ]
 
 switch Environment.get() {
