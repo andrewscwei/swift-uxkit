@@ -1,4 +1,4 @@
-# UXKit [![CI](https://github.com/andrewscwei/swift-uxkit/workflows/CI/badge.svg?branch=master)](https://github.com/andrewscwei/swift-uxkit/actions/workflows/ci.yml?query=branch%3Amaster) [![CD](https://github.com/andrewscwei/swift-uxkit/workflows/CD/badge.svg?branch=master)](https://github.com/andrewscwei/swift-uxkit/actions/workflows/cd.yml?query=branch%3Amaster)
+# UXKit [![CI](https://github.com/andrewscwei/swift-uxkit/workflows/CI/badge.svg)](https://github.com/andrewscwei/swift-uxkit/actions/workflows/ci.yml) [![CD](https://github.com/andrewscwei/swift-uxkit/workflows/CD/badge.svg)](https://github.com/andrewscwei/swift-uxkit/actions/workflows/cd.yml)
 
 A Swift package based on UIKit consisting of custom views, view controllers and other UI utilities.
 
