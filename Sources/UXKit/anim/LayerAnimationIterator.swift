@@ -1,5 +1,3 @@
-// © GHOZT
-
 import UIKit
 
 /// Iterator of `CALayer` animations.

@@ -1,5 +1,3 @@
-// © GHOZT
-
 import UIKit
 
 /// A `UIResponder` conforming to `AnyMeasurable` has a computable `CGSize`.

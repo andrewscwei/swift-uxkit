@@ -1,5 +1,3 @@
-// © GHOZT
-
 extension AnimationDelegate {
 
   /// Enum of `CALayer` properties animatable by the `AnimationDelegate`.

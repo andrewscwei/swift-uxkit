@@ -1,5 +1,3 @@
-// © GHOZT
-
 /// `StateMachine` state type.
 ///
 /// This struct is meant to be extended to define application-specific state

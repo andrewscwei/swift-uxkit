@@ -1,5 +1,3 @@
-// © GHOZT
-
 import Foundation
 
 /// Wraps and links a property of a `StateMachineDelegate` to its

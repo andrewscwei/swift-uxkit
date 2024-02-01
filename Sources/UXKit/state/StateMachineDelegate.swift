@@ -1,5 +1,3 @@
-// © GHOZT
-
 import Foundation
 
 /// An object conforming to this protocol assumes the delegate of a

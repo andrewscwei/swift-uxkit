@@ -1,5 +1,3 @@
-// © GHOZT
-
 public enum AbbreviatedNumberSuffix: CustomStringConvertible {
   case underOneThousand
   case thousands

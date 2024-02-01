@@ -1,5 +1,3 @@
-// © GHOZT
-
 import Foundation
 
 extension NSNumber {
@@ -10,7 +8,7 @@ extension NSNumber {
   ///
   /// - Parameters:
   ///   - int: The integer.
-  ///   
+  ///
   /// - Returns: The abbreviated string.
   public class func abbreviatedNumber(from int: Int) -> String {
     let formatter = NumberFormatter()

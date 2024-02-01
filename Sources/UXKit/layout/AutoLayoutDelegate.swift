@@ -1,5 +1,3 @@
-// © GHOZT
-
 import UIKit
 
 /// Delegate object for defining and applying auto layout rules to `UIView` and `UIViewController`.

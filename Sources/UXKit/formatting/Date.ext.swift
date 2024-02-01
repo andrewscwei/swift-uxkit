@@ -1,5 +1,3 @@
-// © GHOZT
-
 import Foundation
 
 extension Date {
@@ -8,7 +6,7 @@ extension Date {
   public var iso8601: String {
     return Formatter.iso8601.string(from: self)
   }
-  
+
   /// Returns a string representation of how much time has passed since the
   /// current `Date`.
   ///

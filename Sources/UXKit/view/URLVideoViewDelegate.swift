@@ -1,5 +1,3 @@
-// © GHOZT
-
 import AVFoundation
 import UIKit
 

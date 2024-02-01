@@ -1,5 +1,3 @@
-// © GHOZT
-
 import BaseKit
 import UIKit
 

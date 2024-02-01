@@ -1,5 +1,3 @@
-// © GHOZT
-
 import UIKit
 
 class CollectionViewItemSelectionDelegate<S: Hashable, I: Hashable> {

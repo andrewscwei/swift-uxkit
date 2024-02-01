@@ -1,5 +1,3 @@
-// © GHOZT
-
 public enum TimeAgo: CustomStringConvertible {
   case justNow
   case minutes(num: Int)

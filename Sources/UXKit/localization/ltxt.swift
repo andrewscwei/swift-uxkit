@@ -1,5 +1,3 @@
-// © GHOZT
-
 import Foundation
 
 /// Convenience method for fetching a localized string from the main bundle.

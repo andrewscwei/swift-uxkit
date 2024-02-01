@@ -1,5 +1,3 @@
-// © GHOZT
-
 import UIKit
 
 public class VsyncMachine {
@@ -44,7 +42,7 @@ public class VsyncMachine {
     displayLink?.isPaused = true
     displayLink?.invalidate()
     displayLink = nil
-    
+
     reset()
   }
 

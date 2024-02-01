@@ -1,5 +1,3 @@
-// © GHOZT
-
 import UIKit
 
 /// A collection of animation timing functions.

@@ -1,5 +1,3 @@
-// © GHOZT
-
 import UIKit
 
 /// An object conforming to `BackgroundService` performs a background task (i.e.

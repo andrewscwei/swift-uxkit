@@ -1,5 +1,3 @@
-// © GHOZT
-
 import UIKit
 
 /// Overloaded `+` operator for two `NSDirectionalEdgeInsets` values.

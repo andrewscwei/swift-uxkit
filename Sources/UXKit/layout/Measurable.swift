@@ -1,5 +1,3 @@
-// © GHOZT
-
 import UIKit
 
 /// A type conforming to `Measurable` has a statically computable `CGSize` based

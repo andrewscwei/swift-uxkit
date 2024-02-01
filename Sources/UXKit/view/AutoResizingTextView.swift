@@ -1,5 +1,3 @@
-// © GHOZT
-
 import UIKit
 
 open class AutoResizingTextView: UITextView, StateMachineDelegate {

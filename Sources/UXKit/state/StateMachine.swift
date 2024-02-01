@@ -1,5 +1,3 @@
-// © GHOZT
-
 import Foundation
 
 /// A state container that manages stateful properties for an object and emits

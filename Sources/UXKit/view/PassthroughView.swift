@@ -1,5 +1,3 @@
-// © GHOZT
-
 import UIKit
 
 /// A custom `UIView` that, instead of handling touch events itself, forwards

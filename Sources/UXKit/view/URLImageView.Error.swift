@@ -1,5 +1,3 @@
-// © GHOZT
-
 extension URLImageView {
 
   public enum Error: Swift.Error {
