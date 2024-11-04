@@ -1,5 +1,4 @@
 // swift-tools-version:5.5
-// The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
 
@@ -9,55 +8,38 @@ import Glibc
 import Darwin.C
 #endif
 
-enum Environment: String {
-  case local
-  case development
-  case production
-
-  static func get() -> Environment {
-    if let envPointer = getenv("SWIFT_ENV"), let environment = Environment(rawValue: String(cString: envPointer)) {
-      return environment
-    }
-    else if let envPointer = getenv("CI"), String(cString: envPointer) == "true" {
-      return .production
-    }
-    else {
-      return .local
-    }
-  }
-}
-
-var dependencies: [Package.Dependency] = [
-  .package(url: "https://github.com/SDWebImage/SDWebImage.git", from: "5.19.4"),
-]
-
-switch Environment.get() {
-case .local:
-  dependencies.append(.package(path: "../BaseKit"))
-case .development:
-  dependencies.append(.package(name: "BaseKit", url: "https://github.com/andrewscwei/swift-basekit", .branch("master")))
-case .production:
-  dependencies.append(.package(name: "BaseKit", url: "https://github.com/andrewscwei/swift-basekit", from: "0.35.0"))
-}
-
 let package = Package(
   name: "UXKit",
-  platforms: [.iOS(.v15)],
+  platforms: [
+    .iOS(.v15),
+  ],
   products: [
-    // Products define the executables and libraries a package produces, and make them visible to other packages.
     .library(
       name: "UXKit",
-      targets: ["UXKit"]),
+      targets: [
+        "UXKit",
+      ]
+    ),
   ],
-  dependencies: dependencies,
+  dependencies: [
+    .package(url: "https://github.com/SDWebImage/SDWebImage.git", from: "5.19.4"),
+    .package(name: "BaseKit", url: "https://github.com/andrewscwei/swift-basekit", from: "0.35.0"),
+  ],
   targets: [
-    // Targets are the basic building blocks of a package. A target can define a module or a test suite.
-    // Targets can depend on other targets in this package, and on products in packages this package depends on.
     .target(
       name: "UXKit",
-      dependencies: ["BaseKit", "SDWebImage"]),
+      dependencies: [
+        "BaseKit",
+        "SDWebImage",
+      ],
+      path: "Sources"
+    ),
     .testTarget(
       name: "UXKitTests",
-      dependencies: ["UXKit"]),
+      dependencies: [
+        "UXKit",
+      ],
+      path: "Tests"
+    ),
   ]
 )

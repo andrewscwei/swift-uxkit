@@ -6,8 +6,17 @@
         "repositoryURL": "https://github.com/SDWebImage/SDWebImage.git",
         "state": {
           "branch": null,
-          "revision": "59730af512c06fb569c119d737df4c1c499e001d",
-          "version": "5.18.10"
+          "revision": "10d06f6a33bafae8c164fbfd1f03391f6d4692b3",
+          "version": "5.20.0"
+        }
+      },
+      {
+        "package": "BaseKit",
+        "repositoryURL": "https://github.com/andrewscwei/swift-basekit",
+        "state": {
+          "branch": null,
+          "revision": "3a5b9ca7482c912d2095cca8e3016a96a1674085",
+          "version": "0.36.0"
         }
       }
     ]
