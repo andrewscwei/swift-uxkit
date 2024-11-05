@@ -1,12 +1,6 @@
-// swift-tools-version:5.5
+// swift-tools-version:5.9
 
 import PackageDescription
-
-#if os(Linux)
-import Glibc
-#else
-import Darwin.C
-#endif
 
 let package = Package(
   name: "UXKit",
@@ -22,14 +16,14 @@ let package = Package(
     ),
   ],
   dependencies: [
-    .package(url: "https://github.com/SDWebImage/SDWebImage.git", from: "5.19.4"),
-    .package(name: "BaseKit", url: "https://github.com/andrewscwei/swift-basekit", from: "0.35.0"),
+    .package(url: "https://github.com/SDWebImage/SDWebImage.git", from: "5.0.0"),
+    .package(url: "https://github.com/andrewscwei/swift-basekit.git", from: "1.0.0"),
   ],
   targets: [
     .target(
       name: "UXKit",
       dependencies: [
-        "BaseKit",
+        .product(name: "BaseKit", package: "swift-basekit"),
         "SDWebImage",
       ],
       path: "Sources"
