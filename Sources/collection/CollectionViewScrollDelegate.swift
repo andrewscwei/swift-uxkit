@@ -2,6 +2,7 @@ import BaseKit
 import UIKit
 
 class CollectionViewScrollDelegate<S: Hashable, I: Hashable> {
+
   /// Internal `StateMachine` instance.
   lazy var stateMachine = StateMachine(self)
 

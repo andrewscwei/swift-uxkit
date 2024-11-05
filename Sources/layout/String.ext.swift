@@ -7,7 +7,6 @@ extension String {
   /// - Parameters:
   ///   - width: The width constraint.
   ///   - font: The font.
-  ///
   /// - Returns: The height of the string if it were constrained within the
   ///            provided width.
   public func height(withConstrainedWidth width: CGFloat, font: UIFont) -> CGFloat {
@@ -22,7 +21,6 @@ extension String {
   /// - Parameters:
   ///   - height: The height constraint.
   ///   - font: The font.
-  ///
   /// - Returns: The width of the string if it were constrained within the
   ///             provided height.
   public func width(withConstrainedHeight height: CGFloat, font: UIFont) -> CGFloat {

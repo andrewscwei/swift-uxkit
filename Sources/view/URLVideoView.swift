@@ -142,7 +142,7 @@ public class URLVideoView: UIView, StateMachineDelegate {
   }
 
   private func didFailToPlay(error: Swift.Error) {
-    log(.error) { "Playing video... ERR: \(error.localizedDescription)" }
+    log.error("Playing video... ERR: \(error.localizedDescription)")
   }
 
   /// Handler invoked the video reaches the end.
@@ -163,7 +163,6 @@ public class URLVideoView: UIView, StateMachineDelegate {
   ///
   /// - Parameters:
   ///   - time: The time of the video to capture the still image.
-  ///
   /// - Returns: The captured image.
   public func captureImageFromVideo(at time: CMTime = CMTimeMake(value: 0, timescale: 1)) -> UIImage? {
     guard let url = url else { return nil }

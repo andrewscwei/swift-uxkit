@@ -6,7 +6,6 @@ extension UIImage {
   ///
   /// - Parameters:
   ///   - min: The length to resize the target edge to.
-  ///
   /// - Returns: The resized image.
   public func minLengthResize(min: CGFloat) -> UIImage? { UIImage.minLengthResize(self, min: min) }
 
@@ -15,7 +14,6 @@ extension UIImage {
   ///
   /// - Parameters:
   ///   - min: The length to resize the target edge to.
-  ///
   /// - Returns: The resized image.
   public func maxLengthResize(max: CGFloat) -> UIImage? { UIImage.maxLengthResize(self, max: max) }
 
@@ -23,7 +21,6 @@ extension UIImage {
   ///
   /// - Parameters:
   ///   - size: The size to fill.
-  ///
   /// - Returns: The filled image.
   public func aspectFillResize(to size: CGSize) -> UIImage? { UIImage.aspectFillResize(self, to: size) }
 
@@ -33,7 +30,6 @@ extension UIImage {
   ///
   /// - Parameters:
   ///   - size: The size to fit.
-  ///
   /// - Returns: The fitted image.
   public func aspectFitResize(to size: CGSize) -> UIImage? { UIImage.aspectFitResize(self, to: size) }
 
@@ -43,7 +39,6 @@ extension UIImage {
   /// - Parameters:
   ///   - image: The image to resize.
   ///   - min: The length to resize the target edge to.
-  ///
   /// - Returns: The resized image.
   public class func minLengthResize(_ image: UIImage, min: CGFloat) -> UIImage? {
     let aspectRatio = image.size.width / image.size.height
@@ -70,7 +65,6 @@ extension UIImage {
   /// - Parameters:
   ///   - image: The image to resize.
   ///   - min: The length to resize the target edge to.
-  ///
   /// - Returns: The resized image.
   public class func maxLengthResize(_ image: UIImage, max: CGFloat) -> UIImage? {
     let aspectRatio = image.size.width / image.size.height
@@ -96,7 +90,6 @@ extension UIImage {
   /// - Parameters:
   ///   - image: The image to use.
   ///   - size: The size to fill.
-  ///
   /// - Returns: The filled image.
   public class func aspectFillResize(_ image: UIImage, to size: CGSize) -> UIImage? {
     let aspectRatio = min(size.width/image.size.width, size.height/image.size.height)
@@ -122,7 +115,6 @@ extension UIImage {
   /// - Parameters:
   ///   - image: The image to use.
   ///   - size: The size to fit.
-  ///
   /// - Returns: The fitted image.
   public class func aspectFitResize(_ image: UIImage, to size: CGSize) -> UIImage? {
     let aspectRatio = max(size.width/image.size.width, size.height/image.size.height)

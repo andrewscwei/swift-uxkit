@@ -5,7 +5,6 @@ extension NSAttributedString {
   ///
   /// - Parameters:
   ///   - width: The width constraint.
-  ///
   /// - Returns: The height of the attributed string if it were constrained
   ///            within the provided width.
   public func height(withConstrainedWidth width: CGFloat) -> CGFloat {
@@ -19,7 +18,6 @@ extension NSAttributedString {
   ///
   /// - Parameters:
   ///   - height: The height constraint.
-  ///
   /// - Returns: The width of the attributed string if it were constrained
   ///            within the provided height.
   public func width(withConstrainedHeight height: CGFloat) -> CGFloat {

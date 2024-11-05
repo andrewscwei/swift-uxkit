@@ -2,6 +2,7 @@ import BaseKit
 import UIKit
 
 class CollectionViewRefreshControlDelegate {
+
   /// Internal `StateMachine` instance.
   lazy var stateMachine = StateMachine(self)
 

@@ -2,11 +2,11 @@ import BaseKit
 import UIKit
 
 extension AnimationDelegate {
+
   /// Converts an animation instance to a unique hash value.
   ///
   /// - Parameters:
   ///   - anim: The `CAAnimation` instance.
-  ///
   /// - Returns: The unique hash.
   func toHash(_ anim: CAAnimation) -> String {
     return "\(ObjectIdentifier(anim).hashValue)"
@@ -16,7 +16,6 @@ extension AnimationDelegate {
   ///
   /// - Parameters:
   ///   - value: The value to convert.
-  ///
   /// - Returns: The converted value or `nil` if the conversion was not
   ///            possible.
   func toFloat(_ value: Any?) -> Any? {
@@ -30,7 +29,6 @@ extension AnimationDelegate {
   ///
   /// - Parameters:
   ///   - value: The value to convert.
-  ///
   /// - Returns: The converted value or `nil` if the conversion was not
   ///            possible.
   func toCGFloat(_ value: Any?) -> Any? {
@@ -44,7 +42,6 @@ extension AnimationDelegate {
   ///
   /// - Parameters:
   ///   - value: The value to convert.
-  ///
   /// - Returns: The converted value or `nil` if the conversion was not
   ///            possible.
   func toCGColor(_ value: Any?) -> Any? {

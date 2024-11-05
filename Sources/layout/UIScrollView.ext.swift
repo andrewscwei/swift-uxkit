@@ -1,6 +1,7 @@
 import UIKit
 
 extension UIScrollView {
+
   /// The content offset of the scroll view at its minimum scroll position with
   /// content insets taken into account.
   public var minContentOffset: CGPoint {

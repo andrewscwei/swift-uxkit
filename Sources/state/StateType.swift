@@ -43,7 +43,6 @@ public struct StateType: OptionSet {
   ///
   /// - Parameters:
   ///   - types: `StateType` values.
-  ///
   /// - Returns: `true` if any one of the provided `StateType` values is
   ///             included, `false` if none are included.
   public func has(_ types: StateType...) -> Bool {

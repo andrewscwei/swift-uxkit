@@ -1,5 +1,6 @@
 /// Specifies how cells are selected in a `UICollectionView`.
 public enum CollectionViewSelectionMode {
+
   /// No selection allowed.
   case none
 

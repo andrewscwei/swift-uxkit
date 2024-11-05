@@ -9,7 +9,6 @@ public protocol CollectionViewControllerDelegate: AnyObject {
   ///   - indexPath: Index path.
   ///   - section: Section.
   ///   - item: Item.
-  ///
   /// - Returns: `UICollectionViewCell` instance.
   func collection<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>, cellAtIndexPath indexPath: IndexPath, section: S, item: I) -> UICollectionViewCell?
 
@@ -20,7 +19,6 @@ public protocol CollectionViewControllerDelegate: AnyObject {
   ///   - viewController: The invoking `CollectionViewContorller`.
   ///   - indexPath: Index path.
   ///   - kind: String identifier representing the kind of supplementary view.
-  ///
   /// - Returns: `UICollectionReusableView` instance or `nil` indicating no
   ///             supplementary views.
   func collection<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>, supplementaryViewAtIndexPath indexPath: IndexPath, kind: String) -> UICollectionReusableView?
@@ -29,7 +27,6 @@ public protocol CollectionViewControllerDelegate: AnyObject {
   /// collection view.
   ///
   /// - Parameter viewController: The invoking `CollectionViewController`.
-  ///
   /// - Returns: The `UICollectionViewLayout` instance. If `nil`, the default
   ///            layout will be used.
   func collectionViewLayout<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>) -> UICollectionViewLayout?
@@ -40,7 +37,6 @@ public protocol CollectionViewControllerDelegate: AnyObject {
   ///   - viewController: The invoking `CollectionViewController`.
   ///   - item: Item.
   ///   - section: Section.
-  ///
   /// - Returns: `true` if the item should be selected, `false` otherwise.
   func collection<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>, shouldSelectItem item: I, in section: S) -> Bool
 
@@ -50,7 +46,6 @@ public protocol CollectionViewControllerDelegate: AnyObject {
   ///   - viewController: The invoking `CollectionViewController`.
   ///   - item: Item.
   ///   - section: Section.
-  ///
   /// - Returns: `true` if the item should be deselected, `false` otherwise.
   func collection<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>, shouldDeselectItem item: I, in section: S) -> Bool
 
@@ -72,7 +67,6 @@ public protocol CollectionViewControllerDelegate: AnyObject {
   ///
   /// - Parameters:
   ///   - viewController: The invoking `CollectionViewController`.
-  ///
   /// - Returns: `true` to trigger refresh, `false` otherwise.
   func collectionWillPullToRefresh<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>) -> Bool
 
@@ -89,7 +83,6 @@ public protocol CollectionViewControllerDelegate: AnyObject {
   ///
   /// - Parameters:
   ///   - viewController: The invoking `CollectionViewController`.
-  ///
   /// - Returns: Some `CollectionViewRefreshControl` instance.
   func collectionFrontRefreshControl<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>) -> (any CollectionViewRefreshControl)?
 
@@ -99,7 +92,6 @@ public protocol CollectionViewControllerDelegate: AnyObject {
   ///
   /// - Parameters:
   ///   - viewController: The invoking `CollectionViewController`.
-  ///
   /// - Returns: Some `CollectionViewRefreshControl` instance.
   func collectionEndRefreshControl<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>) -> (any CollectionViewRefreshControl)?
 
@@ -110,7 +102,6 @@ public protocol CollectionViewControllerDelegate: AnyObject {
   ///   - viewController: The invoking `CollectionViewController`.
   ///   - item: Item.
   ///   - query: Filter query.
-  ///
   /// - Returns: `true` to include the item, `false` otherwise.
   func collection<S: CaseIterable & Hashable, I: Hashable>(_ viewController: CollectionViewController<S, I>, shouldIncludeItem item: I, withFilterQuery query: Any?) -> Bool
 

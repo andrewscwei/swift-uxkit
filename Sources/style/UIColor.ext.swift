@@ -91,7 +91,6 @@ extension UIColor {
   /// component values as the receiver, but has an alpha component of `0`.
   public var alpha0: UIColor { return self.withAlphaComponent(0) }
 
-
   /// Creates and returns a new color that is dimmed by 10%.
   public var dimmed10: UIColor { return self.withRGBOffset(-0.1) }
 
@@ -150,7 +149,6 @@ extension UIColor {
   ///
   /// - Parameters:
   ///   - value: The RGB offset value (0.0 - 1.0).
-  ///
   /// - Returns: The new color.
   public func withRGBOffset(_ value: CGFloat) -> UIColor {
     var red: CGFloat = 0
@@ -167,7 +165,6 @@ extension UIColor {
   ///
   /// - Parameters:
   ///   - value: The RGB offset value.
-  ///
   /// - Returns: The new color.
   public func withRGBMultiplier(_ value: CGFloat) -> UIColor {
     var red: CGFloat = 0
@@ -184,7 +181,6 @@ extension UIColor {
   ///
   /// - Parameters:
   ///   - value: The alpha offset value (0.0 - 1.0).
-  ///
   /// - Returns: The new color.
   public func withAlphaOffset(_ value: CGFloat) -> UIColor {
     var red: CGFloat = 0
@@ -201,7 +197,6 @@ extension UIColor {
   ///
   /// - Parameters:
   ///   - value: The alpha multiplier value.
-  ///
   /// - Returns: The new color.
   public func withAlphaMultiplier(_ value: CGFloat) -> UIColor {
     var red: CGFloat = 0

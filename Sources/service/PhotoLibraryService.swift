@@ -5,6 +5,8 @@ import UIKit
 public class PhotoLibraryService: Observable {
   public typealias Observer = PhotoLibraryServiceObserver
 
+  public var observers: [WeakReference<any Observer>] = []
+
   /// Gets the photo library authorization status.
   public var authorizationStatus: AuthorizationStatus {
     let status = PHPhotoLibrary.authorizationStatus()
@@ -35,9 +37,6 @@ public class PhotoLibraryService: Observable {
     case .restricted,
          .denied:
       failureHandler(status)
-//      DispatchQueue.main.async {
-//        UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!)
-//      }
     default:
       break
     }

@@ -1,6 +1,7 @@
 import UIKit
 
 class CollectionViewItemSelectionDelegate<S: Hashable, I: Hashable> {
+
   /// Internal `StateMachine` instance.
   lazy var stateMachine = StateMachine(self)
 
@@ -89,7 +90,6 @@ class CollectionViewItemSelectionDelegate<S: Hashable, I: Hashable> {
   /// - Parameters:
   ///   - section: Section.
   ///   - predicate: Custom method for checking the equality between two items.
-  ///
   /// - Returns: `true` if all are selected, `false` otherwise.
   func areAllItemsSelected(in section: S, where predicate: (I, I) -> Bool) -> Bool {
     let items = collectionViewDataSource.snapshot(for: section).items
@@ -106,7 +106,6 @@ class CollectionViewItemSelectionDelegate<S: Hashable, I: Hashable> {
   /// - Parameters:
   ///   - section: Section.
   ///   - predicate: Custom method for checking the equality between two items.
-  ///
   /// - Returns: `true` if all are deselected, `false` otherwise.
   func areAllItemsDeselected(in section: S, where predicate: (I, I) -> Bool) -> Bool {
     let items = collectionViewDataSource.snapshot(for: section).items
@@ -124,9 +123,9 @@ class CollectionViewItemSelectionDelegate<S: Hashable, I: Hashable> {
   /// - Parameters:
   ///   - indexPath: Index path.
   ///   - predicate: Method that determines the equality of two items.
-  ///
   /// - Returns: The selected item, if any.
-  @discardableResult func selectItem(at indexPath: IndexPath, where predicate: (I, I) -> Bool) -> I? {
+  @discardableResult
+  func selectItem(at indexPath: IndexPath, where predicate: (I, I) -> Bool) -> I? {
     guard let item = mapIndexPathToItem(indexPath) else { return nil }
 
     return selectItem(item, where: predicate)
@@ -137,9 +136,9 @@ class CollectionViewItemSelectionDelegate<S: Hashable, I: Hashable> {
   /// - Parameters:
   ///   - item: Item.
   ///   - predicate: Method that determines the equality of two items.
-  ///
   /// - Returns: The selected item if any.
-  @discardableResult func selectItem(_ item: I, where predicate: (I, I) -> Bool) -> I? {
+  @discardableResult
+  func selectItem(_ item: I, where predicate: (I, I) -> Bool) -> I? {
     guard let section = collectionViewDataSource.snapshot().sectionIdentifier(containingItem: item), shouldSelectItem(item, in: section) else { return nil }
 
     return addSelectedItem(item, where: predicate)
@@ -151,9 +150,9 @@ class CollectionViewItemSelectionDelegate<S: Hashable, I: Hashable> {
   /// - Parameters:
   ///   - section: Section.
   ///   - predicate: Method that determines the equality of two items.
-  ///
   /// - Returns: The selected items.
-  @discardableResult func selectAllItems(in section: S, where predicate: (I, I) -> Bool) -> [I] {
+  @discardableResult
+  func selectAllItems(in section: S, where predicate: (I, I) -> Bool) -> [I] {
     guard case .multiple = selectionMode else { return [] }
 
     stateMachine.beginTransaction()
@@ -179,9 +178,9 @@ class CollectionViewItemSelectionDelegate<S: Hashable, I: Hashable> {
   /// - Parameters:
   ///   - indexPath: Index path.
   ///   - predicate: Method that determines the equality of two items.
-  ///
   /// - Returns: The deselected item, if any.
-  @discardableResult func deselectItem(at indexPath: IndexPath, where predicate: (I, I) -> Bool) -> I? {
+  @discardableResult
+  func deselectItem(at indexPath: IndexPath, where predicate: (I, I) -> Bool) -> I? {
     guard let item = mapIndexPathToItem(indexPath) else { return nil }
 
     return deselectItem(item, where: predicate)
@@ -192,9 +191,9 @@ class CollectionViewItemSelectionDelegate<S: Hashable, I: Hashable> {
   /// - Parameters:
   ///   - item: Item.
   ///   - predicate: Method that determines the equality of two items.
-  ///
   /// - Returns: The deselected item if any.
-  @discardableResult func deselectItem(_ item: I, where predicate: (I, I) -> Bool) -> I? {
+  @discardableResult
+  func deselectItem(_ item: I, where predicate: (I, I) -> Bool) -> I? {
     guard let section = collectionViewDataSource.snapshot().sectionIdentifier(containingItem: item), shouldDeselectItem(item, in: section) else { return nil }
 
     return removeSelectedItem(item, where: predicate)
@@ -206,9 +205,9 @@ class CollectionViewItemSelectionDelegate<S: Hashable, I: Hashable> {
   /// - Parameters:
   ///   - section: Section.
   ///   - predicate: Method that determines the equality of two items.
-  ///
   /// - Returns: The deselected items.
-  @discardableResult func deselectAllItems(in section: S, where predicate: (I, I) -> Bool) -> [I] {
+  @discardableResult
+  func deselectAllItems(in section: S, where predicate: (I, I) -> Bool) -> [I] {
     if case .none = selectionMode { return [] }
 
     stateMachine.beginTransaction()
@@ -233,7 +232,6 @@ class CollectionViewItemSelectionDelegate<S: Hashable, I: Hashable> {
   /// - Parameters:
   ///   - item: Item.
   ///   - section: Section of item.
-  ///
   /// - Returns: `true` indicates item should be selected, `false` otherwise.
   func shouldSelectItem(_ item: I, in section: S) -> Bool {
     let flag = shouldSelectItemHandler(item, section)
@@ -249,7 +247,6 @@ class CollectionViewItemSelectionDelegate<S: Hashable, I: Hashable> {
   /// Indicates if an item at the specified index path should be selected.
   ///
   /// - Parameter indexPath: Index path.
-  ///
   /// - Returns: `true` indicates item should be selected, `false` otherwise.
   func shouldSelectItem(at indexPath: IndexPath) -> Bool {
     guard let item = mapIndexPathToItem(indexPath), let section = collectionViewDataSource.snapshot().sectionIdentifier(containingItem: item) else { return false }
@@ -263,7 +260,6 @@ class CollectionViewItemSelectionDelegate<S: Hashable, I: Hashable> {
   /// - Parameters:
   ///   - item: Item.
   ///   - section: Section of item.
-  ///
   /// - Returns: `true` indicates item should be deselected, `false` otherwise.
   func shouldDeselectItem(_ item: I, in section: S) -> Bool {
     let flag = shouldDeselectItemHandler(item, section)
@@ -281,7 +277,6 @@ class CollectionViewItemSelectionDelegate<S: Hashable, I: Hashable> {
   /// Indicates if an item at the specified index path should be deselected.
   ///
   /// - Parameter indexPath: Index path.
-  ///
   /// - Returns: `true` indicates item should be deselected, `false` otherwise.
   func shouldDeselectItem(at indexPath: IndexPath) -> Bool {
     guard let item = mapIndexPathToItem(indexPath), let section = collectionViewDataSource.snapshot().sectionIdentifier(containingItem: item) else { return false }
@@ -310,7 +305,8 @@ class CollectionViewItemSelectionDelegate<S: Hashable, I: Hashable> {
     indexPathsToDeselect.forEach { collectionView.deselectItem(at: $0, animated: isAnimated) }
   }
 
-  @discardableResult private func addSelectedItem(_ item: I, where predicate: (I, I) -> Bool) -> I? {
+  @discardableResult
+  private func addSelectedItem(_ item: I, where predicate: (I, I) -> Bool) -> I? {
     guard collectionViewDataSource.snapshot().indexOfItem(item) != nil else { return nil }
 
     var newSet = selectedItems
@@ -332,7 +328,8 @@ class CollectionViewItemSelectionDelegate<S: Hashable, I: Hashable> {
     return item
   }
 
-  @discardableResult private func removeSelectedItem(_ item: I, where predicate: (I, I) -> Bool) -> I? {
+  @discardableResult
+  private func removeSelectedItem(_ item: I, where predicate: (I, I) -> Bool) -> I? {
     guard collectionViewDataSource.snapshot().indexOfItem(item) != nil else { return nil }
 
     var newSet = selectedItems

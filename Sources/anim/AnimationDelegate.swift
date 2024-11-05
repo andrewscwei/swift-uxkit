@@ -40,8 +40,6 @@ import UIKit
 /// - SeeAlso:
 ///   https://www.calayer.com/core-animation/2016/05/17/catransaction-in-depth.html
 public class AnimationDelegate: NSObject, CAAnimationDelegate {
-  /// Specifies if debug logging is enabled.
-  public let debugMode: Bool = false
 
   /// Multiplier for time values (i.e. duration and delay) of all animations
   /// created by `AnimationDelegate`.
@@ -76,7 +74,7 @@ public class AnimationDelegate: NSObject, CAAnimationDelegate {
   /// - Parameters:
   ///   - view: The view instance.
   ///   - iterator: The closure supplied with an animation iterator for
-  ///     convenience.
+  ///               convenience.
   public func commit(_ view: UIView?, iterator: (LayerAnimationIterator) -> Void) {
     commit(view?.layer, iterator: iterator)
   }
@@ -154,7 +152,6 @@ public class AnimationDelegate: NSObject, CAAnimationDelegate {
     return basic(view.layer, property: property, to: toValue, from: fromValue, delay: delay, duration: duration, timingFunctionName: timingFunctionName, autoreverses: autoreverses, repeatCount: repeatCount, shouldOverwriteExisting: shouldOverwriteExisting, fillMode: fillMode, completion: completion)
   }
 
-
   /// Creates a `CABasicAnimation` for a `CALayer` instance.
   ///
   /// - Parameters:
@@ -177,7 +174,7 @@ public class AnimationDelegate: NSObject, CAAnimationDelegate {
   ///   - duration: The animation duration (in seconds).
   ///   - timingFunctionName: The timing function name.
   ///   - autoreverses: Indicates if the animation automatically reverses on
-  ///     complete.
+  ///                   complete.
   ///   - repeatCount: Indicates the number of times the animation repeats. 0
   ///                  indicates no repeats, and any number less than 0
   ///                  indicates infinite loop.
@@ -248,7 +245,7 @@ public class AnimationDelegate: NSObject, CAAnimationDelegate {
       return nil
     }
 
-    log(.debug, isEnabled: debugMode) { "Animating \(NSStringFromClass(type(of: layer)))<\(ObjectIdentifier(layer).hashValue)> for key path `\(keyPath)` to `\(to ?? "nil")`\(completion == nil ? "" : " with completion handler")..." }
+    log.debug("Animating \(NSStringFromClass(type(of: layer)))<\(ObjectIdentifier(layer).hashValue)> for key path `\(keyPath)` to `\(to ?? "nil")`\(completion == nil ? "" : " with completion handler")...")
 
     let anim = CABasicAnimation(keyPath: keyPath)
     anim.fromValue = from
@@ -362,7 +359,7 @@ public class AnimationDelegate: NSObject, CAAnimationDelegate {
   public func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
     guard let anim = anim as? CABasicAnimation, let keyPath = anim.keyPath, let hash = anim.value(forKey: "id") as? String else { return }
 
-    log(.debug, isEnabled: debugMode) { "Animation stopped for layer ID <\(hash)> for key path `\(keyPath)`\(flag ? "" : " without finishing")" }
+    log.debug("Animation stopped for layer ID <\(hash)> for key path `\(keyPath)`\(flag ? "" : " without finishing")")
 
     if flag, let completion = completionHandlers[hash] {
       completion()

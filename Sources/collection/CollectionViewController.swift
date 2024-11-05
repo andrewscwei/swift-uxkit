@@ -237,7 +237,6 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
   ///   - indexPath: Index path.
   ///   - section: Section.
   ///   - item: Item.
-  ///
   /// - Returns: The `UICollectionViewCell`.
   open func cellFactory(at indexPath: IndexPath, section: S, item: I) -> UICollectionViewCell {
     fatalError("CollectionViewController requires cells to be provided by either a CollectionViewControllerDelegate implementing collection(_:cellAtIndexPath:section:item:) or a subclass overriding cellFactory(at:section:item:)")
@@ -260,7 +259,6 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
   ///   - indexPath: Index path.
   ///   - section: Section.
   ///   - item: Item.
-  ///
   /// - Returns: The `UICollectionReusableView`.
   open func supplementaryViewFactory(at indexPath: IndexPath, kind: String) -> UICollectionReusableView? {
     nil
@@ -304,21 +302,25 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
 
   public func getIndexPath(for item: I) -> IndexPath? { itemSelectionDelegate.mapItemToIndexPath(item) }
 
-  @discardableResult public func selectItem(_ item: I) -> I? {
+  @discardableResult
+  public func selectItem(_ item: I) -> I? {
     guard let item = itemSelectionDelegate.selectItem(item, where: { $0 == $1 }) else { return nil }
 
     return item
   }
 
-  @discardableResult public func selectAllItems(in section: S) -> [I] {
+  @discardableResult
+  public func selectAllItems(in section: S) -> [I] {
     itemSelectionDelegate.selectAllItems(in: section, where: { $0 == $1 })
   }
 
-  @discardableResult public func deselectItem(_ item: I) -> I? {
+  @discardableResult
+  public func deselectItem(_ item: I) -> I? {
     itemSelectionDelegate.deselectItem(item, where: { $0 == $1 })
   }
 
-  @discardableResult public func deselectAllItems(in section: S? = nil) -> [I] {
+  @discardableResult
+  public func deselectAllItems(in section: S? = nil) -> [I] {
     if let section = section {
       return itemSelectionDelegate.deselectAllItems(in: section, where: { $0 == $1 })
     }
@@ -523,7 +525,7 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
   ///
   /// - Returns: The `UICollectionViewLayout`.
   open func layoutFactory() -> UICollectionViewLayout {
-    log(.debug) { "Creating collection view layout... WARN: No collection view layout provided, please override layoutFactory() or implement the delegate method collectionViewLayout(_:)" }
+    log.debug("Creating collection view layout... WARN: No collection view layout provided, please override layoutFactory() or implement the delegate method collectionViewLayout(_:)")
 
     return UICollectionViewLayout()
   }

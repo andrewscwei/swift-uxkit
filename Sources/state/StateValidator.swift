@@ -16,9 +16,8 @@ public struct StateValidator {
   ///
   /// - Parameters:
   ///   - keyPaths: The key paths of the states.
-  ///
   /// - Returns: `true` if at least one state is dirty, `false` if none are
-  ///   dirty.
+  ///            dirty.
   public func isDirty(_ keyPaths: AnyKeyPath...) -> Bool {
     guard let dirtyStateKeyPaths = dirtyStateKeyPaths else { return true }
 
@@ -37,7 +36,6 @@ public struct StateValidator {
   /// - Parameters:
   ///   - types: The state types. This can be a single `StateType` or an option
   ///            set `StateType`, either works.
-  ///
   /// - Returns: `true` if at least one state type is dirty, `false` if none are
   ///            dirty.
   public func isDirty(_ types: StateType...) -> Bool {

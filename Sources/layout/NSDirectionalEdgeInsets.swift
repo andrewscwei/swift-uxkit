@@ -5,7 +5,6 @@ import UIKit
 /// - Parameters:
 ///   - lhs: LHS `NSDirectionalEdgeInsets` value.
 ///   - rhs: RHS `NSDirectionalEdgeInsets` value.
-///
 /// - Returns: The resulting `NSDirectionalEdgeInsets` value.
 public func +(lhs: NSDirectionalEdgeInsets, rhs: NSDirectionalEdgeInsets) -> NSDirectionalEdgeInsets {
   return NSDirectionalEdgeInsets(top: lhs.top + rhs.top, leading: lhs.leading + rhs.leading, bottom: lhs.bottom + rhs.bottom, trailing: lhs.trailing + rhs.trailing)
@@ -16,7 +15,6 @@ public func +(lhs: NSDirectionalEdgeInsets, rhs: NSDirectionalEdgeInsets) -> NSD
 /// - Parameters:
 ///   - lhs: LHS `NSDirectionalEdgeInsets` value.
 ///   - rhs: RHS `NSDirectionalEdgeInsets` value.
-///
 /// - Returns: The resulting `NSDirectionalEdgeInsets` value.
 public func -(lhs: NSDirectionalEdgeInsets, rhs: NSDirectionalEdgeInsets) -> NSDirectionalEdgeInsets {
   return NSDirectionalEdgeInsets(top: lhs.top - rhs.top, leading: lhs.leading - rhs.leading, bottom: lhs.bottom - rhs.bottom, trailing: lhs.trailing - rhs.trailing)
@@ -42,7 +40,6 @@ extension NSDirectionalEdgeInsets {
   ///   - bottom: Bottom edge inset value to replace (omit to retain old value).
   ///   - trailing: Trailing edge inset value to replace (omit to retain old
   ///               value).
-  ///
   /// - Returns: New `NSDirectionalEdgeInsets` struct with replaced edge inset values.
   public func replacedBy(top: CGFloat? = nil, leading: CGFloat? = nil, bottom: CGFloat? = nil, trailing: CGFloat? = nil) -> NSDirectionalEdgeInsets {
     return NSDirectionalEdgeInsets(top: top ?? self.top, leading: leading ?? self.leading, bottom: bottom ?? self.bottom, trailing: trailing ?? self.trailing)
@@ -52,7 +49,6 @@ extension NSDirectionalEdgeInsets {
   ///
   /// - Parameters:
   ///   - offset: The amount to offset each edge inset value by.
-  ///
   /// - Returns: New `NSDirectionalEdgeInsets` struct with offsetting edge inset
   ///            values.
   public func offsetBy(_ offset: CGFloat) -> NSDirectionalEdgeInsets {

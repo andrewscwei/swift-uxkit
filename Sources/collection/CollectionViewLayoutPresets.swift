@@ -1,7 +1,6 @@
 import UIKit
 
 public struct CollectionViewLayoutPresets {
-
   @available(iOS 14.5, *)
   public static func listLayout(
     separatorColor: UIColor? = nil,

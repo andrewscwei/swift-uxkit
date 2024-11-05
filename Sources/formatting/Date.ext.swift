@@ -1,6 +1,7 @@
 import Foundation
 
 extension Date {
+
   /// Returns a string representation of how much time has passed since the
   /// current `Date`.
   ///

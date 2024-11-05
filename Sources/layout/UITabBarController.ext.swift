@@ -1,6 +1,7 @@
 import UIKit
 
 extension UITabBarController {
+
   /// Makes the tab bar background transparent.
   public func makeTabBarBackgroundTransparent() {
     if #available(iOS 13.0, *) {

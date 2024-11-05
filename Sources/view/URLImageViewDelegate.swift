@@ -1,6 +1,7 @@
 import UIKit
 
 public protocol URLImageViewDelegate: AnyObject {
+
   /// Handler invoked when the image finishes loading.
   ///
   /// - Parameters:

@@ -1,6 +1,7 @@
 import Foundation
 
 extension NSNumber {
+
   /// Returns the abbreviated string of an integer (i.e. "1K", "1M", etc.).
   ///
   /// To localize the returned string, the app can create an extension of
@@ -8,7 +9,6 @@ extension NSNumber {
   ///
   /// - Parameters:
   ///   - int: The integer.
-  ///
   /// - Returns: The abbreviated string.
   public class func abbreviatedNumber(from int: Int) -> String {
     let formatter = NumberFormatter()

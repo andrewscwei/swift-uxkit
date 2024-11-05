@@ -11,7 +11,6 @@ public protocol Measurable: AnyMeasurable  {
   ///
   /// - Parameters:
   ///   - params: Attributes that affect the calculation of the size.
-  ///
   /// - Returns: The computed `CGSize`.
   static func sizeThatFits(with params: MeasurableParams?) -> CGSize
 }

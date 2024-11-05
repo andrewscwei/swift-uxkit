@@ -1,11 +1,11 @@
 import Foundation
 
 extension CGPoint {
+
   /// Returns the point at the center of a list of points.
   ///
   /// - Parameters:
   ///   - points: A list of points to determine the center point.
-  ///
   /// - Returns: The center point.
   public static func midPoint(_ points: CGPoint...) -> CGPoint? {
     return midPoint(points)
@@ -15,7 +15,6 @@ extension CGPoint {
   ///
   /// - Parameters:
   ///   - points: A list of points to determine the center point.
-  ///
   /// - Returns: The center point.
   public static func midPoint(_ points: [CGPoint]) -> CGPoint? {
     var xMin: CGFloat?
