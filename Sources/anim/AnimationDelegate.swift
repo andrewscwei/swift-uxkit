@@ -133,7 +133,6 @@ public class AnimationDelegate: NSObject, CAAnimationDelegate {
   ///               parameter. Otherwise, the value of the parameter takes
   ///               precedence.
   ///   - completion: The handler invoked when the animation completes.
-  ///
   /// - Returns: The `CABasicAnimation` instance that was created.
   @discardableResult
   public func basic(_ view: UIView?,
@@ -190,7 +189,6 @@ public class AnimationDelegate: NSObject, CAAnimationDelegate {
   ///               parameter. Otherwise, the value of the parameter takes
   ///               precedence.
   ///   - completion: The handler invoked when the animation completes.
-  ///
   /// - Returns: The `CABasicAnimation` instance that was created.
   @discardableResult
   public func basic(_ layer: CALayer?,
