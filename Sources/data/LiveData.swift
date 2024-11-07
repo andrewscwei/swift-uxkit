@@ -18,7 +18,7 @@ public class LiveData<T: Equatable>: CustomStringConvertible {
       guard value != newValue else { return }
 
       lockQueue.sync { currentValue = newValue }
-      _log.debug("[LiveData<\(T.self)>] Updating value... OK: \(newValue.map { "\($0)" } ?? "nil")")
+      _log.debug { "[LiveData<\(T.self)>] Updating value... OK: \(newValue.map { "\($0)" } ?? "nil")" }
       emit()
     }
   }
@@ -111,7 +111,7 @@ public class LiveData<T: Equatable>: CustomStringConvertible {
   public func emit() {
     let listeners = lockQueue.sync { self.listeners }
 
-    _log.debug("[LiveData<\(T.self)>] Emitting value to \(listeners.keys.count) listener(s)... OK")
+    _log.debug { "[LiveData<\(T.self)>] Emitting value to \(listeners.keys.count) listener(s)... OK" }
 
     for (_, listener) in listeners {
       listener(value)

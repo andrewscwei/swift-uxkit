@@ -243,7 +243,7 @@ public class AnimationDelegate: NSObject, CAAnimationDelegate {
       return nil
     }
 
-    _log.debug("Animating \(NSStringFromClass(type(of: layer)))<\(ObjectIdentifier(layer).hashValue)> for key path `\(keyPath)` to `\(to ?? "nil")`\(completion == nil ? "" : " with completion handler")...")
+    _log.debug { "Animating \(NSStringFromClass(type(of: layer)))<\(ObjectIdentifier(layer).hashValue)> for key path `\(keyPath)` to `\(to ?? "nil")`\(completion == nil ? "" : " with completion handler")..." }
 
     let anim = CABasicAnimation(keyPath: keyPath)
     anim.fromValue = from
@@ -357,7 +357,7 @@ public class AnimationDelegate: NSObject, CAAnimationDelegate {
   public func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
     guard let anim = anim as? CABasicAnimation, let keyPath = anim.keyPath, let hash = anim.value(forKey: "id") as? String else { return }
 
-    _log.debug("Animation stopped for layer ID <\(hash)> for key path `\(keyPath)`\(flag ? "" : " without finishing")")
+    _log.debug { "Animation stopped for layer ID <\(hash)> for key path `\(keyPath)`\(flag ? "" : " without finishing")" }
 
     if flag, let completion = completionHandlers[hash] {
       completion()
