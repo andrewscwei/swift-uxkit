@@ -12,9 +12,9 @@
     {
       "identity" : "swift-basekit",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/andrewscwei/swift-basekit",
+      "location" : "https://github.com/andrewscwei/swift-basekit.git",
       "state" : {
-        "revision" : "cb54e42a6603339a13614088e70e21a75237ec10",
+        "revision" : "0e1d751c33db8677d0f4cc98641e9b8cf8db13e4",
         "version" : "1.0.0"
       }
     }
