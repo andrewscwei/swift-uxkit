@@ -23,14 +23,14 @@ public class RepositoryLiveData<T: Equatable, R: Repository>: LiveData<T>, Repos
     super.init()
 
     Task {
-      await repository.addObserver(self)
-
       switch await repository.getState() {
       case .synced(let value), .notSynced(let value):
         currentValue = map(value, currentValue)
       case .initial:
         currentValue = nil
       }
+
+      await repository.addObserver(self)
     }
   }
 
