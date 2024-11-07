@@ -3,7 +3,9 @@ import Foundation
 /// An object conforming to this protocol assumes the delegate of a
 /// `StateMachine` and handles its state update cycles. An object cannot be a
 /// delegate of more than one `StateMachine`.
+@MainActor
 public protocol StateMachineDelegate: AnyObject {
+
   /// The `StateMachine`.
   var stateMachine: StateMachine { get }
 
