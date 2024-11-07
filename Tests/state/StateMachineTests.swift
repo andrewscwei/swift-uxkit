@@ -39,6 +39,7 @@ class StateMachineTests: XCTestCase {
     XCTAssertFalse(validator.isDirty(\Foo.baz))
   }
 
+  @MainActor
   func testStateMachineDelegate() {
     class Foo: StateMachineDelegate {
       lazy var stateMachine = StateMachine(self)
@@ -50,6 +51,7 @@ class StateMachineTests: XCTestCase {
     XCTAssertNotNil(Foo().stateMachine)
   }
 
+  @MainActor
   func testStatefulProperties() {
     let expectation1 = XCTestExpectation(description: "State machine should invalidate `foo` 2 times.")
     expectation1.expectedFulfillmentCount = 2
@@ -73,10 +75,6 @@ class StateMachineTests: XCTestCase {
         self.expectation2 = expectation2
 
         stateMachine.start()
-      }
-
-      deinit {
-        stateMachine.stop()
       }
 
       func update(check: StateValidator) {
