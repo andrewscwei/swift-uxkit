@@ -135,7 +135,7 @@ public class URLVideoView: UIView, StateMachineDelegate {
   }
 
   private func didFailToPlay(error: Swift.Error) {
-    log.error("Playing video... ERR: \(error.localizedDescription)")
+    _log.error("Playing video... ERR: \(error.localizedDescription)")
   }
 
   /// Handler invoked the video reaches the end.

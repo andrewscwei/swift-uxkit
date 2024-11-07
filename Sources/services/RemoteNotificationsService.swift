@@ -48,19 +48,19 @@ public class RemoteNotificationsService: Observable {
       case .notDetermined:
         UNUserNotificationCenter.current().requestAuthorization(options:[.badge, .alert, .sound]) { granted, error in
           if let error = error {
-            log.error("Requesting for remote notifications authorization... ERR: \(error)")
+            _log.error("Requesting for remote notifications authorization... ERR: \(error)")
             return
           }
 
           guard granted else {
-            log.error("Requesting for remote notifications authorization... ERR: Not granted")
+            _log.error("Requesting for remote notifications authorization... ERR: Not granted")
             return
           }
         }
       case .denied, .restricted:
         failureHandler(status)
       case .authorized:
-        log.debug("Requesting for remote notifications authorization... SKIP: Already granted")
+        _log.debug("Requesting for remote notifications authorization... SKIP: Already granted")
       }
     }
   }
@@ -99,7 +99,7 @@ public class RemoteNotificationsService: Observable {
   public func invalidatePushToken() {
     invalidateAuthorizationStatus { status in
       guard status == .authorized else {
-        log.debug("Invalidating push token... SKIP: Authorization status should be \(AuthorizationStatus.authorized), currently \(status)")
+        _log.debug("Invalidating push token... SKIP: Authorization status should be \(AuthorizationStatus.authorized), currently \(status)")
         return
       }
 
@@ -124,7 +124,7 @@ public class RemoteNotificationsService: Observable {
   public func didRegisterForRemoteNotificationsWithDeviceToken(_ token: Data) {
     let tokenString = token.reduce("", {$0 + String(format: "%02X", $1)})
 
-    log.info("Invalidating push token... OK: \(tokenString)")
+    _log.debug("Invalidating push token... OK: \(tokenString)")
 
     pushToken = tokenString
   }
@@ -135,7 +135,7 @@ public class RemoteNotificationsService: Observable {
   /// - Parameters:
   ///   - error: The error that caused the failure.
   public func didFailToRegisterForRemoteNotificationsWithError(_ error: Error) {
-    log.error("Invalidating push token... ERR: \(error)")
+    _log.error("Invalidating push token... ERR: \(error)")
 
     pushToken = nil
   }
