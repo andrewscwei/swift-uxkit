@@ -111,6 +111,8 @@ public class LiveData<T: Equatable>: CustomStringConvertible {
   public func emit() {
     let listeners = lockQueue.sync { self.listeners }
 
+    _log.debug("[LiveData<\(T.self)>] Emitting value to \(listeners.keys.count) listener(s)... OK")
+
     for (_, listener) in listeners {
       listener(value)
     }
