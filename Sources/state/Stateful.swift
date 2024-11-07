@@ -45,6 +45,7 @@ import Foundation
 /// **Warning**: This property wrapper uses private API and causes segmentation
 /// fault in the compiler if the type constraint of the property owner is not
 /// satisfied.
+@MainActor
 @propertyWrapper
 public struct Stateful<T> {
   public typealias WillSet = (T, T) -> Bool

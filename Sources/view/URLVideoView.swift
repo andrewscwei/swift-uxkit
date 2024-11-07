@@ -79,15 +79,8 @@ public class URLVideoView: UIView, StateMachineDelegate {
     stateMachine.start()
   }
 
-  private func willDeinit() {
-    NotificationCenter.default.removeObserver(self)
-
-    stateMachine.stop()
-    clear()
-  }
-
   deinit {
-    willDeinit()
+    NotificationCenter.default.removeObserver(self)
   }
 
   public override func layoutSubviews() {

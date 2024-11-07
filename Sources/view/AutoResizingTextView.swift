@@ -1,7 +1,6 @@
 import UIKit
 
 open class AutoResizingTextView: UITextView, StateMachineDelegate {
-
   public enum ResizeBehavior: Equatable {
     case matchContent(min: CGFloat = 0, max: CGFloat = .infinity)
     case none
@@ -72,8 +71,6 @@ open class AutoResizingTextView: UITextView, StateMachineDelegate {
   }
 
   deinit {
-    stateMachine.stop()
-
     NotificationCenter.default.removeObserver(self)
 
     removeObserver(self, forKeyPath: "textContainerInset")

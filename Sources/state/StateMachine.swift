@@ -14,6 +14,7 @@ import Foundation
 /// The delegate must explicitly invoke `start()` on its `StateMachine` instance
 /// before it can begin monitoring state changes. Likewise, the delegate must
 /// invoke `stop()` to pause or stop the `StateMachine`.
+@MainActor
 public class StateMachine {
   private weak var delegate: StateMachineDelegate?
 

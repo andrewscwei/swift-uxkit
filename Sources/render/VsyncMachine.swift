@@ -1,5 +1,6 @@
 import UIKit
 
+@MainActor
 public class VsyncMachine {
   private weak var delegate: VsyncMachineDelegate?
 

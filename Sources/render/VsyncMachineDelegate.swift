@@ -1,5 +1,6 @@
 import UIKit
 
+@MainActor
 public protocol VsyncMachineDelegate: AnyObject {
   /// Handler invoked whenever the epoch changes.
   ///
