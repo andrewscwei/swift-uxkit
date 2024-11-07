@@ -24,10 +24,11 @@ public class RepositoryLiveData<T: Equatable, R: Repository>: LiveData<T>, Repos
 
     Task {
       switch await repository.getState() {
-      case .synced(let value), .notSynced(let value):
-        currentValue = map(value, currentValue)
+      case .synced(let data),
+          .notSynced(let data):
+        value = map(data, value)
       case .initial:
-        currentValue = nil
+        value = nil
       }
 
       await repository.addObserver(self)
@@ -69,10 +70,14 @@ public class RepositoryLiveData<T: Equatable, R: Repository>: LiveData<T>, Repos
       newValue = map(data, currentValue)
     }
 
+    _log.debug("[RepositoryLiveData<\(T.self)>] Handling sync... OK: \(String(describing: newValue))")
+
     value = newValue
   }
 
   public func repository<U: Repository>(_ repository: U, didFailToSyncWithError error: Error) {
+    _log.error("[RepositoryLiveData<\(T.self)>] Handling sync... ERR: \(error)")
+
     value = nil
   }
 }
