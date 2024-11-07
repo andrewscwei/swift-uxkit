@@ -30,7 +30,6 @@ public class RepositoryLiveData<T: Equatable, R: Repository>: LiveData<T>, Repos
         currentValue = map(value, currentValue)
       case .initial:
         currentValue = nil
-        sync()
       }
     }
   }
