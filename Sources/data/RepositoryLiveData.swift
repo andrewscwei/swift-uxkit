@@ -56,18 +56,20 @@ public class RepositoryLiveData<T: Equatable, R: Repository>: LiveData<T>, Repos
     self.init(repository) { $0 }
   }
 
-  /// Triggers a sync in the `Repository`.
-  public func sync() {
-    Task {
-      try await repository.sync()
-    }
+  public override func observe(for observer: AnyObject, listener: @escaping LiveData<T>.Listener) {
+    super.observe(for: observer, listener: listener)
+
+    listener(value)
   }
 
   public func repository<U: Repository>(_ repository: U, didSyncWithData data: U.DataType) {
-    var newValue: T? = nil
+    let newValue: T?
 
     if let data = data as? R.DataType {
       newValue = map(data, currentValue)
+    }
+    else {
+      newValue = nil
     }
 
     _log.debug { "[RepositoryLiveData<\(T.self)>] Handling sync... OK: \(String(describing: newValue))" }

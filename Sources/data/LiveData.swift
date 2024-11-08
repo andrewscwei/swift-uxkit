@@ -132,7 +132,9 @@ public class LiveData<T: Equatable>: CustomStringConvertible {
   public func observe(for observer: AnyObject, listener: @escaping Listener) {
     lockQueue.sync {
       let identifier = ObjectIdentifier(observer)
+
       guard !listeners.keys.contains(identifier) else { return }
+
       listeners[identifier] = listener
     }
   }
