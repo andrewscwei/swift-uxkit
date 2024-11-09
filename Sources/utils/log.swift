@@ -1,7 +1,4 @@
 import BaseKit
+import Foundation
 
-#if UXKIT_DEBUG
-let _log = Log(mode: .unified, prefix: "[🚐]")
-#else
-let _log = Log(mode: .none)
-#endif
+let _log = Log(mode: getenv("UXKIT_DEBUG") != nil ? .unified : .none, prefix: "[🚐]")
