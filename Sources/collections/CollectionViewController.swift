@@ -525,7 +525,7 @@ open class CollectionViewController<S: Hashable & CaseIterable, I: Hashable>: UI
   ///
   /// - Returns: The `UICollectionViewLayout`.
   open func layoutFactory() -> UICollectionViewLayout {
-    _log.debug { "Creating collection view layout... WARN: No collection view layout provided, please override layoutFactory() or implement the delegate method collectionViewLayout(_:)" }
+    _log.error { "Creating collection view layout... WARN\n↘︎ No collection view layout provided, please override layoutFactory() or implement the delegate method collectionViewLayout(_:)" }
 
     return UICollectionViewLayout()
   }
