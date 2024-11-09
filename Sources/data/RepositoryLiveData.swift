@@ -72,13 +72,13 @@ public class RepositoryLiveData<T: Equatable, R: Repository>: LiveData<T>, Repos
       newValue = nil
     }
 
-    _log.debug { "[RepositoryLiveData<\(T.self)>] Handling sync... OK: \(String(describing: newValue))" }
+    _log.debug { "[RepositoryLiveData<\(R.self)>] Handling sync... OK\n↘︎ value=\(String(describing: newValue))" }
 
     value = newValue
   }
 
   public func repository<U: Repository>(_ repository: U, didFailToSyncWithError error: Error) {
-    _log.error { "[RepositoryLiveData<\(T.self)>] Handling sync... ERR: \(error)" }
+    _log.error { "[RepositoryLiveData<\(R.self)>] Handling sync... ERR\n↘︎ error=\(error)" }
 
     value = nil
   }
