@@ -17,19 +17,16 @@ let package = Package(
   ],
   dependencies: [
     .package(url: "https://github.com/SDWebImage/SDWebImage.git", from: "5.0.0"),
-    .package(path: "../BaseKit"),
-//    .package(url: "https://github.com/andrewscwei/swift-basekit.git", from: "1.0.0"),
+    .package(url: "https://github.com/andrewscwei/swift-basekit.git", from: "1.0.0"),
   ],
   targets: [
     .target(
       name: "UXKit",
       dependencies: [
-//        .product(name: "BaseKit", package: "swift-basekit"),
-        "BaseKit",
+        .product(name: "BaseKit", package: "swift-basekit"),
         "SDWebImage",
       ],
       path: "Sources"
-//      swiftSettings: [.define("UXKIT_DEBUG")]
     ),
     .testTarget(
       name: "UXKitTests",
