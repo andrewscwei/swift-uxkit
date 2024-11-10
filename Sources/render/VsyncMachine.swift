@@ -71,7 +71,8 @@ public class VsyncMachine {
   ///
   /// - Parameters:
   ///   - displayLink: The current active display link.
-  @objc private func frameWillAdvance(displayLink: CADisplayLink) {
+  @objc
+  private func frameWillAdvance(displayLink: CADisplayLink) {
     let elapsedSinceLastFrame = displayLink.targetTimestamp - displayLink.timestamp
     let epoch = self.epoch ?? displayLink.targetTimestamp
 

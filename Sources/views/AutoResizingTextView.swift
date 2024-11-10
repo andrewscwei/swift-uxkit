@@ -107,7 +107,8 @@ open class AutoResizingTextView: UITextView, StateMachineDelegate {
     }
   }
 
-  @objc private func onTextChange() {
+  @objc
+  private func onTextChange() {
     stateMachine.invalidate(\AutoResizingTextView.text)
   }
 

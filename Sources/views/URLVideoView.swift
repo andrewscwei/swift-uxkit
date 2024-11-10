@@ -142,7 +142,8 @@ public class URLVideoView: UIView, StateMachineDelegate {
   ///
   /// - Parameters:
   ///   - notification: The `Notification` object that triggered this handler.
-  @objc private func didFinishPlaying(notification: Notification) {
+  @objc
+  private func didFinishPlaying(notification: Notification) {
     guard let playerItem = playerItem, playerItem == notification.object as? AVPlayerItem else { return }
 
     if autoLoops {

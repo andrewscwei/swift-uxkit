@@ -111,7 +111,8 @@ public class RemoteNotificationsService: Observable {
 
   /// Handler invoked in the event when app becomes active in case permissions
   /// were changed by the user while the app was in the background.
-  @objc private func applicationDidBecomeActive() {
+  @objc
+  private func applicationDidBecomeActive() {
     invalidatePushToken()
   }
 
