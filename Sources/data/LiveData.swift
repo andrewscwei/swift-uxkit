@@ -18,7 +18,9 @@ public class LiveData<T: Equatable>: CustomStringConvertible {
       guard value != newValue else { return }
 
       lockQueue.sync { currentValue = newValue }
+
       _log.debug { "[LiveData<\(T.self)>] Updating value... OK\n↘︎ value=\(newValue.map { "\($0)" } ?? "nil")" }
+
       emit()
     }
   }
