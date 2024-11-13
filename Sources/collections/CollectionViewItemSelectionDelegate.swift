@@ -11,6 +11,7 @@ class CollectionViewItemSelectionDelegate<S: Hashable, I: Hashable> {
   /// Internal `UICollectionViewDiffableDataSource` instance.
   private var collectionViewDataSource: UICollectionViewDiffableDataSource<S, I> {
     guard let dataSource = collectionView.dataSource as? UICollectionViewDiffableDataSource<S, I> else { fatalError("CollectionViewItemSelectionDelegate only works with UICollectionViewDiffableDataSource") }
+
     return dataSource
   }
 
