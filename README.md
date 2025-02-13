@@ -5,14 +5,8 @@ A Swift package based on UIKit consisting of custom views, view controllers and 
 ## Setup
 
 ```sh
-# Prepare Ruby environment
-$ brew install rbenv ruby-build
-$ rbenv install
-$ rbenv rehash
-$ gem install bundler
-
 # Install fastlane
-$ bundle install
+$ brew install fastlane
 ```
 
 ## Usage
